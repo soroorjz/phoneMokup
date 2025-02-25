@@ -1,0 +1,105 @@
+.report-form {
+    color: #04364a;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+    .form-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #64ccc5;
+      padding-bottom: 10px;
+  
+      .logo-placeholder {
+        width: 50px;
+        height: 50px;
+        // background-color: #64ccc5;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: bold;
+      }
+  
+      h1 {
+        color: #23486a;
+        font-size: 24px;
+        margin: 0;
+      }
+    }
+  
+    .categories {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+  
+      .category {
+        background-color: #64ccc5;
+        color: #ffffff;
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-size: 14px;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+  
+        &:hover {
+          background-color: #578e7e;
+        }
+      }
+    }
+  
+    .instructions {
+      font-size: 14px;
+      color: #26577c;
+      margin-bottom: 20px;
+    }
+  
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+  
+      thead {
+        background-color: #578e7e;
+        color: #ffffff;
+  
+        th {
+          padding: 10px;
+          font-size: 14px;
+        }
+      }
+  
+      tbody {
+        tr {
+          &:nth-child(even) {
+            background-color: #dafffb;
+          }
+  
+          td {
+            padding: 10px;
+            border: 1px solid #64ccc5;
+            text-align: center;
+          }
+  
+          input[type="checkbox"] {
+            transform: scale(1.2);
+            accent-color: #23486a;
+          }
+        }
+      }
+    }
+  
+    .form-footer {
+      font-size: 12px;
+      color: #e55604;
+      text-align: center;
+  
+      p {
+        margin: 0;
+      }
+    }
+  }

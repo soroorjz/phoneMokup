@@ -1,0 +1,26 @@
+.charts-dashboard {
+  // padding: 0 10px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  // height: 100%;
+  gap: 10px;
+}
+
+.chart-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100% !important;
+}
+
+.chart-container {
+  width: 100%;
+}
+
+.chart-title {
+  text-align: center;
+}

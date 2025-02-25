@@ -1,0 +1,26 @@
+.DetailBoxsContainer {
+  padding: 20px 0;
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  .Participants,
+  .Accepted {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 10px;
+    width: 48%;
+    border-radius: 10px;
+
+    h3 {
+      font-size: 18px;
+      color: #04364a;
+    }
+    p {
+      margin-top: 10px;
+      text-align: center;
+      color: #e55604;
+    }
+  }
+  .Accepted {
+  }
+}

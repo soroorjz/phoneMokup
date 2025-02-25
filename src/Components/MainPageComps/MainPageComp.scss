@@ -1,0 +1,213 @@
+.exam-report-slider {
+  width: 100%;
+  margin: auto;
+  // padding: 20px;
+  // background: #f9f9f9;
+  border-radius: 10px;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  .exam-reportHeader {
+    width: 95%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      // align-items: center;
+      gap: 3px;
+      .userName {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        svg {
+          font-size: 20px;
+          color: #ccc;
+        }
+        h3 {
+          font-size: 16px;
+        }
+      }
+
+      p {
+        font-size: 13px;
+        color: #555;
+      }
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #f1f1f1;
+      padding: 5px 10px;
+      border-radius: 5px;
+      width: 60%;
+      margin: 20px auto;
+      input {
+        border: none;
+        outline: none;
+        width: 100%;
+        background: transparent;
+        padding: 5px;
+      }
+
+      .search-icon {
+        color: gray;
+      }
+    }
+  }
+  .mainContentTitle {
+    width: 80%;
+    margin: 25px auto;
+    .filter-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: self-start;
+      gap: 10px;
+      width: 100%;
+
+      cursor: pointer;
+      .selected-filter {
+        font-size: 18px;
+        // width: 100%;
+        // border: 1px solid #ccc;
+        background-color: #ececec;
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: bold;
+        color: #333;
+      }
+      .filter-containerBtn {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+
+        display: flex;
+        align-items: center;
+        color: #555;
+        // width: 100%;
+        .filterSpan {
+          font-size: 12px;
+        }
+      }
+      .filter-icon {
+        font-size: 20px;
+        cursor: pointer;
+      }
+      .filter-dropdown {
+        position: absolute;
+        top: 30px;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 5px 0;
+        list-style: none;
+        z-index: 100;
+
+        li {
+          padding: 10px 15px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: background 0.3s ease;
+
+          &:hover {
+            background: #f5f5f5;
+          }
+        }
+      }
+    }
+  }
+
+  .mainContent {
+    padding: 30px;
+    width: 100%;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    margin: 0 auto;
+    background-color: #64847c89;
+    .exam-title {
+      display: flex;
+      gap: 3px;
+      align-items: start;
+      width: 100%;
+      margin: 0 auto;
+      font-size: 18px;
+      font-weight: 900;
+      text-align: right;
+      margin-bottom: 50px;
+      color: #11153e;
+    }
+    .slide {
+      //   padding: 20px;
+
+      .slide-title {
+        font-size: 18px;
+        // margin-bottom: 10px;
+        // font-weight: bold;
+        color: #444;
+      }
+
+      .chart-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+    }
+
+    .slick-dots {
+      bottom: -30px;
+    }
+
+    .slick-prev,
+    .slick-next {
+      z-index: 10;
+      display: none !important;
+    }
+    .MainPage-exam-stats {
+      margin-top: 50px;
+      // padding: 20px;
+      // background: #f9f9f9;
+      border-radius: 10px;
+      // box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+      h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      ul {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); // دو ستون مساوی
+        gap: 10px; // فاصله بین آیتم‌ها
+        padding: 0;
+
+        li {
+          background: white;
+          display: flex;
+          flex-direction: column;
+          padding: 10px;
+          border-radius: 8px;
+          box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+          font-size: 16px;
+          text-align: center;
+          font-weight: bold;
+          color: #444;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          strong {
+            color: #222;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+  }
+}

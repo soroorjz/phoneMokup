@@ -1,0 +1,16 @@
+export const data = [
+  { description: "تعداد شرکت کنندگان در آزمون", value: "XXX" },
+  { description: "تعداد داوطلبان حضور", value: "XXX" },
+  { description: "تعداد داوطلبان غیر حضور", value: "XXX" },
+  { description: "تعداد شرکت کنندگان دارای بیمه", value: "XXX" },
+  { description: "تعداد اشتغال ایجاد شده", value: "XXX" },
+  { description: "تعداد متقاضیان اقدام شده", value: "XXX" },
+  { description: "تعداد اولویت استخدام امروز", value: "XXX" },
+  { description: "تعداد اولویت استخدام جدید", value: "XXX" },
+  { description: "تعداد اولویت استخدام زنان", value: "XXX" },
+  { description: "تعداد دستگاه‌های ارزیابی وقت", value: "XXX" },
+  { description: "تعداد محل‌های آموزش و آزمون", value: "XXX" },
+  { description: "تعداد فهرست دهندگان مراکز تعطیلی", value: "XXX" },
+  { description: "تعداد عدم حضور", value: "XXX" },
+  { description: "تعداد اعتراضات", value: "XXX" },
+];

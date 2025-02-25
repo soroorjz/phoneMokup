@@ -1,0 +1,37 @@
+.MyReportsFooter-Container {
+  display: flex;
+  padding: 15px;
+  flex-direction: column;
+  gap: 15px;
+
+  p {
+    align-self: flex-end;
+    color: #535050c7;
+    font-size: 14px;
+    span {
+      color: #000000;
+    }
+  }
+  .MyReportsBtns {
+    display: flex;
+    gap: 15px;
+    button {
+      width: 25%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 25px;
+      background-color: #ae440646 !important;
+      svg {
+        margin-right: 5px;
+        font-size: 14px;
+      }
+    }
+
+    .delete {
+      background-color: #578e7e !important;
+    }
+  }
+}
