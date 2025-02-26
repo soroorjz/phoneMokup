@@ -14,21 +14,12 @@ const IranMapChart = lazy(() => import("./IranMapChart"));
 const MyReportsPageComp = () => {
   const [selectedReport, setSelectedReport] = useState("all");
   const wasAllSelected = selectedReport === "all";
-  //   const handleSelectChange = (e) => {
-  //     const value = e.target.value === "all" ? "all" : Number(e.target.value);
-  //     setSelectedReport(value);
-  //     setWasAllSelected(value === "all");
-  //   };
+
   const handleSelectChange = (e) => {
     setSelectedReport(
       e.target.value === "all" ? "all" : Number(e.target.value)
     );
   };
-
-  //   const handleReportClick = (index) => {
-  //     setSelectedReport(index);
-  //     setWasAllSelected(false); // فقط وقتی از لیست انتخاب شد، تغییر کنه
-  //   };
 
   const handleReportClick = (index) => {
     setSelectedReport(index);

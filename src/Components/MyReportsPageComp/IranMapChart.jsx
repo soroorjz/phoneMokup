@@ -10,7 +10,7 @@ const IranMapChart = () => {
 
     // فعال‌سازی تم و پشتیبانی RTL
     root.setThemes([am5themes_Animated.new(root)]);
-    root.container.set("dir", "rtl"); // تنظیم جهت راست به چپ بر روی container
+    root.container.set("dir", "ltr"); // تنظیم جهت راست به چپ بر روی container
 
     const chart = root.container.children.push(
       am5map.MapChart.new(root, {
@@ -90,7 +90,12 @@ const IranMapChart = () => {
     };
   }, []);
 
-  return <div id="iranMap" style={{ width: "100%", height: "500px" }}></div>;
+  return (
+    <div
+      id="iranMap"
+      style={{ width: "100%", height: "500px", direction: "ltr" }}
+    ></div>
+  );
 };
 
 export default IranMapChart;

@@ -94,7 +94,7 @@ const ExamAnalysisComp = () => {
 
         <div className="chart-section">
           <div className="title-input">
-            <label>عنوان آزمون:</label>
+            <label>عنوان گزارش:</label>
             <input
               type="text"
               value={examTitle}

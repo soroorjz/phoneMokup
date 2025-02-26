@@ -58,6 +58,12 @@ const QualityAssurance = () => {
   return (
     <div>
       <div id="chartdiv"></div>
+      <div className="QualityAssuranceBoxes">
+          <div className="QualityAssuranceBox">توضیحات</div>
+          <div className="QualityAssuranceBox">توضیحات</div>
+          <div className="QualityAssuranceBox">توضیحات</div>
+          <div className="QualityAssuranceBox">توضیحات</div>
+        </div>
     </div>
   );
 };
