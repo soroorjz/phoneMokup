@@ -1,34 +1,48 @@
-import React, { useState } from "react";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./AppFooter.scss";
-import {
-  FaHome,
-  FaThList,
-  FaBook,
-  FaChartBar,
-  FaFileAlt,
-} from "react-icons/fa";
+import { FaHome, FaThList, FaChartBar, FaFileAlt } from "react-icons/fa";
 import { TbCategory2 } from "react-icons/tb";
+
 const AppFooter = () => {
-  const [activeTab, setActiveTab] = useState("home");
+  const location = useLocation();
 
   const tabs = [
-    { id: "categories", label: "دسته‌بندی‌ها", icon: <FaThList /> },
-    { id: "guide", label: "دسته‌بندی‌ها", icon: <TbCategory2 /> },
-    { id: "home", label: "خانه", icon: <FaHome /> },
-    { id: "report-builder", label: "گزارش‌ساز", icon: <FaChartBar /> },
-    { id: "my-reports", label: "گزارش‌های من", icon: <FaFileAlt /> },
+    {
+      id: "categories",
+      label: "دسته‌بندی‌ها",
+      icon: <FaThList />,
+      path: "/categories",
+    },
+    { id: "guide", label: "راهنما", icon: <TbCategory2 />, path: "/guide" },
+    { id: "home", label: "خانه", icon: <FaHome />, path: "/" },
+    {
+      id: "report-builder",
+      label: "گزارش‌ساز",
+      icon: <FaChartBar />,
+      path: "/ExamAnalysis",
+    },
+    {
+      id: "my-reports",
+      label: "گزارش‌های من",
+      icon: <FaFileAlt />,
+      path: "/my-reports",
+    },
   ];
+
   return (
     <div className="navbar">
       {tabs.map((tab) => (
-        <div
+        <Link
           key={tab.id}
-          className={`nav-item ${activeTab === tab.id ? "active" : ""}`}
-          onClick={() => setActiveTab(tab.id)}
+          to={tab.path}
+          className={`nav-item ${
+            location.pathname === tab.path ? "active" : ""
+          }`}
         >
           {tab.icon}
           <span>{tab.label}</span>
-        </div>
+        </Link>
       ))}
     </div>
   );

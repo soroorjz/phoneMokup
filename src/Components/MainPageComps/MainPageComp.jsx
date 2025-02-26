@@ -74,15 +74,14 @@ const MainPageComp = () => {
       </div>
       <div className="mainContentTitle">
         <div className="filter-container">
-            <div className="filter-containerBtn">
-                
-             <LuFilter
-            className="filter-icon"
-            onClick={() => setFilterOpen(!filterOpen)}
-          /> 
-          <p className="filterSpan">چینش بر اساس...</p>
-            </div>
-          
+          <div className="filter-containerBtn">
+            <LuFilter
+              className="filter-icon"
+              onClick={() => setFilterOpen(!filterOpen)}
+            />
+            <p className="filterSpan">چینش بر اساس...</p>
+          </div>
+
           <span className="selected-filter">{selectedFilter}</span>
           {filterOpen && (
             <ul className="filter-dropdown">
