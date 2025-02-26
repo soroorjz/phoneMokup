@@ -4,7 +4,8 @@
   background-color: #452c63;
   .myReportHeader {
     width: 90%;
-    margin: 0 auto;
+    margin: 20px auto;
+
     label {
       //   width: 95%;
       display: block;
@@ -21,8 +22,6 @@
       margin: 10px auto;
       border-radius: 10px;
       cursor: pointer;
-
-     
     }
   }
 
@@ -31,8 +30,12 @@
     background-color: #fff;
     border-radius: 50px 50px 0 0;
     border-top: 1px solid #000;
-    padding-top: 10px;
-
+    padding-top: 60px;
+    h3 {
+      color: #33006f;
+      margin: 10px 0;
+      text-align: center;
+    }
     ul {
       width: 90%;
       margin: 5px auto;
@@ -77,6 +80,28 @@
       cursor: pointer;
       :hover {
         color: #800080;
+      }
+    }
+    .report-stats {
+      width: 95%;
+      margin: 20px auto 50px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      .stat-box {
+        display: flex;
+        text-align: center;
+        gap: 10px;
+        flex-direction: column;
+        width: 47%;
+        height: 160px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #fff;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
