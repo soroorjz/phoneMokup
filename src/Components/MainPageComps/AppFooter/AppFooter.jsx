@@ -14,7 +14,7 @@ const AppFooter = () => {
       icon: <FaThList />,
       path: "/categories",
     },
-    { id: "guide", label: "راهنما", icon: <TbCategory2 />, path: "/guide" },
+    { id: "guide", label: "راهنما", icon: <TbCategory2 />, path: "/Guidance" },
     { id: "home", label: "خانه", icon: <FaHome />, path: "/" },
     {
       id: "report-builder",
