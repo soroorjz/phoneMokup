@@ -5,6 +5,7 @@ import MainPage from "./pages/MainPage/MainPage";
 import MyReports from "./pages/MyReports/MyReports";
 import BottomTabChart from "./Components/BottomTabChart/BottomTabChart";
 import ExamAnalysis from "./pages/ExamAnalysis/ExamAnalysis";
+import MyReportsPage from "./pages/MyReportsPage/MyReportsPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="LogIn" element={<LogIn />} />
           <Route path="/" element={<MainPage />} />
           <Route path="/ExamAnalysis" element={<ExamAnalysis />} />
+          <Route path="/MyReportsPage" element={<MyReportsPage />} />
         </Routes>
       </div>
     </Router>

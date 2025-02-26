@@ -26,7 +26,7 @@ const AppFooter = () => {
       id: "my-reports",
       label: "گزارش‌های من",
       icon: <FaFileAlt />,
-      path: "/my-reports",
+      path: "/MyReportsPage",
     },
   ];
 

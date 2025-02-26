@@ -1,60 +1,64 @@
-import React, { useState } from "react";
-import { Line, Bar, Pie } from "react-chartjs-2";
+import React, { useState, useLayoutEffect, useRef } from "react";
+import * as am4core from "@amcharts/amcharts4/core";
+import * as am4charts from "@amcharts/amcharts4/charts";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import { FaPen } from "react-icons/fa6";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
 import "./ExamAnalysisComp.scss";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-const data = {
-  labels: ["فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد"],
-  datasets: [
-    {
-      label: "نتایج آزمون",
-      data: [65, 59, 80, 81, 56],
-      backgroundColor: ["rgba(75, 192, 192, 0.2)"],
-      borderColor: ["rgba(75, 192, 192, 1)"],
-      borderWidth: 1,
-    },
-  ],
-};
+am4core.useTheme(am4themes_animated);
 
 const ExamAnalysisComp = () => {
   const [examTitle, setExamTitle] = useState("");
   const [chartType, setChartType] = useState("line");
+  const chartRef = useRef(null);
 
-  const renderChart = () => {
-    switch (chartType) {
-      case "bar":
-        return <Bar data={data} />;
-      case "pie":
-        return <Pie data={data} />;
-      case "line":
-      default:
-        return <Line data={data} />;
+  useLayoutEffect(() => {
+    let chart;
+    if (chartType === "bar") {
+      chart = am4core.create(chartRef.current, am4charts.XYChart);
+      chart.data = [
+        { category: "فروردین", value: 65 },
+        { category: "اردیبهشت", value: 59 },
+        { category: "خرداد", value: 80 },
+        { category: "تیر", value: 81 },
+        { category: "مرداد", value: 56 },
+      ];
+      let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.dataFields.category = "category";
+      let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      let series = chart.series.push(new am4charts.ColumnSeries());
+      series.dataFields.valueY = "value";
+      series.dataFields.categoryX = "category";
+    } else if (chartType === "pie") {
+      chart = am4core.create(chartRef.current, am4charts.PieChart);
+      chart.data = [
+        { category: "فروردین", value: 65 },
+        { category: "اردیبهشت", value: 59 },
+        { category: "خرداد", value: 80 },
+        { category: "تیر", value: 81 },
+        { category: "مرداد", value: 56 },
+      ];
+      let pieSeries = chart.series.push(new am4charts.PieSeries());
+      pieSeries.dataFields.value = "value";
+      pieSeries.dataFields.category = "category";
+    } else {
+      chart = am4core.create(chartRef.current, am4charts.XYChart);
+      chart.data = [
+        { category: "فروردین", value: 65 },
+        { category: "اردیبهشت", value: 59 },
+        { category: "خرداد", value: 80 },
+        { category: "تیر", value: 81 },
+        { category: "مرداد", value: 56 },
+      ];
+      let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.dataFields.category = "category";
+      let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      let series = chart.series.push(new am4charts.LineSeries());
+      series.dataFields.valueY = "value";
+      series.dataFields.categoryX = "category";
     }
-  };
+    return () => chart.dispose();
+  }, [chartType]);
 
   return (
     <div className="exam-analysis">
@@ -91,7 +95,6 @@ const ExamAnalysisComp = () => {
         <div className="chart-section">
           <div className="title-input">
             <label>عنوان آزمون:</label>
-
             <input
               type="text"
               value={examTitle}
@@ -108,7 +111,7 @@ const ExamAnalysisComp = () => {
             <option value="bar">نمودار میله‌ای</option>
             <option value="pie">نمودار دایره‌ای</option>
           </select>
-          <div className="chart-placeholder">{renderChart()}</div>
+          <div className="chart-placeholder" ref={chartRef}></div>
         </div>
 
         <div className="analysis-boxes">

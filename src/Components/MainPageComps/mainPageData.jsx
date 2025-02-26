@@ -11,21 +11,6 @@ export const reportSlides = [
         },
       ],
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true, // بهبود مقیاس‌بندی نمودار
-      plugins: {
-        legend: {
-          position: "right", // لیبل‌ها به راست منتقل می‌شوند
-          labels: {
-            boxWidth: 20, // اندازه مربع‌های رنگی
-            padding:15, // فاصله‌ی بین لیبل‌ها
-            font: { size: 14, family: "Tahoma" }, // اندازه‌ی فونت منطقی‌تر
-            color: "#333",
-          },
-        },
-      },
-    },
   },
   {
     title: "تحلیل سهمیه شرکت‌کنندگان",
@@ -38,22 +23,6 @@ export const reportSlides = [
           backgroundColor: ["#C57D42", "#64847C", "#181B35", "#636BB9"],
         },
       ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: "right",
-          align: "center",
-          labels: {
-            boxWidth: 15,
-            padding: 15,
-            font: { size: 14, family: "Vazirmatn" },
-            color: "#333",
-          },
-        },
-      },
     },
   },
   {
@@ -74,29 +43,6 @@ export const reportSlides = [
           ],
         },
       ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false, // حذف لیبل از بالا برای نمودار میله‌ای
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            font: { size: 12, family: "Vazirmatn" },
-            color: "#333",
-          },
-        },
-        y: {
-          ticks: {
-            font: { size: 12, family: "Vazirmatn" },
-            color: "#333",
-          },
-        },
-      },
     },
   },
 ];
