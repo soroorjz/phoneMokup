@@ -3,18 +3,19 @@ import { Link, useLocation } from "react-router-dom";
 import "./AppFooter.scss";
 import { FaHome, FaThList, FaChartBar, FaFileAlt } from "react-icons/fa";
 import { TbCategory2 } from "react-icons/tb";
+import { FaBook } from "react-icons/fa6";
 
 const AppFooter = () => {
   const location = useLocation();
 
   const tabs = [
+    { id: "guide", label: "راهنما", icon: <FaBook />, path: "/Guidance" },
     {
       id: "categories",
       label: "دسته‌بندی‌ها",
       icon: <FaThList />,
-      path: "/categories",
+      path: "/CategoryPage",
     },
-    { id: "guide", label: "راهنما", icon: <TbCategory2 />, path: "/Guidance" },
     { id: "home", label: "خانه", icon: <FaHome />, path: "/" },
     {
       id: "report-builder",
