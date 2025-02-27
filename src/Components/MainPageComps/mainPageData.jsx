@@ -7,7 +7,7 @@ export const reportSlides = [
       datasets: [
         {
           data: [60, 40],
-          backgroundColor: ["#36A2EB", "#FF6384"],
+          backgroundColor: ["#ffc8dd", "#ffc8dd"],
         },
       ],
     },
@@ -74,7 +74,7 @@ export const examsData = [
           datasets: [
             {
               data: [60, 40],
-              backgroundColor: ["#36A2EB", "#FF6384"],
+              backgroundColor: ["#36A2EB", "#ffc8dd"],
             },
           ],
         },
@@ -92,12 +92,12 @@ export const examsData = [
           ],
           datasets: [
             {
-              label: "تعداد شرکت‌کنندگان",
+              label: "رشته‌های پر متقاضی",
               data: [200, 150, 130, 120, 100],
               backgroundColor: [
-                "#FFCE56",
-                "#4CAF50",
-                "#36A2EB",
+                "#f2d9b8",
+                "#ffd978",
+                "#9ad7f5",
                 "#FF6384",
                 "#C57D42",
               ],
@@ -133,7 +133,7 @@ export const examsData = [
           datasets: [
             {
               data: [45, 55],
-              backgroundColor: ["#FF6384", "#36A2EB"],
+              backgroundColor: ["#36A2EB", "#ffc8dd"],
             },
           ],
         },
@@ -145,20 +145,20 @@ export const examsData = [
           labels: [
             "آموزش ابتدایی",
             "مشاوره تحصیلی",
-            "زبان انگلیسی",
-            "ریاضی",
-            "فیزیک",
+            "دبیری زبان انگلیسی",
+            "دبیری ریاضی",
+            "دبیری فیزیک",
           ],
           datasets: [
             {
               label: "تعداد شرکت‌کنندگان",
               data: [300, 180, 150, 140, 120],
               backgroundColor: [
-                "#36A2EB",
-                "#FFCE56",
-                "#4CAF50",
-                "#C57D42",
+                "#f2d9b8",
+                "#ffd978",
+                "#9ad7f5",
                 "#FF6384",
+                "#C57D42",
               ],
             },
           ],
@@ -181,7 +181,7 @@ export const examsData = [
           datasets: [
             {
               data: [50, 50],
-              backgroundColor: ["#4CAF50", "#C57D42"],
+              backgroundColor: ["#36A2EB", "#ffc8dd"],
             },
           ],
         },
@@ -196,11 +196,11 @@ export const examsData = [
               label: "تعداد شرکت‌کنندگان",
               data: [220, 200, 180, 150, 130],
               backgroundColor: [
-                "#FFCE56",
-                "#36A2EB",
+                "#f2d9b8",
+                "#ffd978",
+                "#9ad7f5",
                 "#FF6384",
                 "#C57D42",
-                "#4CAF50",
               ],
             },
           ],
