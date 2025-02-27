@@ -12,10 +12,12 @@
     display: flex;
     flex-direction: column;
     .row-title {
+      text-shadow: 0px -2px 14px rgba(69,44,99,0.6);
+      color: #452c63;
       width: 90%;
       margin: 0 auto;
       font-size: 16px;
-      font-weight: 400;
+      font-weight: 900;
     }
 
     .row {

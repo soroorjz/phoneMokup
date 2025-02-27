@@ -67,6 +67,7 @@
   }
   .mainContentTitle {
     width: 80%;
+    
     margin: 25px auto;
     .filter-container {
       position: relative;
@@ -149,6 +150,8 @@
         gap: 3px;
         align-items: center;
         background-color: #769edf;
+      text-shadow: 0px -2px 14px rgba(69,44,99,0.6);
+
         width: 100%;
         margin: 0 auto;
         padding: 10px 5px;
