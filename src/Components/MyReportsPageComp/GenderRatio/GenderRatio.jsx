@@ -65,16 +65,16 @@ const GenderRatio = () => {
       if (target.dataItem) {
         switch (target.dataItem.dataContext.gender) {
           case "زن":
-            return am5.color(0xffc8dd); // صورتی روشن
+            return am5.color(0x6794dc); // صورتی روشن
           case "مرد":
-            return am5.color(0xa2d2ff); // آبی روشن
+            return am5.color(0xa367dc); // آبی روشن
           default:
             return fill;
         }
       }
       return fill;
     });
-
+//"#6794dc","#a367dc"
     let data = [
       { gender: "زن", count: 3500 },
       { gender: "مرد", count: 2500 },

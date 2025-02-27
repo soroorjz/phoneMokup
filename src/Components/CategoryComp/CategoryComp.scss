@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  height:90%;
+  height: 90%;
   padding: 20px;
   position: relative;
   justify-content: center;
@@ -20,13 +20,20 @@
     .category-card {
       padding: 15px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
       border-radius: 10px;
-      border: 2px solid #bebede;
+      // border: 2px solid #bebede;
+      background-color: #c1d3fe;
       cursor: pointer;
-      transition: background 0.3sease;
+      transition: background 0.4sease;
       position: relative;
+      color: #452c63;
+      align-items: center;
+      justify-content: center;
+     
       &:hover {
-        background: #e0e0e0;
+        background: #abc4ff;
       }
 
       .category-title {
