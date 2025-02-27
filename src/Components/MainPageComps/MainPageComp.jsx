@@ -81,6 +81,9 @@ const MainPageComp = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <div className="logoPart">
+          <img src="/assets/images/IMG-20250126-WA0000-removebg-preview.png" alt="" />
+        </div>
       </div>
 
       {/* نمایش لیست آزمون‌های پیدا شده */}
