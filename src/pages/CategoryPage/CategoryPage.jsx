@@ -6,6 +6,7 @@ import "./CategoryPage.scss";
 const CategoryPage = () => {
   return (
     <div className="CategoryPage">
+     <h2>جستجو بر اساس دسته‌بندی‌ها</h2>
       <CategoryComp />
       <AppFooter />
     </div>
