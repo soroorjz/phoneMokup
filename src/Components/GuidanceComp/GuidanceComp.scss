@@ -46,6 +46,7 @@
         text-align: center;
         margin: 10px 0;
         width: 45%;
+        cursor: pointer;
 
         .icon {
           font-size: 22px;
@@ -54,10 +55,18 @@
         p {
           font-size: 14px;
         }
+        &.chartsBox {
+          background: linear-gradient(60deg, #ffa726, #fb8c00);
+        }
+        &.dataBox {
+          background: linear-gradient(60deg, #f55a4e, #f32c1e);
+        }
 
         &.large-box {
           width: 90%;
           height: 150px;
+          background: rgb(219, 125, 85);
+          background: linear-gradient(60deg, #c2b093, #b09873);
         }
 
         &.small-box {
@@ -65,7 +74,19 @@
           display: flex;
           flex-direction: column;
           height: 160px;
-          justify-content: space-around;
+          gap: 12px;
+          &:nth-child(1) {
+            background: linear-gradient(60deg, #66bb6a, #43a047);
+          }
+          &:nth-child(2) {
+            background: linear-gradient(60deg, #ffa726, #fb8c00);
+          }
+          &:nth-child(3) {
+            background: linear-gradient(60deg, #ef5350, #e53935);
+          }
+          &:nth-child(4) {
+            background: linear-gradient(60deg, #758fb3, #57759e);
+          }
         }
       }
     }

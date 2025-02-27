@@ -14,11 +14,11 @@ const GuidanceComp = () => {
       <div className="GuidanceCompWrapper">
         <h2 className="row-title">آموزش</h2>
         <div className="row row-1">
-          <div className="box">
+          <div className="box chartsBox">
             <FaDatabase className="icon" />
             <p>داده خوانی</p>
           </div>
-          <div className="box">
+          <div className="box dataBox">
             <FaChartBar className="icon" />
             <p>انواع نمودار</p>
           </div>
