@@ -56,17 +56,16 @@
           font-size: 14px;
         }
         &.chartsBox {
-          background: linear-gradient(60deg, #ffa726, #fb8c00);
+          background-color: #6794dc;
         }
         &.dataBox {
-          background: linear-gradient(60deg, #f55a4e, #f32c1e);
+          background-color: #67b7dc;
         }
 
         &.large-box {
           width: 90%;
           height: 150px;
-          background: rgb(219, 125, 85);
-          background: linear-gradient(60deg, #c2b093, #b09873);
+          background-color: #8c76df;
         }
 
         &.small-box {
@@ -76,16 +75,16 @@
           height: 160px;
           gap: 12px;
           &:nth-child(1) {
-            background: linear-gradient(60deg, #66bb6a, #43a047);
+            background-color: #769edf;
           }
           &:nth-child(2) {
-            background: linear-gradient(60deg, #ffa726, #fb8c00);
+            background-color: #a6c9e2;
           }
           &:nth-child(3) {
-            background: linear-gradient(60deg, #ef5350, #e53935);
+            background-color: #767fdf;
           }
           &:nth-child(4) {
-            background: linear-gradient(60deg, #758fb3, #57759e);
+            background-color: #ac76df;
           }
         }
       }

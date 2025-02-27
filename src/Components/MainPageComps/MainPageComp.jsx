@@ -121,7 +121,7 @@ const MainPageComp = () => {
           <div key={examIndex} className="exam-section">
             {/* عنوان آزمون */}
             <h2 className="exam-title">
-              <FaClipboard />
+              {/* <FaClipboard /> */}
               {exam.title}
             </h2>
 

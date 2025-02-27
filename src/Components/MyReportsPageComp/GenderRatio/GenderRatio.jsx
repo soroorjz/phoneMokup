@@ -21,13 +21,34 @@ const GenderRatio = () => {
         categoryField: "gender",
       })
     );
-    series.set(
-      "tooltip",
-      am5.Tooltip.new(root, {
-        labelText: "{category}: {valuePercentTotal.formatNumber('#.00')}%",
-        autoTextColor: true,
-      })
-    );
+
+    let tooltip = am5.Tooltip.new(root, {
+      labelText: "{category}: {valuePercentTotal.formatNumber('#.00')}%",
+      autoTextColor: true,
+    });
+
+    tooltip.label.setAll({
+      oversizedBehavior: "wrap",
+      maxWidth: 100,
+      fontSize: 14,
+      textAlign: "center",
+      fill: am5.color("#000"),
+    });
+
+    tooltip.get("background").setAll({
+      fill: am5.color("#fff"),
+      stroke: am5.color("#fff"),
+      strokeWidth: 1,
+      cornerRadius: 8,
+    });
+
+    tooltip.setAll({
+      pointerOrientation: "horizontal",
+      centerX: am5.percent(50),
+      centerY: am5.percent(50),
+    });
+
+    series.set("tooltip", tooltip);
 
     series.slices.template.setAll({
       strokeWidth: 2,
@@ -37,8 +58,21 @@ const GenderRatio = () => {
     series.labels.template.setAll({
       fontSize: 16,
       text: "{category}: {valuePercentTotal.formatNumber('#.')}%",
-      maxWidth: 120, // حداکثر عرض هر متن
-      oversizedBehavior: "wrap", // اگر متن بزرگ شد، آن را به چند خط بشکن
+      maxWidth: 60,
+      oversizedBehavior: "wrap",
+    });
+    series.slices.template.adapters.add("fill", (fill, target) => {
+      if (target.dataItem) {
+        switch (target.dataItem.dataContext.gender) {
+          case "زن":
+            return am5.color(0xffc8dd); // صورتی روشن
+          case "مرد":
+            return am5.color(0xa2d2ff); // آبی روشن
+          default:
+            return fill;
+        }
+      }
+      return fill;
     });
 
     let data = [

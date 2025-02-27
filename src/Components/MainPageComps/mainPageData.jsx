@@ -74,7 +74,7 @@ export const examsData = [
           datasets: [
             {
               data: [60, 40],
-              backgroundColor: ["#36A2EB", "#ffc8dd"],
+              backgroundColor: ["#6794dc","#a367dc" ],
             },
           ],
         },
@@ -95,11 +95,11 @@ export const examsData = [
               label: "رشته‌های پر متقاضی",
               data: [200, 150, 130, 120, 100],
               backgroundColor: [
-                "#f2d9b8",
-                "#ffd978",
-                "#9ad7f5",
-                "#FF6384",
-                "#C57D42",
+                "#df9776",
+                "#df7876",
+                "#df76b3",
+                "#cc76df",
+                "#ac76df",
               ],
             },
           ],
@@ -133,7 +133,7 @@ export const examsData = [
           datasets: [
             {
               data: [45, 55],
-              backgroundColor: ["#36A2EB", "#ffc8dd"],
+              backgroundColor: ["#6794dc","#a367dc" ],
             },
           ],
         },
@@ -154,11 +154,11 @@ export const examsData = [
               label: "تعداد شرکت‌کنندگان",
               data: [300, 180, 150, 140, 120],
               backgroundColor: [
-                "#f2d9b8",
-                "#ffd978",
-                "#9ad7f5",
-                "#FF6384",
-                "#C57D42",
+                "#df9776",
+                "#df7876",
+                "#df76b3",
+                "#cc76df",
+                "#ac76df",
               ],
             },
           ],
@@ -181,7 +181,7 @@ export const examsData = [
           datasets: [
             {
               data: [50, 50],
-              backgroundColor: ["#36A2EB", "#ffc8dd"],
+              backgroundColor: ["#6794dc","#a367dc" ],
             },
           ],
         },
@@ -196,11 +196,11 @@ export const examsData = [
               label: "تعداد شرکت‌کنندگان",
               data: [220, 200, 180, 150, 130],
               backgroundColor: [
-                "#f2d9b8",
-                "#ffd978",
-                "#9ad7f5",
-                "#FF6384",
-                "#C57D42",
+                "#df9776",
+                "#df7876",
+                "#df76b3",
+                "#cc76df",
+                "#ac76df",
               ],
             },
           ],
