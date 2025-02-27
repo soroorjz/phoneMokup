@@ -1,0 +1,85 @@
+.category-result-page {
+  padding-top: 20px;
+  height: 90%;
+  background-color: #fff;
+  border-radius: 50px 50px 0 0;
+  .back-btn {
+    display: block;
+    width: 20%;
+    margin: 20px auto 0;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #452c63;
+    color: white;
+    cursor: pointer;
+    &:hover {
+      background-color: #33006f;
+    }
+  }
+
+  .selected-options-container {
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px auto;
+
+    .selected-option {
+      display: flex;
+      align-items: center;
+      background: #e0e0e0;
+      border-radius: 5px;
+      padding: 3px 5px;
+      position: relative;
+      span {
+        font-size: 13px;
+        margin-left: 3px;
+      }
+
+      .remove-option-btn {
+        background: none;
+        border: none;
+        color: red;
+        cursor: pointer;
+        margin-left: 8px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .chart-container {
+    width: 90%;
+    margin: 0 auto 20px;
+    h2 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      color: #333;
+    }
+  }
+
+  .report-description-title {
+    font-size: 24px;
+    width: 90%;
+    margin: 0 auto 20px;
+    color: #333;
+  }
+
+  .report-description-boxes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 90%;
+    margin: 0 auto 20px;
+    .description-box {
+      width: 47%;
+      height: 140px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #fff;
+    }
+  }
+}

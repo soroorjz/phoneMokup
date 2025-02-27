@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./CategoryComp.scss";
+import CategoryResultPage from "./CategoryResultPage/CategoryResultPage";
 
 const categories = [
   {
@@ -50,6 +51,7 @@ const categories = [
 const CategoryComp = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({});
+  const [showResults, setShowResults] = useState(false);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -65,6 +67,10 @@ const CategoryComp = () => {
     }
   };
 
+  const handleShowResults = () => {
+    setShowResults(true);
+  };
+
   const clearSelection = (categoryTitle) => {
     setSelectedOptions((prev) => {
       const updatedOptions = { ...prev };
@@ -73,9 +79,23 @@ const CategoryComp = () => {
     });
   };
 
+  const handleHideResults = () => {
+    setShowResults(false);
+  };
+
   const closeSidebar = () => {
     setSelectedCategory(null);
   };
+
+  if (showResults) {
+    return (
+      <CategoryResultPage
+        selectedOptions={selectedOptions}
+        clearSelection={clearSelection}
+        onHideResults={handleHideResults}
+      />
+    );
+  }
 
   return (
     <div className="categories-container">
@@ -105,7 +125,11 @@ const CategoryComp = () => {
         ))}
       </div>
 
-      <button className="showReportBtn"> مشاهده گزارش‌ها</button>
+      {Object.keys(selectedOptions).length > 0 && (
+        <button className="showReportBtn" onClick={handleShowResults}>
+          مشاهده گزارش‌ها
+        </button>
+      )}
 
       <div className={`sidebar ${selectedCategory ? "open" : ""}`}>
         <button className="close-btn" onClick={closeSidebar}>
