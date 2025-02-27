@@ -1,9 +1,9 @@
 import React, { useLayoutEffect } from "react";
 import "./GenderRatio.scss";
-
 import * as am5 from "@amcharts/amcharts5";
 import * as am5percent from "@amcharts/amcharts5/percent";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+
 const GenderRatio = () => {
   useLayoutEffect(() => {
     let root = am5.Root.new("chartdiv");
@@ -61,23 +61,25 @@ const GenderRatio = () => {
       maxWidth: 60,
       oversizedBehavior: "wrap",
     });
+
     series.slices.template.adapters.add("fill", (fill, target) => {
       if (target.dataItem) {
         switch (target.dataItem.dataContext.gender) {
           case "زن":
-            return am5.color(0x6794dc); // صورتی روشن
+            return am5.color(0x6794dc); // آبی روشن
           case "مرد":
-            return am5.color(0xa367dc); // آبی روشن
+            return am5.color(0xa367dc); // بنفش روشن
           default:
             return fill;
         }
       }
       return fill;
     });
-//"#6794dc","#a367dc"
+
+    // داده‌های فرضی
     let data = [
-      { gender: "زن", count: 3500 },
-      { gender: "مرد", count: 2500 },
+      { gender: "زن", count: 600000 }, // تعداد فرضی زنان
+      { gender: "مرد", count: 400000 }, // تعداد فرضی مردان
     ];
 
     series.data.setAll(data);
@@ -87,13 +89,21 @@ const GenderRatio = () => {
   }, []);
 
   return (
-    <div>
+    <div className="GenderRatioContainer">
       <div id="chartdiv" style={{ width: "100%", height: "400px" }}></div>
       <div className="GenderRatioBoxes">
-        <div className="GenderRatioBox">توضیحات</div>
-        <div className="GenderRatioBox">توضیحات</div>
-        <div className="GenderRatioBox">توضیحات</div>
-        <div className="GenderRatioBox">توضیحات</div>
+        <div className="GenderRatioBox">
+          تعداد کل ثبت‌نام‌کنندگان: <span>۱٬۰۰۰٬۰۰۰ نفر</span> 
+        </div>
+        <div className="GenderRatioBox">
+          تعداد ثبت‌نام‌کنندگان زن: <span>۶۰۰٬۰۰۰ نفر</span> 
+        </div>
+        <div className="GenderRatioBox">
+          تعداد ثبت‌نام‌کنندگان مرد: <span>۴۰۰٬۰۰۰ نفر</span> 
+        </div>
+        <div className="GenderRatioBox">
+          نسبت زنان به مردان: <span>۶۰٪ زن،</span>  <span>۴۰٪ مرد</span>
+        </div>
       </div>
     </div>
   );
