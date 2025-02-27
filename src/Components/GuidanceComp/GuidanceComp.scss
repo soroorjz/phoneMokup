@@ -28,6 +28,10 @@
       &.row-3 {
         justify-content: center;
       }
+      &.row-3{
+      gap: 10px;
+
+      }
 
       &.row-2 {
         justify-content: center;
@@ -49,7 +53,7 @@
         cursor: pointer;
 
         .icon {
-          font-size: 22px;
+          font-size: 25px;
           margin-bottom: 0.5rem;
         }
         p {
@@ -87,6 +91,16 @@
             background-color: #ac76df;
           }
         }
+      }
+      .slide-text {
+        font-size: 24px !important ;
+        color: #452c63;
+        font-weight: bold;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
       }
     }
   }

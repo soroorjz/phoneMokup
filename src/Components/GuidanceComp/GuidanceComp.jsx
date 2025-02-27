@@ -1,20 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FaPhone } from "react-icons/fa";
+import { MdOutlineMenuBook } from "react-icons/md";
+import { IoMdChatbubbles } from "react-icons/io";
+import { FaHeadset } from "react-icons/fa6";
+import { Mousewheel, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
 import "./GuidanceComp.scss";
-import {
-  FaChartBar,
-  FaDatabase,
-  FaPhone,
-  FaEnvelope,
-  FaRegImage,
-} from "react-icons/fa6";
-import { MdHeadsetMic } from "react-icons/md";
+import { FaChartBar, FaDatabase } from "react-icons/fa6";
+const sentences = [
+  { text: "امکان دریافت فایل اکسل", bg: "#8c76df" },
+  { text: "امکان ساخت گزارش شخصی", bg: "#df9776" },
+  { text: "استفاده از به‌روزترین داده‌های آماری", bg: "#76bedf" },
+];
+
 const GuidanceComp = () => {
+  const [bgColor, setBgColor] = useState(sentences[0].bg);
+
   return (
     <div className="support-container">
       <div className="GuidanceCompWrapper">
         <h2 className="row-title">آموزش</h2>
         <div className="row row-1">
           <div className="box chartsBox">
+            {" "}
             <FaDatabase className="icon" />
             <p>داده خوانی</p>
           </div>
@@ -24,27 +34,47 @@ const GuidanceComp = () => {
           </div>
         </div>
 
-        <h2 className="row-title">لورم</h2>
+        <h2 className="row-title">جدیدترین امکانات برنامک</h2>
         <div className="row row-2">
-          <div className="box large-box"></div>
+          <div className="box large-box" style={{ backgroundColor: bgColor }}>
+            <Swiper
+              direction="vertical"
+              slidesPerView={1}
+              spaceBetween={30}
+              speed={1000} // سرعت اسلایدها
+              loop={true} // لوپ
+              autoplay={{ delay: 3000, disableOnInteraction: false }} // اسلاید خودکار
+              mousewheel={true}
+              modules={[Mousewheel, Autoplay]}
+              onSlideChange={(swiper) =>
+                setBgColor(sentences[swiper.activeIndex].bg)
+              }
+            >
+              {sentences.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <p className="slide-text">{item.text}</p>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         </div>
 
         <h2 className="row-title">پشتیبانی</h2>
         <div className="row row-3">
           <div className="box small-box">
-            <FaPhone className="icon" />
+            <FaPhone />
             <p>تلفنی</p>
           </div>
           <div className="box small-box">
-            <FaEnvelope className="icon" />
+            <IoMdChatbubbles />
             <p>پیامکی</p>
           </div>
           <div className="box small-box">
-            <MdHeadsetMic className="icon" />
+            <FaHeadset />
             <p>تلفن گویا</p>
           </div>
           <div className="box small-box">
-            <FaRegImage className="icon" />
+            <MdOutlineMenuBook />
             <p>راهنمای تصویری</p>
           </div>
         </div>
