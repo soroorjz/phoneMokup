@@ -5,6 +5,10 @@
     flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
+    #chartdiv{
+      width: 90%;
+      margin: 0 auto;
+    }
     .GenderRatioBox {
       display: flex;
       text-align: center;

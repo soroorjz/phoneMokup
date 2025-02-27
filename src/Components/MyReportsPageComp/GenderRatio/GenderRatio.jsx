@@ -21,6 +21,13 @@ const GenderRatio = () => {
         categoryField: "gender",
       })
     );
+    series.set(
+      "tooltip",
+      am5.Tooltip.new(root, {
+        labelText: "{category}: {valuePercentTotal.formatNumber('#.00')}%",
+        autoTextColor: true,
+      })
+    );
 
     series.slices.template.setAll({
       strokeWidth: 2,
@@ -30,6 +37,8 @@ const GenderRatio = () => {
     series.labels.template.setAll({
       fontSize: 16,
       text: "{category}: {valuePercentTotal.formatNumber('#.')}%",
+      maxWidth: 120, // حداکثر عرض هر متن
+      oversizedBehavior: "wrap", // اگر متن بزرگ شد، آن را به چند خط بشکن
     });
 
     let data = [

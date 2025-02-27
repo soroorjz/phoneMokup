@@ -13,8 +13,8 @@ export const reports = [
     title: "پذیرفته‌شدگان نهایی آزمون در استان‌های ایران",
     date: "۱۴۰۳/۰۹/۰۳",
     stats: {
-      totalApplicants: 50000,
-      totalAccepted: 12000,
+      totalApplicants: 700,
+      totalAccepted: 500,
       topProvince: "تهران",
       lowestProvince: "سیستان و بلوچستان",
     },
