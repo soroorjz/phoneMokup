@@ -82,7 +82,7 @@ const MainPageComp = () => {
           />
         </div>
         <div className="logoPart">
-          <img src="/assets/images/IMG-20250126-WA0000-removebg-preview.png" alt="" />
+          <img src="/assets/images/logo2.png" alt="" />
         </div>
       </div>
 
