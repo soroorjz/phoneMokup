@@ -23,6 +23,7 @@
     "recharts": "^2.15.0",
     "scss": "^0.2.4",
     "slick-carousel": "^1.8.1",
+    "sweetalert2": "^11.17.2",
     "swiper": "^11.2.4"
   },
   "scripts": {

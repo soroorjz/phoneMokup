@@ -2,10 +2,11 @@ import React, { useState, useLayoutEffect, useRef } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { FaPen, FaPlus, FaEdit, FaTrash, FaCheck } from "react-icons/fa";
+import { FaPen, FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import Swal from "sweetalert2";
 import "./ExamAnalysisComp.scss";
 
 am4core.useTheme(am4themes_animated);
@@ -65,7 +66,10 @@ const ExamAnalysisComp = () => {
   }, [chartType]);
 
   const addDescriptionBox = () => {
-    setDescriptionBoxes([...descriptionBoxes, { id: Date.now(), text: "", isSubmitted: false }]);
+    setDescriptionBoxes([
+      ...descriptionBoxes,
+      { id: Date.now(), text: "", isSubmitted: false },
+    ]);
   };
 
   const editDescriptionBox = (id, newText) => {
@@ -94,6 +98,28 @@ const ExamAnalysisComp = () => {
         box.id === id ? { ...box, isSubmitted: false } : box
       )
     );
+  };
+
+  const handleSubmitReport = () => {
+    // نمایش پیام موفقیت‌آمیز
+    Swal.fire({
+      title: "",
+      text: "گزارش شما با موفقیت ثبت شد.",
+      icon: "success",
+      timer: 2000, // 2 ثانیه
+      showConfirmButton: false,
+      customClass: {
+        popup: "ExamAnalysis-popup", // کلاس سفارشی برای مودال
+      },
+    });
+
+    // ریست کردن همه چیز به حالت اولیه
+    setTimeout(() => {
+      setExamTitle("");
+      setChartType("line");
+      setDescriptionBoxes([]);
+      window.scrollTo({ top: 0, behavior: "smooth" }); // اسکرول به بالای صفحه
+    }, 2000);
   };
 
   return (
@@ -164,36 +190,39 @@ const ExamAnalysisComp = () => {
                 disabled={box.isSubmitted}
               />
               <div className="box-actions">
-               
                 <button
                   className="editeBtn"
                   onClick={() => enableEditDescriptionBox(box.id)}
                 >
-                  <CiEdit/>
-                  ویرایش 
+                  <CiEdit />
+                  ویرایش
                 </button>
                 <button
                   className="deleteBtn"
                   onClick={() => deleteDescriptionBox(box.id)}
                 >
-                  <MdDelete/>
-                  حذف 
+                  <MdDelete />
+                  حذف
                 </button>
                 {!box.isSubmitted && (
                   <button
                     className="submitBtn"
                     onClick={() => submitDescriptionBox(box.id)}
                   >
-                    <IoMdCheckmarkCircleOutline/>
-                    ثبت 
+                    <IoMdCheckmarkCircleOutline />
+                    ثبت
                   </button>
                 )}
               </div>
             </div>
           ))}
         </div>
-
-        <button className="download-btn"> دریافت فایل اکسل</button>
+        <div className="AnalysisSubmitBtns">
+          <button className="download-btn"> دریافت فایل اکسل</button>
+          <button className="submit-btn" onClick={handleSubmitReport}>
+            ثبت گزارش
+          </button>
+        </div>
       </div>
     </div>
   );

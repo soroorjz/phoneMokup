@@ -89,7 +89,7 @@
         .addBtn {
           cursor: pointer;
           margin-right: 5px;
-          &:hover{
+          &:hover {
             color: rgb(147, 30, 30);
           }
         }
@@ -116,7 +116,7 @@
           display: flex;
           align-items: center;
           justify-content: flex-end;
-          gap:5px;
+          gap: 5px;
           button {
             display: flex;
             gap: 3px;
@@ -125,7 +125,7 @@
             border: none;
             cursor: pointer;
             background-color: #b2b2c07a;
-            padding:2px 5px;
+            padding: 2px 5px;
             border-radius: 10px;
             color: #555;
           }
@@ -141,23 +141,33 @@
         }
       }
     }
+    .AnalysisSubmitBtns {
+      display: flex;
+      margin-top: 40px;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
 
-    .download-btn {
-      align-self: self-end;
-      // margin: 15px 0 ;
-      display: block;
-      width: 50%;
-      margin: 20px auto 0;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background-color: #452c63;
-      color: white;
-      cursor: pointer;
+      button {
+        align-self: self-end;
+        display: block;
+        width: 45%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background-color: #452c63;
+        color: white;
+        cursor: pointer;
 
-      &:hover {
-        background-color: #33006f;
+        &:hover {
+          background-color: #33006f;
+        }
       }
     }
   }
+
+
+}
+.ExamAnalysis-popup{
+  width: 320px;
 }
