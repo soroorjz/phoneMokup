@@ -39,7 +39,11 @@
   margin: 0;
   box-sizing: border-box;
   font-family: Vazirmatn;
+  
 }
+*::-webkit-scrollbar {
+    display: none;
+  }
 
 .App {
   width: 100%;
