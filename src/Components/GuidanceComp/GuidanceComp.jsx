@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "./GuidanceComp.scss";
 import { FaChartBar, FaDatabase } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 const sentences = [
   { text: "امکان دریافت فایل اکسل", bg: "#8c76df" },
   { text: "امکان ساخت گزارش شخصی", bg: "#df9776" },
@@ -23,15 +24,14 @@ const GuidanceComp = () => {
       <div className="GuidanceCompWrapper">
         <h2 className="row-title">آموزش</h2>
         <div className="row row-1">
-          <div className="box chartsBox">
-            {" "}
+          <Link to="/DataReading" className="box chartsBox">
             <FaDatabase className="icon" />
             <p>داده خوانی</p>
-          </div>
-          <div className="box dataBox">
+          </Link>
+          <Link to="/ChartTraining" className="box dataBox">
             <FaChartBar className="icon" />
             <p>انواع نمودار</p>
-          </div>
+          </Link>
         </div>
 
         <h2 className="row-title">جدیدترین امکانات برنامک</h2>

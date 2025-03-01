@@ -5,6 +5,9 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  a {
+    text-decoration: none;
+  }
   .GuidanceCompWrapper {
     padding-top: 30px;
     background-color: #fff;
@@ -12,7 +15,7 @@
     display: flex;
     flex-direction: column;
     .row-title {
-      text-shadow: 0px -2px 14px rgba(69,44,99,0.6);
+      text-shadow: 0px -2px 14px rgba(69, 44, 99, 0.6);
       color: #452c63;
       width: 90%;
       margin: 0 auto;
@@ -30,9 +33,8 @@
       &.row-3 {
         justify-content: center;
       }
-      &.row-3{
-      gap: 10px;
-
+      &.row-3 {
+        gap: 10px;
       }
 
       &.row-2 {

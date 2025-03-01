@@ -1,0 +1,29 @@
+.chart-tutorial-Container {
+  width: 100%;
+  background-color: #fff;
+  margin-top: 20px;
+  border-radius: 50px 50px 0 0;
+  .chart-tutorial {
+    display: flex;
+
+    flex-direction: column;
+    gap: 20px;
+    width: 90%;
+    margin: 25px auto;
+
+    .chart-card {
+      margin-top: 25px;
+
+      h2 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 1rem;
+        color: #666;
+      }
+    }
+  }
+}

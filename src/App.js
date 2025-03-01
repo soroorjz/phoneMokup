@@ -8,6 +8,8 @@ import ExamAnalysis from "./pages/ExamAnalysis/ExamAnalysis";
 import MyReportsPage from "./pages/MyReportsPage/MyReportsPage";
 import Guidance from "./pages/Guidance/Guidance";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
+import DataReading from "./pages/DataReading/DataReading";
+import ChartTraining from "./pages/ChartTraining/ChartTraining";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/MyReportsPage" element={<MyReportsPage />} />
           <Route path="/Guidance" element={<Guidance />} />
           <Route path="/CategoryPage" element={<CategoryPage />} />
+          <Route path="/DataReading" element={<DataReading />} />
+          <Route path="/ChartTraining" element={<ChartTraining />} />
         </Routes>
       </div>
     </Router>
