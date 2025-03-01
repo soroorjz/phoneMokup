@@ -302,7 +302,7 @@ const DataReadingComp = () => {
         ))}
       </div>
       <button className="backToGuidanceBtn">
-        <Link to="/DataReading">
+        <Link to="/Guidance">
         بازگشت
         </Link>
       </button>
