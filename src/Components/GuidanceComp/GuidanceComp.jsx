@@ -26,11 +26,11 @@ const GuidanceComp = () => {
         <div className="row row-1">
           <Link to="/DataReading" className="box chartsBox">
             <FaDatabase className="icon" />
-            <p>داده خوانی</p>
+            <p>راهنمای تحلیل آزمون‌ها</p>
           </Link>
           <Link to="/ChartTraining" className="box dataBox">
             <FaChartBar className="icon" />
-            <p>انواع نمودار</p>
+            <p>راهنمای انواع نمودار</p>
           </Link>
         </div>
 

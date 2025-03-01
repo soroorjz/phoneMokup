@@ -5,7 +5,7 @@ import "./ChartTraining.scss";
 const ChartTraining = () => {
   return (
     <div className="ChartTrainingContainer">
-      <h2>آموزش انواع نمودار</h2>
+      <h2>راهنمای انواع نمودار</h2>
       <ChartTrainingComp />
       <AppFooter />
     </div>
