@@ -83,13 +83,62 @@
       gap: 10px;
       justify-content: center;
 
+      .add-description {
+        display: flex;
+        align-items: center;
+        .addBtn {
+          cursor: pointer;
+          margin-right: 5px;
+          &:hover{
+            color: rgb(147, 30, 30);
+          }
+        }
+      }
+
       .box {
-        width: 47%;
+        width: 100%;
         height: 160px;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 10px;
         background-color: #fff;
+        .boxTexArea {
+          width: 100%;
+          height: 74%;
+          padding: 5px;
+          border: none;
+          resize: none;
+          font-size: 17px;
+          color: #555;
+        }
+        .box-actions {
+          height: 20%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap:5px;
+          button {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            background-color: #b2b2c07a;
+            padding:2px 5px;
+            border-radius: 10px;
+            color: #555;
+          }
+          .submitBtn:hover {
+            color: rgb(14, 109, 14);
+          }
+          .editeBtn:hover {
+            color: rgb(236, 150, 30);
+          }
+          .deleteBtn:hover {
+            color: rgb(189, 19, 19);
+          }
+        }
       }
     }
 

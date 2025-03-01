@@ -2,7 +2,10 @@ import React, { useState, useLayoutEffect, useRef } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { FaPen } from "react-icons/fa6";
+import { FaPen, FaPlus, FaEdit, FaTrash, FaCheck } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { CiEdit } from "react-icons/ci";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import "./ExamAnalysisComp.scss";
 
 am4core.useTheme(am4themes_animated);
@@ -10,6 +13,7 @@ am4core.useTheme(am4themes_animated);
 const ExamAnalysisComp = () => {
   const [examTitle, setExamTitle] = useState("");
   const [chartType, setChartType] = useState("line");
+  const [descriptionBoxes, setDescriptionBoxes] = useState([]);
   const chartRef = useRef(null);
 
   useLayoutEffect(() => {
@@ -59,6 +63,38 @@ const ExamAnalysisComp = () => {
     }
     return () => chart.dispose();
   }, [chartType]);
+
+  const addDescriptionBox = () => {
+    setDescriptionBoxes([...descriptionBoxes, { id: Date.now(), text: "", isSubmitted: false }]);
+  };
+
+  const editDescriptionBox = (id, newText) => {
+    setDescriptionBoxes(
+      descriptionBoxes.map((box) =>
+        box.id === id ? { ...box, text: newText } : box
+      )
+    );
+  };
+
+  const deleteDescriptionBox = (id) => {
+    setDescriptionBoxes(descriptionBoxes.filter((box) => box.id !== id));
+  };
+
+  const submitDescriptionBox = (id) => {
+    setDescriptionBoxes(
+      descriptionBoxes.map((box) =>
+        box.id === id ? { ...box, isSubmitted: true } : box
+      )
+    );
+  };
+
+  const enableEditDescriptionBox = (id) => {
+    setDescriptionBoxes(
+      descriptionBoxes.map((box) =>
+        box.id === id ? { ...box, isSubmitted: false } : box
+      )
+    );
+  };
 
   return (
     <div className="exam-analysis">
@@ -115,10 +151,46 @@ const ExamAnalysisComp = () => {
         </div>
 
         <div className="analysis-boxes">
-          <div className="box">توضیحات</div>
-          <div className="box">توضیحات</div>
-          <div className="box">توضیحات</div>
-          <div className="box">توضیحات</div>
+          <div className="add-description" onClick={addDescriptionBox}>
+            <span>افزودن توضیحات</span>
+            <FaPlus className="addBtn" />
+          </div>
+          {descriptionBoxes.map((box) => (
+            <div key={box.id} className="box">
+              <textarea
+                className="boxTexArea"
+                value={box.text}
+                onChange={(e) => editDescriptionBox(box.id, e.target.value)}
+                disabled={box.isSubmitted}
+              />
+              <div className="box-actions">
+               
+                <button
+                  className="editeBtn"
+                  onClick={() => enableEditDescriptionBox(box.id)}
+                >
+                  <CiEdit/>
+                  ویرایش 
+                </button>
+                <button
+                  className="deleteBtn"
+                  onClick={() => deleteDescriptionBox(box.id)}
+                >
+                  <MdDelete/>
+                  حذف 
+                </button>
+                {!box.isSubmitted && (
+                  <button
+                    className="submitBtn"
+                    onClick={() => submitDescriptionBox(box.id)}
+                  >
+                    <IoMdCheckmarkCircleOutline/>
+                    ثبت 
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
 
         <button className="download-btn"> دریافت فایل اکسل</button>
