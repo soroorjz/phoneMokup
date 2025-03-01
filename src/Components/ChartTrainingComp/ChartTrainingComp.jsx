@@ -10,6 +10,7 @@ import {
 import "chart.js/auto";
 import "./ChartTrainingComp.scss";
 import { chartData } from "../../pages/ChartTraining/chartTrainingData";
+import { Link } from "react-router-dom";
 const toPersianDigits = (num) =>
   num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
 
@@ -67,7 +68,8 @@ const ChartTrainingComp = () => {
                 )}
               </div>
               <p className="chart-analysis">
-                تحلیل: این نمودار به شما کمک می‌کند تا{" "}
+                <span>تحلیل:</span>
+                 این نمودار به شما کمک می‌کند تا
                 {chart.chart.description?.toLowerCase() || "این داده‌ها"} را
                 بهتر درک کنید.
               </p>
@@ -75,6 +77,11 @@ const ChartTrainingComp = () => {
           );
         })}
       </div>
+      <button className="backToGuidanceBtn">
+        <Link to="/Guidance">
+        بازگشت
+        </Link>
+      </button>
     </div>
   );
 };
