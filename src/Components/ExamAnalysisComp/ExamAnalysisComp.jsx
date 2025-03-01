@@ -101,25 +101,51 @@ const ExamAnalysisComp = () => {
   };
 
   const handleSubmitReport = () => {
-    // نمایش پیام موفقیت‌آمیز
+    // مرحله اول: نمایش مودال برای ثبت عنوان آزمون
     Swal.fire({
-      title: "",
-      text: "گزارش شما با موفقیت ثبت شد.",
-      icon: "success",
-      timer: 2000, // 2 ثانیه
-      showConfirmButton: false,
+      title: "عنوان گزارش خود را وارد کنید",
+      input: "text",
+      inputPlaceholder: "عنوان گزارش",
+      showCancelButton: true,
+      confirmButtonText: "ثبت",
+      cancelButtonText: "لغو",
       customClass: {
-        popup: "ExamAnalysis-popup", // کلاس سفارشی برای مودال
+        popup: "ExamAnalysis-popup",
+        title:"ExamAnalysis-Title"
       },
-    });
+      preConfirm: (inputValue) => {
+        if (!inputValue) {
+          Swal.showValidationMessage("ثبت عنوان گزارش الزامی است!");
+          return false;
+        }
+        return inputValue;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const title = result.value;
+        setExamTitle(title); // ذخیره عنوان آزمون در state
 
-    // ریست کردن همه چیز به حالت اولیه
-    setTimeout(() => {
-      setExamTitle("");
-      setChartType("line");
-      setDescriptionBoxes([]);
-      window.scrollTo({ top: 0, behavior: "smooth" }); // اسکرول به بالای صفحه
-    }, 2000);
+        // مرحله دوم: نمایش مودال موفقیت‌آمیز
+        Swal.fire({
+          title: "",
+          text: "گزارش شما با موفقیت ثبت شد.",
+          icon: "success",
+          timer: 3000, // 3 ثانیه
+          showConfirmButton: false,
+          customClass: {
+            popup: "ExamAnalysis-popup",
+          },
+        });
+
+        // ریست کردن همه چیز به حالت اولیه
+        setTimeout(() => {
+          setExamTitle("");
+          setChartType("line");
+          setDescriptionBoxes([]);
+          window.scrollTo({ top: 0, behavior: "smooth" }); // اسکرول به بالای صفحه
+        }, 3000);
+      }
+    });
   };
 
   return (
@@ -156,13 +182,6 @@ const ExamAnalysisComp = () => {
 
         <div className="chart-section">
           <div className="title-input">
-            <label>عنوان گزارش:</label>
-            <input
-              type="text"
-              value={examTitle}
-              onChange={(e) => setExamTitle(e.target.value)}
-            />
-            <FaPen />
           </div>
           <select
             className="chartType"
