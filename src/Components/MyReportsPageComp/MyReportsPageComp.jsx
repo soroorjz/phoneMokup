@@ -2,6 +2,7 @@ import React, { useState, lazy, Suspense } from "react";
 import { reports } from "./myReportsData";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import "./MyReportsPageComp.scss";
+import { useReports } from "../../pages/ExamAnalysis/ReportsContext";
 
 // بارگذاری داینامیک کامپوننت‌های مخصوص هر گزارش
 const QualityAssurance = lazy(() =>
@@ -14,6 +15,7 @@ const IranMapChart = lazy(() => import("./IranMapChart"));
 const MyReportsPageComp = () => {
   const [selectedReport, setSelectedReport] = useState("all");
   const wasAllSelected = selectedReport === "all";
+  const { reports } = useReports();
 
   const handleSelectChange = (e) => {
     setSelectedReport(

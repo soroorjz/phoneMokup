@@ -8,6 +8,7 @@ import { CiEdit } from "react-icons/ci";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import Swal from "sweetalert2";
 import "./ExamAnalysisComp.scss";
+import { useReports } from "../../pages/ExamAnalysis/ReportsContext";
 
 am4core.useTheme(am4themes_animated);
 
@@ -16,6 +17,7 @@ const ExamAnalysisComp = () => {
   const [chartType, setChartType] = useState("line");
   const [descriptionBoxes, setDescriptionBoxes] = useState([]);
   const chartRef = useRef(null);
+  const { addReport } = useReports();
 
   useLayoutEffect(() => {
     let chart;
@@ -111,7 +113,7 @@ const ExamAnalysisComp = () => {
       cancelButtonText: "لغو",
       customClass: {
         popup: "ExamAnalysis-popup",
-        title:"ExamAnalysis-Title"
+        title: "ExamAnalysis-Title",
       },
       preConfirm: (inputValue) => {
         if (!inputValue) {
@@ -124,6 +126,15 @@ const ExamAnalysisComp = () => {
       if (result.isConfirmed) {
         const title = result.value;
         setExamTitle(title); // ذخیره عنوان آزمون در state
+
+        const report = {
+          id: Date.now(), // یک ID منحصر به فرد برای گزارش
+          title,
+          chartType,
+          descriptionBoxes,
+          date: new Date().toLocaleDateString("fa-IR"), // تاریخ گزارش
+        };
+        addReport(report);
 
         // مرحله دوم: نمایش مودال موفقیت‌آمیز
         Swal.fire({
@@ -181,8 +192,7 @@ const ExamAnalysisComp = () => {
         </div>
 
         <div className="chart-section">
-          <div className="title-input">
-          </div>
+          <div className="title-input"></div>
           <select
             className="chartType"
             value={chartType}
