@@ -7,9 +7,10 @@ const ExamAnalysisFilters = () => {
   const [quotas, setQuotas] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [provinces, setProvinces] = useState([]);
+  const [executiveBodies, setExecutiveBodies] = useState(null);
   const [genders, setGenders] = useState([]);
-
   const [error, setError] = useState(null);
+  const [token, setToken] = useState(null); // نگهداری موقت توکن
 
   // تابع دریافت توکن
   const fetchToken = useCallback(async () => {
@@ -24,8 +25,11 @@ const ExamAnalysisFilters = () => {
 
       if (response.status !== 200) throw new Error("خطا در دریافت توکن!");
 
-      localStorage.setItem("RayanToken", response.data.token);
-      return response.data.token;
+      const { token, expiresIn } = response.data;
+      const expirationTime = Date.now() + expiresIn * 1000; // زمان انقضا محاسبه می‌شود
+      setToken(token); // توکن در حافظه موقت ذخیره می‌شود
+      localStorage.setItem("tokenExpiration", expirationTime.toString()); // زمان انقضا در localStorage ذخیره می‌شود
+      return token;
     } catch (err) {
       console.error("Error fetching token:", err);
       setError("خطا در دریافت توکن!");
@@ -33,12 +37,19 @@ const ExamAnalysisFilters = () => {
     }
   }, []);
 
+  // بررسی انقضای توکن
+  const isTokenExpired = () => {
+    const expirationTime = localStorage.getItem("tokenExpiration");
+    if (!expirationTime) return true; // اگر زمان انقضا وجود نداشت، توکن منقضی شده است
+    return Date.now() > parseInt(expirationTime, 10); // بررسی زمان انقضا
+  };
+
   const fetchData = useCallback(async () => {
     try {
-      let token = localStorage.getItem("RayanToken");
-      if (!token) {
-        token = await fetchToken();
-        if (!token) return;
+      let currentToken = token;
+      if (!currentToken || isTokenExpired()) {
+        currentToken = await fetchToken(); // اگر توکن منقضی شده بود، توکن جدید دریافت می‌کنیم
+        if (!currentToken) return;
       }
 
       // چک کردن کش
@@ -48,8 +59,7 @@ const ExamAnalysisFilters = () => {
       const cachedJobs = localStorage.getItem("Jobs");
       const cachedProvinces = localStorage.getItem("Provinces");
       const cachedGenders = localStorage.getItem("Genders");
-      const cachedExamTimes = localStorage.getItem("ExamTimes");
-      const cachedTestExecutors = localStorage.getItem("TestExecutors");
+      const cachedExecutiveBodies = localStorage.getItem("ExecutiveBodies"); // چک کردن کش دستگاه‌ها
 
       if (
         cachedExamTitles &&
@@ -58,8 +68,7 @@ const ExamAnalysisFilters = () => {
         cachedJobs &&
         cachedProvinces &&
         cachedGenders &&
-        cachedExamTimes &&
-        cachedTestExecutors
+        cachedExecutiveBodies // اضافه کردن شرط برای دستگاه‌ها
       ) {
         console.log("داده‌ها از کش خوانده شدند");
         setExamTitles(JSON.parse(cachedExamTitles));
@@ -68,7 +77,7 @@ const ExamAnalysisFilters = () => {
         setJobs(JSON.parse(cachedJobs));
         setProvinces(JSON.parse(cachedProvinces));
         setGenders(JSON.parse(cachedGenders));
-
+        setExecutiveBodies(JSON.parse(cachedExecutiveBodies)); // اضافه کردن دستگاه‌ها
         return;
       }
 
@@ -80,30 +89,29 @@ const ExamAnalysisFilters = () => {
         jobsResponse,
         provincesResponse,
         gendersResponse,
-        examTimesResponse,
-        testExecutorsResponse,
+        executiveBodiesResponse, // اضافه کردن درخواست برای دستگاه‌ها
       ] = await Promise.all([
         axios.get("/api/exam/exams", {
-          headers: { "RAYAN-TOKEN": token, "RAYAN-DEBUG": true },
+          headers: { "RAYAN-TOKEN": currentToken, "RAYAN-DEBUG": true },
         }),
         axios.get("/api/religion/religions", {
-          headers: { "RAYAN-TOKEN": token, "RAYAN-DEBUG": true },
+          headers: { "RAYAN-TOKEN": currentToken, "RAYAN-DEBUG": true },
         }),
         axios.get("/api/quota/quotas", {
-          headers: { "RAYAN-TOKEN": token, "RAYAN-DEBUG": true },
+          headers: { "RAYAN-TOKEN": currentToken, "RAYAN-DEBUG": true },
         }),
         axios.get("/api/job/jobs", {
-          headers: { "RAYAN-TOKEN": token, "RAYAN-DEBUG": true },
+          headers: { "RAYAN-TOKEN": currentToken, "RAYAN-DEBUG": true },
         }),
         axios.get("/api/geography/geographies", {
-          headers: { "RAYAN-TOKEN": token, "RAYAN-DEBUG": true },
+          headers: { "RAYAN-TOKEN": currentToken, "RAYAN-DEBUG": true },
         }),
         axios.get("/api/gender/genders", {
-          headers: { "RAYAN-TOKEN": token, "RAYAN-DEBUG": true },
+          headers: { "RAYAN-TOKEN": currentToken, "RAYAN-DEBUG": true },
         }),
-        axios.get("/api/exam/examTimes", {
-          headers: { "RAYAN-TOKEN": token, "RAYAN-DEBUG": true },
-        }),
+        axios.get("/api/executivebody/executivebodies", {
+          headers: { "RAYAN-TOKEN": currentToken, "RAYAN-DEBUG": true },
+        }), // اضافه کردن درخواست برای دستگاه‌ها
       ]);
 
       // بررسی وضعیت پاسخ‌ها
@@ -114,19 +122,29 @@ const ExamAnalysisFilters = () => {
         jobsResponse.status !== 200 ||
         provincesResponse.status !== 200 ||
         gendersResponse.status !== 200 ||
-        examTimesResponse.status !== 200 ||
-        testExecutorsResponse.status !== 200
+        executiveBodiesResponse.status !== 200 // اضافه کردن بررسی برای دستگاه‌ها
       ) {
         throw new Error("خطا در دریافت داده‌ها!");
       }
 
+      // فیلتر کردن استان‌ها: فقط geographyNameهایی که geographyParent آنها null است
+      const filteredProvinces = provincesResponse.data.filter(
+        (province) => province.geographyParent === null
+      );
+
+      // فیلتر کردن سهمیه‌ها: فقط quotaهایی که quotaParent آنها null است
+      const filteredQuotas = quotasResponse.data.filter(
+        (quota) => quota.quotaParent === null
+      );
+
       // ذخیره داده‌ها در state
       setExamTitles(examTitlesResponse.data);
       setReligions(religionsResponse.data);
-      setQuotas(quotasResponse.data);
+      setQuotas(filteredQuotas); // استفاده از سهمیه‌های فیلتر شده
       setJobs(jobsResponse.data);
-      setProvinces(provincesResponse.data);
+      setProvinces(filteredProvinces); // استفاده از استان‌های فیلتر شده
       setGenders(gendersResponse.data);
+      setExecutiveBodies(executiveBodiesResponse.data); // اضافه کردن دستگاه‌ها
 
       // ذخیره داده‌ها در localStorage
       localStorage.setItem(
@@ -134,25 +152,24 @@ const ExamAnalysisFilters = () => {
         JSON.stringify(examTitlesResponse.data)
       );
       localStorage.setItem("Religions", JSON.stringify(religionsResponse.data));
-      localStorage.setItem("Quotas", JSON.stringify(quotasResponse.data));
+      localStorage.setItem("Quotas", JSON.stringify(filteredQuotas));
       localStorage.setItem("Jobs", JSON.stringify(jobsResponse.data));
-      localStorage.setItem("Provinces", JSON.stringify(provincesResponse.data));
+      localStorage.setItem("Provinces", JSON.stringify(filteredProvinces));
       localStorage.setItem("Genders", JSON.stringify(gendersResponse.data));
-      localStorage.setItem("ExamTimes", JSON.stringify(examTimesResponse.data));
       localStorage.setItem(
-        "TestExecutors",
-        JSON.stringify(testExecutorsResponse.data)
-      );
+        "ExecutiveBodies",
+        JSON.stringify(executiveBodiesResponse.data)
+      ); // اضافه کردن دستگاه‌ها
     } catch (err) {
       console.error("Error fetching data:", err);
       setError("خطا در دریافت داده‌ها!");
-    } finally {
     }
-  }, [fetchToken]);
+  }, [token, fetchToken]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
   return (
     <div>
       {error && <p>{error}</p>}
@@ -165,7 +182,7 @@ const ExamAnalysisFilters = () => {
             </option>
           ))}
         </select>
-
+  
         <select id="religion" name="religion">
           <option value="">دین شرکت‌کنندگان</option>
           {religions.map((religion, index) => (
@@ -174,7 +191,7 @@ const ExamAnalysisFilters = () => {
             </option>
           ))}
         </select>
-
+  
         <select>
           <option>سهمیه</option>
           {quotas.map((quota) => (
@@ -183,7 +200,7 @@ const ExamAnalysisFilters = () => {
             </option>
           ))}
         </select>
-
+  
         <select>
           <option>استان</option>
           {provinces.map((province) => (
@@ -192,11 +209,16 @@ const ExamAnalysisFilters = () => {
             </option>
           ))}
         </select>
-
+  
         <select>
           <option>دستگاه</option>
+          {executiveBodies.map((executiveBody) => (
+            <option key={executiveBody.executiveBodyId} value={executiveBody.executiveBodyId}>
+              {executiveBody.executiveBodyName}
+            </option>
+          ))}
         </select>
-
+  
         <select>
           <option>شغل</option>
           {jobs.map((job) => (
@@ -205,7 +227,7 @@ const ExamAnalysisFilters = () => {
             </option>
           ))}
         </select>
-
+  
         <select>
           <option>جنسیت</option>
           {genders.map((gender, index) => (
