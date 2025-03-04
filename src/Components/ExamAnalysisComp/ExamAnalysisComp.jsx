@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { FaPen, FaPlus } from "react-icons/fa";
-
+import { FaPen, FaPlus, FaExclamationCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 import "./ExamAnalysisComp.scss";
 import { useReports } from "../../pages/ExamAnalysis/ReportsContext";
@@ -19,6 +18,7 @@ const ExamAnalysisComp = () => {
   const [descriptionBoxes, setDescriptionBoxes] = useState([]);
   const [allGeographies, setAllGeographies] = useState([]);
   const chartRef = useRef(null);
+  const [isTextVisible, setIsTextVisible] = useState(false);
 
   const addDescriptionBox = () => {
     setDescriptionBoxes([
@@ -56,7 +56,6 @@ const ExamAnalysisComp = () => {
   };
 
   const handleSubmitReport = () => {
-    // مرحله اول: نمایش مودال برای ثبت عنوان آزمون
     Swal.fire({
       title: "عنوان گزارش خود را وارد کنید",
       input: "text",
@@ -78,45 +77,57 @@ const ExamAnalysisComp = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const title = result.value;
-        setExamTitle(title); // ذخیره عنوان آزمون در state
+        setExamTitle(title);
 
         const report = {
-          id: Date.now(), // یک ID منحصر به فرد برای گزارش
+          id: Date.now(),
           title,
           chartType,
           descriptionBoxes,
           filters,
-          date: new Date().toLocaleDateString("fa-IR"), // تاریخ گزارش
+          date: new Date().toLocaleDateString("fa-IR"),
         };
         addReport(report);
 
-        // مرحله دوم: نمایش مودال موفقیت‌آمیز
         Swal.fire({
           title: "",
           text: "گزارش شما با موفقیت ثبت شد.",
           icon: "success",
-          timer: 3000, // 3 ثانیه
+          timer: 3000,
           showConfirmButton: false,
           customClass: {
             popup: "ExamAnalysis-popup",
           },
         });
 
-        // ریست کردن همه چیز به حالت اولیه
         setTimeout(() => {
           setExamTitle("");
           setChartType("line");
           setDescriptionBoxes([]);
-          window.scrollTo({ top: 0, behavior: "smooth" }); // اسکرول به بالای صفحه
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }, 3000);
       }
     });
   };
 
+  const toggleTextVisibility = () => {
+    setIsTextVisible(!isTextVisible);
+  };
+
   return (
     <div className="exam-analysis">
-      <h2>گزارش‌ساز</h2>
-      <p>با انتخاب گزینه‌های موردنظر، تحلیل آزمون خود را دریافت کنید.</p>
+      <div className="header-section">
+        <div className="title-wrapper">
+          <h2>گزارش‌ساز</h2>
+          <FaExclamationCircle
+            className="info-icon"
+            onClick={toggleTextVisibility}
+          />
+        </div>
+        <p className={`info-text ${isTextVisible ? "visible" : ""}`}>
+          با انتخاب گزینه‌های موردنظر، تحلیل آزمون خود را دریافت کنید.
+        </p>
+      </div>
       <div className="examAnalysisInner">
         <ExamAnalysisFilters />
         <div className="chart-section">
@@ -164,4 +175,5 @@ const ExamAnalysisComp = () => {
     </div>
   );
 };
+
 export default ExamAnalysisComp;

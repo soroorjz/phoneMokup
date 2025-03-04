@@ -4,41 +4,146 @@
   background-color: #452c63;
   flex-direction: column;
   padding-top: 20px;
-  h2 {
-    text-align: center;
-    color: #ffffff;
+
+  .header-section {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      h2 {
+        text-align: center;
+        color: #ffffff;
+        margin: 0;
+      }
+
+      .info-icon {
+        color: #c5c5d4;
+        font-size: 18px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.2);
+          color: #ffffff;
+        }
+      }
+    }
+
+    .info-text {
+      font-size: 14px;
+      color: #c5c5d4;
+      margin: 10px 0 0 0;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.5s ease-in-out;
+      text-align: center;
+
+      &.visible {
+        opacity: 1;
+        max-height: 50px;
+        animation: slideIn 0.5s ease-in-out;
+      }
+    }
   }
 
-  p {
-    width: 90%;
-    margin: 20px auto;
-    // text-align: center;
-    font-size: 14px;
-    color: #c5c5d4;
+  @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
+
   .examAnalysisInner {
     width: 100%;
     margin-top: 20px;
     background-color: #fff;
     border-radius: 50px 50px 0 0;
     padding: 40px 0;
+
     .filters {
       width: 90%;
       margin: 0 auto 40px;
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
       gap: 10px;
-      justify-content: center;
+
       select {
         width: 47%;
         padding: 5px;
         border-radius: 10px;
         border: 1px solid #bebede;
       }
+
+      .filter-icon {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 10px;
+        background-color: #452c63;
+        color: white;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #33006f;
+        }
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        right: -250px;
+        width: 250px;
+        height: 100%;
+        background-color: #fff;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+        transition: right 0.3s ease;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 1000;
+
+        &.open {
+          right: 0;
+        }
+
+        .close-btn {
+          align-self: flex-end;
+          background: none;
+          border: none;
+          font-size: 20px;
+          color: #555;
+          cursor: pointer;
+
+          &:hover {
+            color: #ff0000;
+          }
+        }
+
+        select {
+          width: 100%;
+          padding: 5px;
+          border-radius: 10px;
+          border: 1px solid #bebede;
+        }
+      }
     }
+
     .chart-section {
       width: 90%;
       margin: 0 auto;
+
       .title-input {
         width: 65%;
         display: flex;
@@ -49,19 +154,19 @@
 
         input {
           padding: 5px;
-          // border-radius: 4px;
           border: 0;
           border-bottom: 1px solid #ccc;
         }
+
         svg {
           color: #bebede;
         }
       }
+
       .chartType {
         width: 60%;
         padding: 5px;
         border-radius: 10px;
-
         border: 1px solid #bebede;
       }
     }
@@ -70,7 +175,6 @@
       text-align: center;
       margin: 15px 0;
       border-radius: 4px;
-
       padding: 10px;
       border: 1px dashed #bebede;
     }
@@ -86,9 +190,11 @@
       .add-description {
         display: flex;
         align-items: center;
+
         .addBtn {
           cursor: pointer;
           margin-right: 5px;
+
           &:hover {
             color: rgb(147, 30, 30);
           }
@@ -102,6 +208,7 @@
         border: 1px solid #ddd;
         border-radius: 10px;
         background-color: #fff;
+
         .boxTexArea {
           width: 100%;
           height: 74%;
@@ -111,12 +218,14 @@
           font-size: 17px;
           color: #555;
         }
+
         .box-actions {
           height: 20%;
           display: flex;
           align-items: center;
           justify-content: flex-end;
           gap: 5px;
+
           button {
             display: flex;
             gap: 3px;
@@ -129,18 +238,22 @@
             border-radius: 10px;
             color: #555;
           }
+
           .submitBtn:hover {
             color: rgb(14, 109, 14);
           }
+
           .editeBtn:hover {
             color: rgb(236, 150, 30);
           }
+
           .deleteBtn:hover {
             color: rgb(189, 19, 19);
           }
         }
       }
     }
+
     .AnalysisSubmitBtns {
       display: flex;
       margin-top: 40px;
@@ -165,14 +278,13 @@
       }
     }
   }
-
-
 }
-.ExamAnalysis-popup{
+
+.ExamAnalysis-popup {
   width: 400px;
-
 }
-.ExamAnalysis-Title{
+
+.ExamAnalysis-Title {
   font-size: 24px;
   font-weight: 400;
 }
