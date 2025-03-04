@@ -1,57 +1,212 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import "./CategoryComp.scss";
 import CategoryResultPage from "./CategoryResultPage/CategoryResultPage";
 
-const categories = [
-  {
-    title: "استان",
-    details: ["همه", "تهران", "اصفهان", "شیراز", "مشهد", "تبریز"],
-  },
-  {
-    title: "دستگاه",
-    details: ["همه", "وزارت بهداشت", "وزارت علوم", "وزارت نیرو", "وزارت کشور"],
-  },
-  { title: "جنسیت", details: ["همه", "زن", "مرد"] },
-  { title: "سهمیه", details: ["همه", "آزاد", "5%", "25%", "50%"] },
+// دسته‌بندی‌های استاتیک
+const staticCategories = [
   {
     title: "سن",
     details: ["همه", "18-25 سال", "26-35 سال", "36-45 سال", "بیش از 45 سال"],
   },
   {
-    title: "رشته تحصیلی",
-    details: ["همه", "مهندسی نرم‌افزار", "حقوق", "حسابداری", "مدیریت", "پزشکی"],
-  },
-  {
-    title: "هزینه آزمون",
-    details: [
-      "همه",
-      "کمتر از 50 هزار تومان",
-      "50-100 هزار تومان",
-      "100-200 هزار تومان",
-      "بیش از 200 هزار تومان",
-    ],
-  },
-  {
-    title: "مجری آزمون",
+    title: "مجری ارزیابی آزمون",
     details: ["همه", "سنجش", "رایانگان", "جهاد دانشگاهی"],
   },
-  {
-    title: "عنوان آزمون",
-    details: [
-      "همه",
-      "آزمون استخدامی کشوری",
-      "آزمون قضاوت",
-      "آزمون وکالت",
-      "آزمون دکتری",
-    ],
-  },
-  { title: "نوبت آزمون", details: ["همه", "1400", "1401", "1402", "1403"] },
+  { title: "نتایج ارزیابی تکمیلی", details: ["غایب", "مردود", "قبول"] },
+  { title: "نتایج آزمون کتبی", details: ["غایب", "مردود", "قبول"] },
+  { title: "نتایج گزینش", details: ["غایب", "مردود", "قبول"] },
 ];
 
 const CategoryComp = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showResults, setShowResults] = useState(false);
+  const [token, setToken] = useState(null);
+  const [error, setError] = useState(null);
+  const [geographies, setGeographies] = useState([]);
+  const [dynamicCategories, setDynamicCategories] = useState({
+    جنسیت: [],
+    سهمیه: [],
+    شغل: [],
+    "مقطع تحصیلی": [],
+    "رشته تحصیلی": [],
+    "هزینه آزمون": [],
+    دستگاه: [],
+    "مجری آزمون": [],
+    "عنوان آزمون": [],
+    "شغل محل": [],
+  });
+
+  const fetchToken = useCallback(async () => {
+    try {
+      const response = await axios.post("/api/auth", null, {
+        headers: {
+          "RAYAN-USERNAME": "S.JAMEIE",
+          "RAYAN-PASSWORD": "1156789",
+          "RAYAN-DEBUG": true,
+        },
+      });
+      if (response.status !== 200) throw new Error("خطا در دریافت توکن!");
+      const { token, expiresIn } = response.data;
+      const expirationTime = Date.now() + expiresIn * 1000;
+      setToken(token);
+      localStorage.setItem("tokenExpiration", expirationTime.toString());
+      return token;
+    } catch (err) {
+      console.error("Error fetching token:", err);
+      setError("خطا در دریافت توکن!");
+      return null;
+    }
+  }, []);
+
+  const isTokenExpired = () => {
+    const expirationTime = localStorage.getItem("tokenExpiration");
+    if (!expirationTime) return true;
+    return Date.now() > parseInt(expirationTime, 10);
+  };
+
+  const fetchData = useCallback(async () => {
+    try {
+      let currentToken = token;
+      if (!currentToken || isTokenExpired()) {
+        currentToken = await fetchToken();
+        if (!currentToken) return;
+      }
+
+      const cachedGeographies = localStorage.getItem("geographies");
+      const cachedDynamicData = Object.keys(dynamicCategories).reduce(
+        (acc, key) => {
+          const cached = localStorage.getItem(key);
+          if (cached) acc[key] = JSON.parse(cached);
+          return acc;
+        },
+        {}
+      );
+
+      if (
+        cachedGeographies &&
+        Object.keys(cachedDynamicData).length ===
+          Object.keys(dynamicCategories).length
+      ) {
+        console.log("داده‌ها از کش خوانده شدند");
+        setGeographies(JSON.parse(cachedGeographies));
+        setDynamicCategories(cachedDynamicData);
+        return;
+      }
+
+      const endpoints = {
+        geographies: "/api/geography/geographies",
+        جنسیت: "/api/gender/genders",
+        سهمیه: "/api/quota/quotas",
+        شغل: "/api/job/jobs",
+        "مقطع تحصیلی": "/api/grade/grades",
+        "رشته تحصیلی": "/api/field/fields",
+        "هزینه آزمون": "/api/exam/exams",
+        دستگاه: "/api/executivebody/executivebodies",
+        "مجری آزمون": "/api/organizer/organizers",
+        "عنوان آزمون": "/api/exam/exams",
+        "شغل محل": "/api/joblocation/joblocations",
+      };
+
+      const requests = Object.entries(endpoints).map(([key, url]) =>
+        axios.get(url, {
+          headers: { "RAYAN-TOKEN": currentToken, "RAYAN-DEBUG": true },
+        })
+      );
+
+      const responses = await Promise.all(requests);
+      const newDynamicData = {};
+
+      responses.forEach((response, index) => {
+        const key = Object.keys(endpoints)[index];
+        let data = response.data;
+
+        if (key === "geographies") {
+          setGeographies(data);
+          localStorage.setItem("geographies", JSON.stringify(data));
+        } else if (key === "جنسیت") {
+          newDynamicData[key] = ["همه", ...data.map((item) => item.genderName)];
+        } else if (key === "سهمیه") {
+          newDynamicData[key] = [
+            "همه",
+            ...data
+              .filter((item) => item.quotaParent === null)
+              .map((item) => item.quotaTitle),
+          ];
+        } else if (key === "شغل") {
+          newDynamicData[key] = ["همه", ...data.map((item) => item.jobName)];
+        } else if (key === "مقطع تحصیلی") {
+          newDynamicData[key] = ["همه", ...data.map((item) => item.gradeTitle)]; // تغییر به gradeTitle
+        } else if (key === "رشته تحصیلی") {
+          newDynamicData[key] = ["همه", ...data.map((item) => item.fieldTitle)]; // تغییر به fieldTitle
+        } else if (key === "هزینه آزمون") {
+          newDynamicData[key] = [
+            "همه",
+            ...data.map((item) => {
+              const price = item.examPrice
+                ? (parseInt(item.examPrice) / 10).toLocaleString() + " تومان"
+                : "نامشخص"; // تبدیل به تومان و فرمت
+              return price;
+            }),
+          ];
+        } else if (key === "دستگاه") {
+          newDynamicData[key] = [
+            "همه",
+            ...data.map((item) => item.executiveBodyName),
+          ];
+        } else if (key === "مجری آزمون") {
+          newDynamicData[key] = [
+            "همه",
+            ...data.map((item) => item.organizerName),
+          ];
+        } else if (key === "عنوان آزمون") {
+          newDynamicData[key] = ["همه", ...data.map((item) => item.examName)];
+        } else if (key === "شغل محل") {
+          newDynamicData[key] = [
+            "همه",
+            ...data.map((item) => item.jobLocationName),
+          ];
+        }
+
+        if (key !== "geographies") {
+          localStorage.setItem(key, JSON.stringify(newDynamicData[key]));
+        }
+      });
+
+      setDynamicCategories(newDynamicData);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("خطا در دریافت داده‌ها!");
+    }
+  }, [token, fetchToken]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const provinces = geographies.filter((g) => g.geographyParent === null);
+  const counties = selectedOptions["استان"]
+    ? geographies.filter(
+        (g) => g.geographyParent === selectedOptions["استان"].id
+      )
+    : [];
+
+  const categories = [
+    {
+      title: "استان",
+      details: ["همه", ...provinces.map((p) => p.geographyName)],
+    },
+    {
+      title: "شهرستان",
+      details: ["همه", ...counties.map((c) => c.geographyName)],
+    },
+    ...Object.entries(dynamicCategories).map(([title, details]) => ({
+      title,
+      details,
+    })),
+    ...staticCategories,
+  ];
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -59,9 +214,24 @@ const CategoryComp = () => {
 
   const handleOptionClick = (option) => {
     if (selectedCategory) {
+      let value = option;
+      if (selectedCategory.title === "استان") {
+        const selectedProvince = provinces.find(
+          (p) => p.geographyName === option
+        );
+        value = selectedProvince
+          ? { id: selectedProvince.geographyId, name: option }
+          : option;
+      } else if (selectedCategory.title === "شهرستان") {
+        const selectedCounty = counties.find((c) => c.geographyName === option);
+        value = selectedCounty
+          ? { id: selectedCounty.geographyId, name: option }
+          : option;
+      }
+
       setSelectedOptions((prev) => ({
         ...prev,
-        [selectedCategory.title]: option,
+        [selectedCategory.title]: value,
       }));
       closeSidebar();
     }
@@ -99,6 +269,7 @@ const CategoryComp = () => {
 
   return (
     <div className="categories-container">
+      {error && <p>{error}</p>}
       <div className="category-grid">
         {categories.map((category, index) => (
           <div
@@ -109,7 +280,9 @@ const CategoryComp = () => {
             <div className="category-title">{category.title}</div>
             {selectedOptions[category.title] && (
               <div className="selected-option">
-                {selectedOptions[category.title]}
+                {typeof selectedOptions[category.title] === "object"
+                  ? selectedOptions[category.title].name
+                  : selectedOptions[category.title]}
                 <button
                   className="clear-btn"
                   onClick={(e) => {
