@@ -175,7 +175,7 @@ const ExamAnalysisFilters = () => {
       {error && <p>{error}</p>}
       <div className="filters">
         <select>
-          <option disabled>عنوان آزمون</option>
+          <option>عنوان آزمون</option>
           {examTitles.map((exam) => (
             <option key={exam.examId} value={exam.examId}>
               {exam.examName}
@@ -184,9 +184,7 @@ const ExamAnalysisFilters = () => {
         </select>
 
         <select id="religion" name="religion">
-          <option value="" disabled>
-            دین شرکت‌کنندگان
-          </option>
+          <option value="">دین شرکت‌کنندگان</option>
           {religions.map((religion, index) => (
             <option key={index} value={religion.religionName}>
               {religion.religionName}
@@ -195,7 +193,7 @@ const ExamAnalysisFilters = () => {
         </select>
 
         <select>
-          <option disabled>سهمیه</option>
+          <option>سهمیه</option>
           {quotas.map((quota) => (
             <option key={quota.id} value={quota.quotaTitle}>
               {quota.quotaTitle}
@@ -204,7 +202,7 @@ const ExamAnalysisFilters = () => {
         </select>
 
         <select>
-          <option disabled>استان</option>
+          <option>استان</option>
           {provinces.map((province) => (
             <option key={province.geographyId} value={province.geographyId}>
               {province.geographyName}
@@ -213,7 +211,7 @@ const ExamAnalysisFilters = () => {
         </select>
 
         <select>
-          <option disabled>دستگاه</option>
+          <option>دستگاه</option>
           {executiveBodies.map((executiveBody) => (
             <option
               key={executiveBody.executiveBodyId}
@@ -225,7 +223,7 @@ const ExamAnalysisFilters = () => {
         </select>
 
         <select>
-          <option disabled>شغل</option>
+          <option>شغل</option>
           {jobs.map((job) => (
             <option key={job.jobId} value={job.jobId}>
               {job.jobName}
@@ -234,7 +232,7 @@ const ExamAnalysisFilters = () => {
         </select>
 
         <select>
-          <option disabled>جنسیت</option>
+          <option>جنسیت</option>
           {genders.map((gender, index) => (
             <option key={index} value={gender.genderName}>
               {gender.genderName}
