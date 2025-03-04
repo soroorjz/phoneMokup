@@ -128,6 +128,10 @@ const ExamAnalysisComp = () => {
             <option value="line">نمودار خطی</option>
             <option value="bar">نمودار میله‌ای</option>
             <option value="pie">نمودار دایره‌ای</option>
+            <option value="map">نمودار پراکندگی در کشور</option>
+            <option value="semiCircle">نیم‌دایره</option>
+            <option value="nestedDonut">دونات تودرتو</option>
+            <option value="pictorial">تصویری انباشته</option>
           </select>
           <ChartComponent chartType={chartType} filters={filters} />
         </div>
