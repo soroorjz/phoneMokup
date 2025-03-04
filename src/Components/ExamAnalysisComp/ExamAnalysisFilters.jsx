@@ -7,7 +7,7 @@ const ExamAnalysisFilters = () => {
   const [quotas, setQuotas] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [provinces, setProvinces] = useState([]);
-  const [executiveBodies, setExecutiveBodies] = useState(null);
+  const [executiveBodies, setExecutiveBodies] = useState([]);
   const [genders, setGenders] = useState([]);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null); // نگهداری موقت توکن
@@ -175,61 +175,66 @@ const ExamAnalysisFilters = () => {
       {error && <p>{error}</p>}
       <div className="filters">
         <select>
-          <option>عنوان آزمون</option>
+          <option disabled>عنوان آزمون</option>
           {examTitles.map((exam) => (
             <option key={exam.examId} value={exam.examId}>
               {exam.examName}
             </option>
           ))}
         </select>
-  
+
         <select id="religion" name="religion">
-          <option value="">دین شرکت‌کنندگان</option>
+          <option value="" disabled>
+            دین شرکت‌کنندگان
+          </option>
           {religions.map((religion, index) => (
             <option key={index} value={religion.religionName}>
               {religion.religionName}
             </option>
           ))}
         </select>
-  
+
         <select>
-          <option>سهمیه</option>
+          <option disabled>سهمیه</option>
           {quotas.map((quota) => (
             <option key={quota.id} value={quota.quotaTitle}>
               {quota.quotaTitle}
             </option>
           ))}
         </select>
-  
+
         <select>
-          <option>استان</option>
+          <option disabled>استان</option>
           {provinces.map((province) => (
             <option key={province.geographyId} value={province.geographyId}>
               {province.geographyName}
             </option>
           ))}
         </select>
-  
+
         <select>
-          <option>دستگاه</option>
+          <option disabled>دستگاه</option>
           {executiveBodies.map((executiveBody) => (
-            <option key={executiveBody.executiveBodyId} value={executiveBody.executiveBodyId}>
+            <option
+              key={executiveBody.executiveBodyId}
+              value={executiveBody.executiveBodyId}
+            >
               {executiveBody.executiveBodyName}
             </option>
           ))}
         </select>
-  
+
         <select>
-          <option>شغل</option>
+          <option disabled>شغل</option>
           {jobs.map((job) => (
             <option key={job.jobId} value={job.jobId}>
               {job.jobName}
             </option>
           ))}
         </select>
-  
+
         <select>
-          <option>جنسیت</option>
+          <option disabled>جنسیت</option>
           {genders.map((gender, index) => (
             <option key={index} value={gender.genderName}>
               {gender.genderName}

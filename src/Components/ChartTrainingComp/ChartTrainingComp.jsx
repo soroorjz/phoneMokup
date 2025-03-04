@@ -68,7 +68,7 @@ const ChartTrainingComp = () => {
                 )}
               </div>
               <p className="chart-analysis">
-                <span>تحلیل:</span>
+                <span>کاربرد:</span>
                  این نمودار به شما کمک می‌کند تا
                 {chart.chart.description?.toLowerCase() || "این داده‌ها"} را
                 بهتر درک کنید.

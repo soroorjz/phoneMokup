@@ -6,7 +6,6 @@
   border-radius: 50px 50px 0 0;
   .chart-tutorial {
     display: flex;
-
     flex-direction: column;
     gap: 20px;
     width: 90%;
@@ -28,6 +27,7 @@
       p {
         font-size: 1rem;
         color: #666;
+        text-align: center;
       }
     }
   }
