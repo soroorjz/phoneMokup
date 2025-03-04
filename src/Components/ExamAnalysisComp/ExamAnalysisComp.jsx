@@ -14,11 +14,11 @@ am4core.useTheme(am4themes_animated);
 
 const ExamAnalysisComp = () => {
   const [examTitle, setExamTitle] = useState("");
+  const { filters, addReport } = useReports();
   const [chartType, setChartType] = useState("line");
   const [descriptionBoxes, setDescriptionBoxes] = useState([]);
   const [allGeographies, setAllGeographies] = useState([]);
   const chartRef = useRef(null);
-  const { addReport } = useReports();
 
   const addDescriptionBox = () => {
     setDescriptionBoxes([
@@ -85,6 +85,7 @@ const ExamAnalysisComp = () => {
           title,
           chartType,
           descriptionBoxes,
+          filters,
           date: new Date().toLocaleDateString("fa-IR"), // تاریخ گزارش
         };
         addReport(report);
@@ -119,7 +120,6 @@ const ExamAnalysisComp = () => {
       <div className="examAnalysisInner">
         <ExamAnalysisFilters />
         <div className="chart-section">
-          <div className="title-input"></div>
           <select
             className="chartType"
             value={chartType}
@@ -129,7 +129,7 @@ const ExamAnalysisComp = () => {
             <option value="bar">نمودار میله‌ای</option>
             <option value="pie">نمودار دایره‌ای</option>
           </select>
-          <ChartComponent chartType={chartType} />
+          <ChartComponent chartType={chartType} filters={filters} />
         </div>
 
         {/* بخش توضیحات */}
@@ -150,7 +150,6 @@ const ExamAnalysisComp = () => {
           ))}
         </div>
 
-        {/* دکمه‌های ثبت و دانلود */}
         <div className="AnalysisSubmitBtns">
           <button className="download-btn">دریافت فایل اکسل</button>
           <button className="submit-btn" onClick={handleSubmitReport}>
@@ -161,5 +160,4 @@ const ExamAnalysisComp = () => {
     </div>
   );
 };
-
 export default ExamAnalysisComp;

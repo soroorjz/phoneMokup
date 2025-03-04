@@ -30,5 +30,4 @@ function App() {
     </ReportsProvider>
   );
 }
-
 export default App;

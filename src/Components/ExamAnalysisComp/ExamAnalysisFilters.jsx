@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import { useReports } from "../../pages/ExamAnalysis/ReportsContext";
 
 const ExamAnalysisFilters = () => {
+  const { updateFilters } = useReports();
   const [examTitles, setExamTitles] = useState([]);
   const [religions, setReligions] = useState([]);
   const [quotas, setQuotas] = useState([]);
@@ -169,13 +171,12 @@ const ExamAnalysisFilters = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
   return (
     <div>
       {error && <p>{error}</p>}
       <div className="filters">
-        <select>
-          <option>عنوان آزمون</option>
+        <select onChange={(e) => updateFilters("examId", e.target.value)}>
+          <option value="">عنوان آزمون</option>
           {examTitles.map((exam) => (
             <option key={exam.examId} value={exam.examId}>
               {exam.examName}
@@ -183,7 +184,7 @@ const ExamAnalysisFilters = () => {
           ))}
         </select>
 
-        <select id="religion" name="religion">
+        <select onChange={(e) => updateFilters("religion", e.target.value)}>
           <option value="">دین شرکت‌کنندگان</option>
           {religions.map((religion, index) => (
             <option key={index} value={religion.religionName}>
@@ -192,8 +193,8 @@ const ExamAnalysisFilters = () => {
           ))}
         </select>
 
-        <select>
-          <option>سهمیه</option>
+        <select onChange={(e) => updateFilters("quota", e.target.value)}>
+          <option value="">سهمیه</option>
           {quotas.map((quota) => (
             <option key={quota.id} value={quota.quotaTitle}>
               {quota.quotaTitle}
@@ -201,8 +202,8 @@ const ExamAnalysisFilters = () => {
           ))}
         </select>
 
-        <select>
-          <option>استان</option>
+        <select onChange={(e) => updateFilters("province", e.target.value)}>
+          <option value="">استان</option>
           {provinces.map((province) => (
             <option key={province.geographyId} value={province.geographyId}>
               {province.geographyName}
@@ -210,8 +211,10 @@ const ExamAnalysisFilters = () => {
           ))}
         </select>
 
-        <select>
-          <option>دستگاه</option>
+        <select
+          onChange={(e) => updateFilters("executiveBody", e.target.value)}
+        >
+          <option value="">دستگاه</option>
           {executiveBodies.map((executiveBody) => (
             <option
               key={executiveBody.executiveBodyId}
@@ -222,8 +225,8 @@ const ExamAnalysisFilters = () => {
           ))}
         </select>
 
-        <select>
-          <option>شغل</option>
+        <select onChange={(e) => updateFilters("job", e.target.value)}>
+          <option value="">شغل</option>
           {jobs.map((job) => (
             <option key={job.jobId} value={job.jobId}>
               {job.jobName}
@@ -231,8 +234,8 @@ const ExamAnalysisFilters = () => {
           ))}
         </select>
 
-        <select>
-          <option>جنسیت</option>
+        <select onChange={(e) => updateFilters("gender", e.target.value)}>
+          <option value="">جنسیت</option>
           {genders.map((gender, index) => (
             <option key={index} value={gender.genderName}>
               {gender.genderName}
@@ -243,5 +246,4 @@ const ExamAnalysisFilters = () => {
     </div>
   );
 };
-
 export default ExamAnalysisFilters;

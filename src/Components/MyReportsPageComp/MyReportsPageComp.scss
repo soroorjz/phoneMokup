@@ -74,7 +74,7 @@
       color: #452c63;
       top: 34px;
       position: absolute;
-     
+
       background: none;
       border: none;
       font-size: 28px;
@@ -104,6 +104,31 @@
         align-items: center;
         justify-content: center;
       }
+    }
+  }
+}
+
+.report-details {
+  width: 90%;
+  margin: 20px auto 0;
+  padding-bottom: 20px;
+
+  h3 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+  }
+
+  .chart-wrapper {
+    margin: 20px 0;
+  }
+
+  .description-boxes {
+    .description-box {
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 5px;
     }
   }
 }
