@@ -1,11 +1,10 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react"; // useState اضافه شده
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4geodata_ir from "@amcharts/amcharts4-geodata/iranLow";
 import generateFakeChartData from "../../pages/fakeApi";
 
-// تابع برای تبدیل اعداد به ارقام فارسی
 const toPersianNumber = (num) => {
   const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
   return num
@@ -15,13 +14,15 @@ const toPersianNumber = (num) => {
 
 const ChartComponent = ({ chartType, filters }) => {
   const chartRef = useRef(null);
+  const [description, setDescription] = useState(""); // برای نگه‌داری توضیح
 
   useLayoutEffect(() => {
     let chart;
-    let chartData = generateFakeChartData(filters, chartType);
-    console.log("chartData for map:", chartData); // برای دیباگ
+    const result = generateFakeChartData(filters, chartType); // حالا یه شیء برمی‌گردونه
+    const chartData = result.data; // دیتا رو جدا می‌کنیم
+    setDescription(result.description); // توضیح رو ست می‌کنیم
+    console.log("chartData for map:", chartData);
 
-    // تنظیم سراسری جهت برای پشتیبانی از فارسی
     am4core.options.defaultLocale = {
       ...am4core.options.defaultLocale,
       direction: "rtl",
@@ -130,31 +131,27 @@ const ChartComponent = ({ chartType, filters }) => {
       series.numberFormatter = new am4core.NumberFormatter();
       series.numberFormatter.format = (value) => toPersianNumber(value);
     } else if (chartType === "map") {
-      // رندر نقشه ایران
       chart = am4core.create(chartRef.current, am4maps.MapChart);
       chart.geodata = am4geodata_ir;
       chart.projection = new am4maps.projections.Miller();
 
       let polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
       polygonSeries.useGeodata = true;
-
-      // استفاده مستقیم از chartData بدون مپ کردن دوباره
-      polygonSeries.data = chartData; // داده‌ها مستقیماً از generateFakeChartData میاد
+      polygonSeries.data = chartData;
 
       let polygonTemplate = polygonSeries.mapPolygons.template;
       polygonTemplate.tooltipText = "{name}: {value} نفر";
       polygonTemplate.fill = am4core.color("#cfcfcf");
       polygonTemplate.stroke = am4core.color("#ffffff");
       polygonTemplate.strokeWidth = 1;
+      polygonTemplate.propertyFields.fill = "fill";
 
-      // تنظیم RTL به شکلی ایمن‌تر
       if (chart.container) {
-        chart.container.direction = "rtl"; // تنظیم جهت راست‌به‌چپ فقط اگر container وجود داره
+        chart.container.direction = "rtl";
         chart.container.layout = "horizontal";
       }
       chart.rtl = true;
 
-      // تنظیم tooltip برای RTL
       if (!polygonTemplate.tooltip) {
         polygonTemplate.tooltip = new am4core.Tooltip();
       }
@@ -170,22 +167,10 @@ const ChartComponent = ({ chartType, filters }) => {
       polygonTemplate.tooltip.label.fill = am4core.color("#000000");
       polygonTemplate.tooltip.label.fontSize = 14;
 
-      // رنگ‌بندی بر اساس مقدار value
-      polygonTemplate.propertyFields.fill = "fill";
       polygonSeries.dataFields.value = "value";
       polygonSeries.dataFields.id = "id";
-      polygonSeries.dataFields.name = "name"; // اضافه کردن فیلد name برای tooltip
-
-      polygonTemplate.adapter.add("fill", (fill, target) => {
-        const value = target.dataItem?.dataContext?.value || 0;
-        if (value > 8000000) return am4core.color("#ff0000"); // قرمز
-        if (value > 6000000) return am4core.color("#ff8c00"); // نارنجی
-        if (value > 4000000) return am4core.color("#ffff00"); // زرد
-        if (value > 2000000) return am4core.color("#32cd32"); // سبز روشن
-        return am4core.color("#008000"); // سبز تیره
-      });
+      polygonSeries.dataFields.name = "name";
     } else {
-      // پیش‌فرض خطی
       chart = am4core.create(chartRef.current, am4charts.XYChart);
       chart.data = chartData;
       chart.rtl = true;
@@ -220,11 +205,14 @@ const ChartComponent = ({ chartType, filters }) => {
   }, [chartType, filters]);
 
   return (
-    <div
-      className="chart-placeholder"
-      ref={chartRef}
-      style={{ width: "100%", height: "400px" }}
-    />
+    <div className="chart-container">
+      <p className="chart-description">{description}</p> {/* نمایش توضیح */}
+      <div
+        className="chart-placeholder"
+        ref={chartRef}
+        style={{ width: "100%", height: "400px" }}
+      />
+    </div>
   );
 };
 
