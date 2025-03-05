@@ -1,10 +1,11 @@
-import React, { useLayoutEffect, useRef, useState } from "react"; // useState اضافه شده
+import React, { useLayoutEffect, useRef, useState } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4geodata_ir from "@amcharts/amcharts4-geodata/iranLow";
 import generateFakeChartData from "../../pages/fakeApi";
 
+// تابع برای تبدیل اعداد به ارقام فارسی
 const toPersianNumber = (num) => {
   const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
   return num
@@ -14,19 +15,25 @@ const toPersianNumber = (num) => {
 
 const ChartComponent = ({ chartType, filters }) => {
   const chartRef = useRef(null);
-  const [description, setDescription] = useState(""); // برای نگه‌داری توضیح
+  const [description, setDescription] = useState("");
 
   useLayoutEffect(() => {
     let chart;
-    const result = generateFakeChartData(filters, chartType); // حالا یه شیء برمی‌گردونه
-    const chartData = result.data; // دیتا رو جدا می‌کنیم
-    setDescription(result.description); // توضیح رو ست می‌کنیم
+    const result = generateFakeChartData(filters, chartType);
+    const chartData = result.data;
+    setDescription(result.description);
     console.log("chartData for map:", chartData);
 
+    // تنظیم جهت RTL
     am4core.options.defaultLocale = {
       ...am4core.options.defaultLocale,
       direction: "rtl",
     };
+
+    // فرمت‌کننده اعداد فارسی
+    const numberFormatter = new am4core.NumberFormatter();
+    numberFormatter.numberFormat = "#.";
+    numberFormatter.format = (value) => toPersianNumber(value);
 
     if (chartType === "bar") {
       chart = am4core.create(chartRef.current, am4charts.XYChart);
@@ -46,9 +53,7 @@ const ChartComponent = ({ chartType, filters }) => {
 
       let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       valueAxis.title.text = "تعداد (نفر)";
-      valueAxis.numberFormatter = new am4core.NumberFormatter();
-      valueAxis.numberFormatter.numberFormat = "#.0a";
-      valueAxis.numberFormatter.format = (value) => toPersianNumber(value);
+      valueAxis.numberFormatter = numberFormatter;
       valueAxis.renderer.labels.template.fontSize = 12;
 
       let series = chart.series.push(new am4charts.ColumnSeries());
@@ -57,8 +62,7 @@ const ChartComponent = ({ chartType, filters }) => {
       series.columns.template.tooltipText = "{category}: {value} نفر";
       series.columns.template.fillOpacity = 0.8;
       series.columns.template.width = am4core.percent(70);
-      series.numberFormatter = new am4core.NumberFormatter();
-      series.numberFormatter.format = (value) => toPersianNumber(value);
+      series.numberFormatter = numberFormatter;
     } else if (chartType === "pie") {
       chart = am4core.create(chartRef.current, am4charts.PieChart);
       chart.data = chartData;
@@ -70,8 +74,7 @@ const ChartComponent = ({ chartType, filters }) => {
       pieSeries.labels.template.text = "{category}: {value}%";
       pieSeries.labels.template.fontSize = 12;
       pieSeries.radius = am4core.percent(80);
-      pieSeries.numberFormatter = new am4core.NumberFormatter();
-      pieSeries.numberFormatter.format = (value) => toPersianNumber(value);
+      pieSeries.numberFormatter = numberFormatter;
     } else if (chartType === "semiCircle") {
       chart = am4core.create(chartRef.current, am4charts.PieChart);
       chart.data = chartData;
@@ -85,8 +88,7 @@ const ChartComponent = ({ chartType, filters }) => {
       series.labels.template.text = "{category}: {value}%";
       series.labels.template.fontSize = 12;
       series.radius = am4core.percent(80);
-      series.numberFormatter = new am4core.NumberFormatter();
-      series.numberFormatter.format = (value) => toPersianNumber(value);
+      series.numberFormatter = numberFormatter;
     } else if (chartType === "nestedDonut") {
       chart = am4core.create(chartRef.current, am4charts.PieChart);
       chart.data = chartData;
@@ -99,8 +101,7 @@ const ChartComponent = ({ chartType, filters }) => {
       series1.innerRadius = am4core.percent(30);
       series1.labels.template.text = "{category}: {value}%";
       series1.labels.template.fontSize = 10;
-      series1.numberFormatter = new am4core.NumberFormatter();
-      series1.numberFormatter.format = (value) => toPersianNumber(value);
+      series1.numberFormatter = numberFormatter;
 
       let series2 = chart.series.push(new am4charts.PieSeries());
       series2.data = chartData.map((item) => ({
@@ -113,8 +114,7 @@ const ChartComponent = ({ chartType, filters }) => {
       series2.innerRadius = am4core.percent(15);
       series2.labels.template.text = "{category}: {value}%";
       series2.labels.template.fontSize = 10;
-      series2.numberFormatter = new am4core.NumberFormatter();
-      series2.numberFormatter.format = (value) => toPersianNumber(value);
+      series2.numberFormatter = numberFormatter;
     } else if (chartType === "pictorial") {
       chart = am4core.create(chartRef.current, am4charts.SlicedChart);
       chart.data = chartData;
@@ -128,8 +128,7 @@ const ChartComponent = ({ chartType, filters }) => {
       series.labels.template.fontSize = 12;
       series.labels.template.disabled = false;
       series.ticks.template.disabled = false;
-      series.numberFormatter = new am4core.NumberFormatter();
-      series.numberFormatter.format = (value) => toPersianNumber(value);
+      series.numberFormatter = numberFormatter;
     } else if (chartType === "map") {
       chart = am4core.create(chartRef.current, am4maps.MapChart);
       chart.geodata = am4geodata_ir;
@@ -138,9 +137,11 @@ const ChartComponent = ({ chartType, filters }) => {
       let polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
       polygonSeries.useGeodata = true;
       polygonSeries.data = chartData;
+      polygonSeries.numberFormatter = numberFormatter; // اعمال فرمت فارسی به سری
 
       let polygonTemplate = polygonSeries.mapPolygons.template;
-      polygonTemplate.tooltipText = "{name}: {value} نفر";
+      // تنظیم دستی تولتیپ با اعداد فارسی
+      polygonTemplate.tooltipText = "{name}: [bold]{value.formatNumber('#')}[/] نفر";
       polygonTemplate.fill = am4core.color("#cfcfcf");
       polygonTemplate.stroke = am4core.color("#ffffff");
       polygonTemplate.strokeWidth = 1;
@@ -166,6 +167,7 @@ const ChartComponent = ({ chartType, filters }) => {
       polygonTemplate.tooltip.label.textAlign = "right";
       polygonTemplate.tooltip.label.fill = am4core.color("#000000");
       polygonTemplate.tooltip.label.fontSize = 14;
+      polygonTemplate.tooltip.numberFormatter = numberFormatter; // اعمال فرمت فارسی
 
       polygonSeries.dataFields.value = "value";
       polygonSeries.dataFields.id = "id";
@@ -186,17 +188,14 @@ const ChartComponent = ({ chartType, filters }) => {
 
       let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       valueAxis.title.text = "تعداد (نفر)";
-      valueAxis.numberFormatter = new am4core.NumberFormatter();
-      valueAxis.numberFormatter.numberFormat = "#.0a";
-      valueAxis.numberFormatter.format = (value) => toPersianNumber(value);
+      valueAxis.numberFormatter = numberFormatter;
       valueAxis.renderer.labels.template.fontSize = 12;
 
       let series = chart.series.push(new am4charts.LineSeries());
       series.dataFields.valueY = "value";
       series.dataFields.categoryX = "category";
       series.tooltipText = "{category}: {value} نفر";
-      series.numberFormatter = new am4core.NumberFormatter();
-      series.numberFormatter.format = (value) => toPersianNumber(value);
+      series.numberFormatter = numberFormatter;
     }
 
     return () => {
@@ -206,7 +205,7 @@ const ChartComponent = ({ chartType, filters }) => {
 
   return (
     <div className="chart-container">
-      <p className="chart-description">{description}</p> {/* نمایش توضیح */}
+      <p className="chart-description">{description}</p>
       <div
         className="chart-placeholder"
         ref={chartRef}

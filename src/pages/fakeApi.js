@@ -87,12 +87,12 @@ const generateFakeChartData = (filters, chartType) => {
 
   // تابع تعیین رنگ بر اساس رنج مقدار
   const getColorByValue = (value) => {
-    if (value > 50000) return "#d32f2f"; // قرمز تیره
-    if (value > 25000) return "#f57c00"; // نارنجی
-    if (value > 10000) return "#fbc02d"; // زرد
-    if (value > 5000) return "#388e3c"; // سبز تیره
-    if (value > 1000) return "#81c784"; // سبز روشن
-    return "#e0e0e0"; // خاکستری روشن
+    if (value > 50000) return "#dc8c67";
+    if (value > 25000) return "#dc6788";
+    if (value > 10000) return "#a367dc";
+    if (value > 5000) return "#8067dc";
+    if (value > 1000) return "#6771dc";
+    return "#67b7dc";
   };
 
   // تابع پیدا کردن اسم استان
