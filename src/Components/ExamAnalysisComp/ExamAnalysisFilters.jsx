@@ -245,7 +245,10 @@ const ExamAnalysisFilters = () => {
           <select onChange={(e) => updateFilters("province", e.target.value)}>
             <option value="">استان</option>
             {provinces.map((province) => (
-              <option key={province.geographyId} value={province.geographyId}>
+              <option
+                key={province.geographyName}
+                value={province.geographyName}
+              >
                 {province.geographyName}
               </option>
             ))}

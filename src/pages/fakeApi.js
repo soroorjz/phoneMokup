@@ -95,9 +95,34 @@ const generateFakeChartData = (filters, chartType) => {
     return "#e0e0e0"; // خاکستری روشن
   };
 
+  // تابع پیدا کردن اسم استان
+  const getProvinceName = (provinceValue) => {
+    console.log(
+      "Province value received:",
+      provinceValue,
+      "Type:",
+      typeof provinceValue
+    );
+    if (!provinceValue) {
+      console.log("No province value provided");
+      return "استان نامشخص";
+    }
+    // چک می‌کنیم که آیا provinceValue یه ID هست یا اسم
+    let prov = provinces.find((p) => p.id === provinceValue);
+    if (!prov) {
+      // اگه با ID پیدا نشد، با اسم چک می‌کنیم
+      prov = provinces.find((p) => p.name === provinceValue);
+    }
+    console.log("Found province:", prov);
+    return prov ? prov.name : "استان نامشخص";
+  };
+
   // تابع تولید توضیح داینامیک
   const generateDescription = () => {
     let desc = "";
+    const provinceName = province ? getProvinceName(province) : null;
+    console.log("Filters:", filters);
+    console.log("Province Name:", provinceName);
     if (religion && !examId && !quota && !province && !job && !gender) {
       desc =
         chartType === "map" || chartType === "bar"
@@ -111,22 +136,22 @@ const generateFakeChartData = (filters, chartType) => {
     } else if (religion && province && !examId && !quota && !job && !gender) {
       desc =
         chartType === "bar"
-          ? `تعداد قبولی‌های دین ${religion} در آزمون‌های مختلف در ${province}`
-          : `تعداد شغل‌های پیشنهادی از دستگاه‌ها برای دین ${religion} در ${province}`;
+          ? `تعداد قبولی‌های دین ${religion} در آزمون‌های مختلف در ${provinceName}`
+          : `تعداد شغل‌های پیشنهادی از دستگاه‌ها برای دین ${religion} در ${provinceName}`;
     } else if (quota && !religion && !examId && !province && !job && !gender) {
-      desc = `تعداد قبولی‌های سهمیه ${quota} در کل کشور`;
+      desc = `تعداد قبولی‌های ${quota} در کل کشور`;
     } else if (quota && province && !religion && !examId && !job && !gender) {
       desc =
         chartType === "pie"
-          ? `نسبت قبولی زن به مرد سهمیه ${quota} در ${province}`
-          : `تعداد شغل‌های موجود برای سهمیه ${quota} در ${province}`;
+          ? `نسبت قبولی زن به مرد ${quota} در ${provinceName}`
+          : `تعداد شغل‌های موجود برای ${quota} در ${provinceName}`;
     } else if (gender && !religion && !examId && !quota && !province && !job) {
       desc = `تعداد قبولی‌های جنسیت ${gender} در کل کشور`;
     } else if (province && !religion && !examId && !quota && !job && !gender) {
       desc =
         chartType === "pie"
-          ? `نسبت قبولی‌های سهمیه‌های مختلف در ${province}`
-          : `نسبت قبولی‌ها با دین‌های مختلف در ${province}`;
+          ? `نسبت قبولی‌های سهمیه‌های مختلف در ${provinceName}`
+          : `نسبت قبولی‌ها با دین‌های مختلف در ${provinceName}`;
     } else if (job && !religion && !examId && !quota && !province && !gender) {
       desc =
         chartType === "map"
@@ -235,7 +260,8 @@ const generateFakeChartData = (filters, chartType) => {
       const data = examTitles.map((exam) => ({
         category: exam,
         value: generatePopulationBasedValue(
-          provinces.find((p) => p.name === province)?.population || 1000000,
+          provinces.find((p) => p.id === province || p.name === province)
+            ?.population || 1000000,
           0.002 + Math.random() * 0.001
         ),
       }));
@@ -288,7 +314,8 @@ const generateFakeChartData = (filters, chartType) => {
   // سناریو 5: سهمیه + استان
   if (quota && province && !religion && !examId && !job && !gender) {
     const provPopulation =
-      provinces.find((p) => p.name === province)?.population || 1000000;
+      provinces.find((p) => p.id === province || p.name === province)
+        ?.population || 1000000;
     if (chartType === "pie") {
       const data = [
         { category: "مرد", value: 60 + Math.round(Math.random() * 10) },
