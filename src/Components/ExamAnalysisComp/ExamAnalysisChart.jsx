@@ -223,7 +223,7 @@ const ChartComponent = ({ chartType, filters }) => {
     <div
       className="chart-placeholder"
       ref={chartRef}
-      style={{ width: "100%", height: "500px" }}
+      style={{ width: "100%", height: "400px" }}
     />
   );
 };
