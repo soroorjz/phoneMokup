@@ -5,14 +5,6 @@ import CategoryResultPage from "./CategoryResultPage/CategoryResultPage";
 
 // دسته‌بندی‌های استاتیک
 const staticCategories = [
-  {
-    title: "سن",
-    details: ["همه", "18-25 سال", "26-35 سال", "36-45 سال", "بیش از 45 سال"],
-  },
-  {
-    title: "مجری ارزیابی آزمون",
-    details: ["همه", "سنجش", "رایانگان", "جهاد دانشگاهی"],
-  },
   { title: "نتایج ارزیابی تکمیلی", details: ["غایب", "مردود", "قبول"] },
   { title: "نتایج آزمون کتبی", details: ["غایب", "مردود", "قبول"] },
   { title: "نتایج گزینش", details: ["غایب", "مردود", "قبول"] },
@@ -36,6 +28,7 @@ const CategoryComp = () => {
     "مجری آزمون": [],
     "عنوان آزمون": [],
     "شغل محل": [],
+    "مجری ارزیابی آزمون": [], // اضافه کردن به داینامیک
   });
 
   const fetchToken = useCallback(async () => {
@@ -107,6 +100,7 @@ const CategoryComp = () => {
         "مجری آزمون": "/api/organizer/organizers",
         "عنوان آزمون": "/api/exam/exams",
         "شغل محل": "/api/joblocation/joblocations",
+        "مجری ارزیابی آزمون": "/api/analyzeorganizer/analyzeorganizers", // اضافه کردن endpoint جدید
       };
 
       const requests = Object.entries(endpoints).map(([key, url]) =>
@@ -137,16 +131,16 @@ const CategoryComp = () => {
         } else if (key === "شغل") {
           newDynamicData[key] = ["همه", ...data.map((item) => item.jobName)];
         } else if (key === "مقطع تحصیلی") {
-          newDynamicData[key] = ["همه", ...data.map((item) => item.gradeTitle)]; // تغییر به gradeTitle
+          newDynamicData[key] = ["همه", ...data.map((item) => item.gradeTitle)];
         } else if (key === "رشته تحصیلی") {
-          newDynamicData[key] = ["همه", ...data.map((item) => item.fieldTitle)]; // تغییر به fieldTitle
+          newDynamicData[key] = ["همه", ...data.map((item) => item.fieldTitle)];
         } else if (key === "هزینه آزمون") {
           newDynamicData[key] = [
             "همه",
             ...data.map((item) => {
               const price = item.examPrice
                 ? (parseInt(item.examPrice) / 10).toLocaleString() + " تومان"
-                : "نامشخص"; // تبدیل به تومان و فرمت
+                : "نامشخص";
               return price;
             }),
           ];
@@ -167,6 +161,11 @@ const CategoryComp = () => {
             "همه",
             ...data.map((item) => item.jobLocationName),
           ];
+        } else if (key === "مجری ارزیابی آزمون") {
+          newDynamicData[key] = [
+            "همه",
+            ...data.map((item) => item.analyzeOrganizerName),
+          ]; // مپ کردن analyzeOrganizerName
         }
 
         if (key !== "geographies") {
