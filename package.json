@@ -4,8 +4,7 @@
   "private": true,
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.39",
-    "@amcharts/amcharts5": "^5.11.1",
-    "@amcharts/amcharts5-geodata": "^5.1.4",
+    "@amcharts/amcharts4-geodata": "^4.1.30",
     "@lottiefiles/dotlottie-react": "^0.13.0",
     "axios": "^1.8.1",
     "chart.js": "^4.4.8",

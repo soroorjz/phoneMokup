@@ -11,6 +11,9 @@ import "chart.js/auto";
 import "./ChartTrainingComp.scss";
 import { chartData } from "../../pages/ChartTraining/chartTrainingData";
 import { Link } from "react-router-dom";
+
+import TrainingInranChart from "./TrainingInranChart";
+
 const toPersianDigits = (num) =>
   num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
 
@@ -66,10 +69,13 @@ const ChartTrainingComp = () => {
                 {chart.chart.type === "radar" && (
                   <Radar data={formattedData} options={chartOptions} />
                 )}
+                {chart.chart.type === "map" && (
+                  <TrainingInranChart data={chart.chart.data} />
+                )}
               </div>
               <p className="chart-analysis">
                 <span>کاربرد:</span>
-                 این نمودار به شما کمک می‌کند تا
+                این نمودار به شما کمک می‌کند تا
                 {chart.chart.description?.toLowerCase() || "این داده‌ها"} را
                 بهتر درک کنید.
               </p>
@@ -78,9 +84,7 @@ const ChartTrainingComp = () => {
         })}
       </div>
       <button className="backToGuidanceBtn">
-        <Link to="/Guidance">
-        بازگشت
-        </Link>
+        <Link to="/Guidance">بازگشت</Link>
       </button>
     </div>
   );

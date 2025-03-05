@@ -1,9 +1,11 @@
 export const chartData = [
   {
     title: "نمودار میله‌ای (Bar Chart)",
-    chartTypeDescription: "نمودار میله‌ای برای مقایسه داده‌های دسته‌بندی‌شده استفاده می‌شود.",
+    chartTypeDescription:
+      "نمودار میله‌ای برای مقایسه داده‌های دسته‌بندی‌شده استفاده می‌شود.",
     chart: {
-      description: "مقایسه تعداد شرکت‌کنندگان در آزمون‌های استخدامی برای رشته‌های مختلف.",
+      description:
+        "مقایسه تعداد شرکت‌کنندگان در آزمون‌های استخدامی برای رشته‌های مختلف.",
       type: "bar",
       data: {
         labels: ["مهندسی نرم‌افزار", "حسابداری", "مدیریت", "حقوق"],
@@ -25,7 +27,8 @@ export const chartData = [
   },
   {
     title: "نمودار خطی (Line Chart)",
-    chartTypeDescription: "نمودار خطی برای نمایش روند تغییرات داده‌ها در طول زمان استفاده می‌شود.",
+    chartTypeDescription:
+      "نمودار خطی برای نمایش روند تغییرات داده‌ها در طول زمان استفاده می‌شود.",
     chart: {
       description: "تعداد داوطلبان آزمون استخدامی در ۵ سال اخیر.",
       type: "line",
@@ -45,7 +48,8 @@ export const chartData = [
   },
   {
     title: "نمودار دایره‌ای (Pie Chart)",
-    chartTypeDescription: "نمودار دایره‌ای برای نمایش توزیع داده‌ها بین چند دسته استفاده می‌شود.",
+    chartTypeDescription:
+      "نمودار دایره‌ای برای نمایش توزیع داده‌ها بین چند دسته استفاده می‌شود.",
     chart: {
       description: "توزیع داوطلبان آزمون استخدامی بر اساس سطح تحصیلات.",
       type: "pie",
@@ -67,7 +71,8 @@ export const chartData = [
   },
   {
     title: "نمودار پراکندگی (Scatter Plot)",
-    chartTypeDescription: "نمودار پراکندگی برای نمایش رابطه بین دو متغیر استفاده می‌شود.",
+    chartTypeDescription:
+      "نمودار پراکندگی برای نمایش رابطه بین دو متغیر استفاده می‌شود.",
     chart: {
       description: "رابطه بین تعداد ساعت مطالعه و نمره آزمون داوطلبان.",
       type: "scatter",
@@ -90,7 +95,8 @@ export const chartData = [
   },
   {
     title: "نمودار راداری (Radar Chart)",
-    chartTypeDescription: "نمودار راداری برای مقایسه عملکرد متغیرهای مختلف در یک سیستم استفاده می‌شود.",
+    chartTypeDescription:
+      "نمودار راداری برای مقایسه عملکرد متغیرهای مختلف در یک سیستم استفاده می‌شود.",
     chart: {
       description: "مقایسه عملکرد داوطلبان در بخش‌های مختلف آزمون.",
       type: "radar",
@@ -105,6 +111,47 @@ export const chartData = [
           },
         ],
       },
+    },
+  },
+  {
+    title: "نقشه ایران (Iran Map)",
+    chartTypeDescription: "نمایش نقشه ایران با استان‌ها و داده‌های مرتبط.",
+    chart: {
+      description: "نمایش توزیع جمعیت در استان‌های مختلف ایران.",
+      type: "map",
+      data: [
+        { id: "IR-01", name: "آذربايجان شرقي", value: 3900000 },
+        { id: "IR-02", name: "آذربايجان غربي", value: 3300000 },
+        { id: "IR-03", name: "اردبيل", value: 1300000 },
+        { id: "IR-04", name: "اصفهان", value: 5500000 },
+        { id: "IR-32", name: "البرز", value: 3000000 },
+        { id: "IR-05", name: "ايلام", value: 600000 },
+        { id: "IR-06", name: "بوشهر", value: 1200000 },
+        { id: "IR-07", name: "تهران", value: 9500000 },
+        { id: "IR-08", name: "چهارمحال و بختياري", value: 950000 },
+        { id: "IR-29", name: "خراسان جنوبي", value: 800000 },
+        { id: "IR-30", name: "خراسان رضوي", value: 6200000 },
+        { id: "IR-31", name: "خراسان شمالي", value: 900000 },
+        { id: "IR-10", name: "خوزستان", value: 4600000 },
+        { id: "IR-11", name: "زنجان", value: 1100000 },
+        { id: "IR-12", name: "سمنان", value: 700000 },
+        { id: "IR-13", name: "سيستان و بلوچستان", value: 3000000 },
+        { id: "IR-14", name: "فارس", value: 5000000 },
+        { id: "IR-28", name: "قزوين", value: 1300000 },
+        { id: "IR-26", name: "قم", value: 1400000 },
+        { id: "IR-16", name: "كردستان", value: 1600000 },
+        { id: "IR-15", name: "كرمان", value: 2000000 },
+        { id: "IR-17", name: "كرمانشاه", value: 2000000 },
+        { id: "IR-18", name: "كهكيلويه و بويراحمد", value: 700000 },
+        { id: "IR-27", name: "گلستان", value: 1900000 },
+        { id: "IR-19", name: "گيلان", value: 2500000 },
+        { id: "IR-20", name: "لرستان", value: 1800000 },
+        { id: "IR-21", name: "مازندران", value: 3300000 },
+        { id: "IR-22", name: "مركزي", value: 1500000 },
+        { id: "IR-23", name: "هرمزگان", value: 1900000 },
+        { id: "IR-24", name: "همدان", value: 1800000 },
+        { id: "IR-25", name: "يزد", value: 1200000 },
+      ],
     },
   },
 ];
