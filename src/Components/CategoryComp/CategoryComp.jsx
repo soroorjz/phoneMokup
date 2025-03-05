@@ -28,7 +28,7 @@ const CategoryComp = () => {
     "مجری آزمون": [],
     "عنوان آزمون": [],
     "شغل محل": [],
-    "مجری ارزیابی آزمون": [], // اضافه کردن به داینامیک
+    "مجری ارزیابی آزمون": [],
   });
 
   const fetchToken = useCallback(async () => {
@@ -100,7 +100,7 @@ const CategoryComp = () => {
         "مجری آزمون": "/api/organizer/organizers",
         "عنوان آزمون": "/api/exam/exams",
         "شغل محل": "/api/joblocation/joblocations",
-        "مجری ارزیابی آزمون": "/api/analyzeorganizer/analyzeorganizers", // اضافه کردن endpoint جدید
+        "مجری ارزیابی آزمون": "/api/analyzeorganizer/analyzeorganizers",
       };
 
       const requests = Object.entries(endpoints).map(([key, url]) =>
@@ -165,7 +165,7 @@ const CategoryComp = () => {
           newDynamicData[key] = [
             "همه",
             ...data.map((item) => item.analyzeOrganizerName),
-          ]; // مپ کردن analyzeOrganizerName
+          ];
         }
 
         if (key !== "geographies") {
@@ -280,7 +280,7 @@ const CategoryComp = () => {
             {selectedOptions[category.title] && (
               <div className="selected-option">
                 {typeof selectedOptions[category.title] === "object"
-                  ? selectedOptions[category.title].name
+                  ? selectedOptions[category.title].name // فقط name رو نشون بده
                   : selectedOptions[category.title]}
                 <button
                   className="clear-btn"
