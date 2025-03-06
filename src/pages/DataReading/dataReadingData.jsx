@@ -253,8 +253,43 @@ export const DataReadingchartData = [
   },
   {
     title: "نمودار نقشه‌ای (Map Chart)",
-    chart: <TrainingInranChart />,
-
+    chart: (
+      <TrainingInranChart
+        data={[
+          { id: "IR-01", name: "آذربايجان شرقي", value: 3900000 },
+          { id: "IR-02", name: "آذربايجان غربي", value: 3300000 },
+          { id: "IR-03", name: "اردبيل", value: 1300000 },
+          { id: "IR-04", name: "اصفهان", value: 5500000 },
+          { id: "IR-32", name: "البرز", value: 3000000 },
+          { id: "IR-05", name: "ايلام", value: 600000 },
+          { id: "IR-06", name: "بوشهر", value: 1200000 },
+          { id: "IR-07", name: "تهران", value: 9500000 },
+          { id: "IR-08", name: "چهارمحال و بختياري", value: 950000 },
+          { id: "IR-29", name: "خراسان جنوبي", value: 800000 },
+          { id: "IR-30", name: "خراسان رضوي", value: 6200000 },
+          { id: "IR-31", name: "خراسان شمالي", value: 900000 },
+          { id: "IR-10", name: "خوزستان", value: 4600000 },
+          { id: "IR-11", name: "زنجان", value: 1100000 },
+          { id: "IR-12", name: "سمنان", value: 700000 },
+          { id: "IR-13", name: "سيستان و بلوچستان", value: 3000000 },
+          { id: "IR-14", name: "فارس", value: 5000000 },
+          { id: "IR-28", name: "قزوين", value: 1300000 },
+          { id: "IR-26", name: "قم", value: 1400000 },
+          { id: "IR-16", name: "كردستان", value: 1600000 },
+          { id: "IR-15", name: "كرمان", value: 2000000 },
+          { id: "IR-17", name: "كرمانشاه", value: 2000000 },
+          { id: "IR-18", name: "كهكيلويه و بويراحمد", value: 700000 },
+          { id: "IR-27", name: "گلستان", value: 1900000 },
+          { id: "IR-19", name: "گيلان", value: 2500000 },
+          { id: "IR-20", name: "لرستان", value: 1800000 },
+          { id: "IR-21", name: "مازندران", value: 3300000 },
+          { id: "IR-22", name: "مركزي", value: 1500000 },
+          { id: "IR-23", name: "هرمزگان", value: 1900000 },
+          { id: "IR-24", name: "همدان", value: 1800000 },
+          { id: "IR-25", name: "يزد", value: 1200000 },
+        ]}
+      />
+    ),
     description:
       "این نمودار موقعیت جغرافیایی استان‌های ایران را نشان می‌دهد و می‌تواند برای تحلیل داده‌های منطقه‌ای به کار رود.",
   },
