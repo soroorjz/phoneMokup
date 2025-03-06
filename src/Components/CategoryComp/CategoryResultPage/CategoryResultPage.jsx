@@ -13,8 +13,19 @@ const CategoryResultPage = ({
         {Object.entries(selectedOptions).length > 0 ? (
           Object.entries(selectedOptions).map(([category, option]) => (
             <div key={category} className="selected-option">
-              <span>{`${category}: ${option}`}</span>
-              
+              <span>
+                {`${category}: ${
+                  typeof option === "object" && option.name
+                    ? option.name
+                    : option
+                }`}
+              </span>
+              {/* <button
+                className="remove-option-btn"
+                onClick={() => clearSelection(category)}
+              >
+                ✖
+              </button> */}
             </div>
           ))
         ) : (
