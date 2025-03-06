@@ -204,7 +204,7 @@ const ExamAnalysisFilters = () => {
         <select onChange={(e) => updateFilters("examId", e.target.value)}>
           <option value="">عنوان آزمون</option>
           {examTitles.map((exam) => (
-            <option key={exam.examId} value={exam.examId}>
+            <option key={exam.examId} value={exam.examName}>
               {exam.examName}
             </option>
           ))}
@@ -260,8 +260,8 @@ const ExamAnalysisFilters = () => {
             <option value="">دستگاه</option>
             {executiveBodies.map((executiveBody) => (
               <option
-                key={executiveBody.executiveBodyId}
-                value={executiveBody.executiveBodyId}
+                key={executiveBody.executiveBodyName}
+                value={executiveBody.executiveBodyName}
               >
                 {executiveBody.executiveBodyName}
               </option>
@@ -271,7 +271,7 @@ const ExamAnalysisFilters = () => {
           <select onChange={(e) => updateFilters("job", e.target.value)}>
             <option value="">شغل</option>
             {jobs.map((job) => (
-              <option key={job.jobId} value={job.jobId}>
+              <option key={job.jobName} value={job.jobName}>
                 {job.jobName}
               </option>
             ))}
