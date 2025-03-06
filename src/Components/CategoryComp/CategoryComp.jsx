@@ -23,7 +23,6 @@ const CategoryComp = () => {
     شغل: [],
     "مقطع تحصیلی": [],
     "رشته تحصیلی": [],
-    "هزینه آزمون": [],
     دستگاه: [],
     "مجری آزمون": [],
     "عنوان آزمون": [],
@@ -95,7 +94,6 @@ const CategoryComp = () => {
         شغل: "/api/job/jobs",
         "مقطع تحصیلی": "/api/grade/grades",
         "رشته تحصیلی": "/api/field/fields",
-        "هزینه آزمون": "/api/exam/exams",
         دستگاه: "/api/executivebody/executivebodies",
         "مجری آزمون": "/api/organizer/organizers",
         "عنوان آزمون": "/api/exam/exams",
@@ -134,16 +132,6 @@ const CategoryComp = () => {
           newDynamicData[key] = ["همه", ...data.map((item) => item.gradeTitle)];
         } else if (key === "رشته تحصیلی") {
           newDynamicData[key] = ["همه", ...data.map((item) => item.fieldTitle)];
-        } else if (key === "هزینه آزمون") {
-          newDynamicData[key] = [
-            "همه",
-            ...data.map((item) => {
-              const price = item.examPrice
-                ? (parseInt(item.examPrice) / 10).toLocaleString() + " تومان"
-                : "نامشخص";
-              return price;
-            }),
-          ];
         } else if (key === "دستگاه") {
           newDynamicData[key] = [
             "همه",
@@ -280,7 +268,7 @@ const CategoryComp = () => {
             {selectedOptions[category.title] && (
               <div className="selected-option">
                 {typeof selectedOptions[category.title] === "object"
-                  ? selectedOptions[category.title].name // فقط name رو نشون بده
+                  ? selectedOptions[category.title].name
                   : selectedOptions[category.title]}
                 <button
                   className="clear-btn"
