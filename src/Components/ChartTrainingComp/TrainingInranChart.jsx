@@ -72,7 +72,7 @@ const TrainingInranChart = ({ data }) => {
   }, [data]);
 
   return (
-    <div
+    <div className="TrainingInranChart"
       ref={chartRef}
       style={{
         width: "100%",

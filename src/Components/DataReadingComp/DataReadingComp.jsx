@@ -1,6 +1,6 @@
 import React from "react";
 import "./DataReadingComp.scss";
-import { chartData } from "../../pages/DataReading/dataReadingData";
+import { DataReadingchartData } from "../../pages/DataReading/dataReadingData";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -32,7 +32,7 @@ const DataReadingComp = () => {
   return (
     <div className="DataReadingComp-Container">
       <div className="Data-Reading-Container">
-        {chartData.map((chart, index) => (
+        {DataReadingchartData.map((chart, index) => (
           <div className="chartContainer" key={index}>
             <h2 className="chartTile">{chart.title}</h2>
             <div

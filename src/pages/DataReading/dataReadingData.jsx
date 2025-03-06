@@ -1,11 +1,12 @@
 import { Bar, Line, Pie, Scatter } from "react-chartjs-2";
+import TrainingInranChart from "../../Components/ChartTrainingComp/TrainingInranChart";
 
 const toPersianNumber = (number) => {
   const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
   return number.toString().replace(/\d/g, (x) => persianDigits[x]);
 };
 
-export const chartData = [
+export const DataReadingchartData = [
   {
     title: "نمودار ستونی (Bar Chart)",
     chart: (
@@ -249,5 +250,12 @@ export const chartData = [
     ),
     description:
       "نمودار پراکندگی برای بررسی رابطه‌ی بین دو متغیر استفاده می‌شود. هر نقطه نشان‌دهنده‌ی یک داده است.",
+  },
+  {
+    title: "نمودار نقشه‌ای (Map Chart)",
+    chart: <TrainingInranChart />,
+
+    description:
+      "این نمودار موقعیت جغرافیایی استان‌های ایران را نشان می‌دهد و می‌تواند برای تحلیل داده‌های منطقه‌ای به کار رود.",
   },
 ];
