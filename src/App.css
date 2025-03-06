@@ -1,35 +1,40 @@
 @font-face {
   font-family: "Vazirmatn";
-  src: url("/public/assets/fonts/Vazirmatn-Black.woff2") format("woff2"),
-    url("/public/assets/fonts/Vazirmatn-Black.ttf") format("truetype");
+  src:
+   /* url("/public/assets/fonts/Vazirmatn-Black.woff2") format("woff2"), */
+    url("/public/assets/fonts/font2/Vazirmatn-Black.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: "Vazirmatn";
-  src: url("/public/assets/fonts/Vazirmatn-Bold.woff2") format("woff2"),
-    url("/public/assets/fonts/Vazirmatn-Bold.ttf") format("truetype");
+  src:
+   /* url("/public/assets/fonts/Vazirmatn-Bold.woff2") format("woff2"), */
+    url("/public/assets/fonts/font2/Vazirmatn-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: bold;
 }
 @font-face {
   font-family: "Vazirmatn";
-  src: url("/public/assets/fonts/Vazirmatn-Thin.woff2") format("woff2"),
-    url("/public/assets/fonts/Vazirmatn-Thin.ttf") format("truetype");
+  src:
+   /* url("/public/assets/fonts/Vazirmatn-Thin.woff2") format("woff2"), */
+    url("/public/assets/fonts/font2/Vazirmatn-Thin.ttf") format("truetype");
   font-weight: thin;
   font-style: thin;
 }
 @font-face {
   font-family: "Vazirmatn";
-  src: url("/public/assets/fonts/Vazirmatn-Light.woff2") format("woff2"),
-    url("/public/assets/fonts/Vazirmatn-Light.ttf") format("truetype");
+  src:
+   /* url("/public/assets/fonts/Vazirmatn-Light.woff2") format("woff2"), */
+    url("/public/assets/fonts/font2/Vazirmatn-Light.ttf") format("truetype");
   font-weight: Light;
   font-style: Light;
 }
 @font-face {
   font-family: "Vazirmatn";
-  src: url("/public/assets/fonts/Vazirmatn-Medium.woff2") format("woff2"),
-    url("/public/assets/fonts/Vazirmatn-Medium.ttf") format("truetype");
+  src: 
+  /* url("/public/assets/fonts/Vazirmatn-Medium.woff2") format("woff2"), */
+    url("/public/assets/fonts/font2/Vazirmatn-FD-Medium.ttf") format("truetype");
   font-weight: Medium;
   font-style: Medium;
 }
@@ -39,11 +44,10 @@
   margin: 0;
   box-sizing: border-box;
   font-family: Vazirmatn;
-  
 }
 *::-webkit-scrollbar {
-    display: none;
-  }
+  display: none;
+}
 
 .App {
   width: 100%;
