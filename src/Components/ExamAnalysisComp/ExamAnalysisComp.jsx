@@ -8,17 +8,32 @@ import { useReports } from "../../pages/ExamAnalysis/ReportsContext";
 import ChartComponent from "./ExamAnalysisChart";
 import DescriptionBoxComponent from "./DescriptionBoxComponent";
 import ExamAnalysisFilters from "./ExamAnalysisFilters";
+import generateFakeChartData from "../../pages/fakeApi"; // اضافه کردن فایل API
 
 am4core.useTheme(am4themes_animated);
 
 const ExamAnalysisComp = () => {
   const [examTitle, setExamTitle] = useState("");
   const { filters, addReport } = useReports();
-  const [chartType, setChartType] = useState("line");
+  const [chartType, setChartType] = useState("line"); // مقدار اولیه موقت
   const [descriptionBoxes, setDescriptionBoxes] = useState([]);
   const [allGeographies, setAllGeographies] = useState([]);
   const chartRef = useRef(null);
   const [isTextVisible, setIsTextVisible] = useState(false);
+
+  // دریافت supportedCharts بر اساس فیلترها
+  const getSupportedCharts = useCallback(() => {
+    const result = generateFakeChartData(filters, chartType);
+    return result.supportedCharts || []; // لیست چارت‌های پشتیبانی‌شده
+  }, [filters, chartType]);
+
+  // به‌روزرسانی chartType با اولین چارت پشتیبانی‌شده وقتی فیلترها تغییر می‌کنن
+  useEffect(() => {
+    const supportedCharts = getSupportedCharts();
+    if (!supportedCharts.includes(chartType) && supportedCharts.length > 0) {
+      setChartType(supportedCharts[0]); // تنظیم به اولین چارت پشتیبانی‌شده
+    }
+  }, [filters, chartType, getSupportedCharts]);
 
   const addDescriptionBox = () => {
     setDescriptionBoxes([
@@ -102,7 +117,7 @@ const ExamAnalysisComp = () => {
 
         setTimeout(() => {
           setExamTitle("");
-          setChartType("line");
+          setChartType("line"); // ریست به مقدار اولیه (بعد از آپدیت فیلترها تنظیم می‌شه)
           setDescriptionBoxes([]);
           window.scrollTo({ top: 0, behavior: "smooth" });
         }, 3000);
@@ -136,13 +151,25 @@ const ExamAnalysisComp = () => {
             value={chartType}
             onChange={(e) => setChartType(e.target.value)}
           >
-            <option value="line">نمودار خطی</option>
-            <option value="bar">نمودار میله‌ای</option>
-            <option value="pie">نمودار دایره‌ای</option>
-            <option value="map">نمودار پراکندگی در کشور</option>
-            <option value="semiCircle">نیم‌دایره</option>
-            <option value="nestedDonut">دونات تودرتو</option>
-            <option value="pictorial">تصویری انباشته</option>
+            {getSupportedCharts().map((type) => (
+              <option key={type} value={type}>
+                {type === "line"
+                  ? "نمودار خطی"
+                  : type === "bar"
+                  ? "نمودار میله‌ای"
+                  : type === "pie"
+                  ? "نمودار دایره‌ای"
+                  : type === "map"
+                  ? "نمودار پراکندگی در کشور"
+                  : type === "semiCircle"
+                  ? "نیم‌دایره"
+                  : type === "nestedDonut"
+                  ? "دونات تودرتو"
+                  : type === "pictorial"
+                  ? "تصویری انباشته"
+                  : type}
+              </option>
+            ))}
           </select>
           <ChartComponent chartType={chartType} filters={filters} />
         </div>

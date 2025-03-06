@@ -21,8 +21,40 @@ const ChartComponent = ({ chartType, filters }) => {
     let chart;
     const result = generateFakeChartData(filters, chartType);
     const chartData = result.data;
-    setDescription(result.description);
-    console.log("chartData for map:", chartData);
+    const supportedCharts = result.supportedCharts || [];
+    setDescription(result.description || "");
+
+    console.log("chartData:", chartData);
+    console.log("supportedCharts:", supportedCharts);
+
+    // اگر داده‌ای وجود نداره یا چارت فعلی پشتیبانی نمی‌شه
+    if (
+      !chartData ||
+      chartData.length === 0 ||
+      !supportedCharts.includes(chartType)
+    ) {
+      // به جای رندر نمودار، پیام رو نشون بده
+      const placeholder = document.createElement("div");
+      placeholder.style.width = "100%";
+      placeholder.style.height = "400px";
+      placeholder.style.display = "flex";
+      placeholder.style.alignItems = "center";
+      placeholder.style.justifyContent = "center";
+      placeholder.style.background = "rgba(0, 0, 0, 0.1)"; // پس‌زمینه تار
+      placeholder.style.backdropFilter = "blur(5px)"; // افکت تار
+      placeholder.style.color = "#333";
+      placeholder.style.fontSize = "24px";
+      placeholder.style.fontFamily = "Vazir, Arial, sans-serif"; // فونت فارسی
+      placeholder.style.textAlign = "center";
+      placeholder.innerText = result.description || "گزارشی یافت نشد";
+
+      chartRef.current.innerHTML = "";
+      chartRef.current.appendChild(placeholder);
+
+      return () => {
+        chartRef.current.innerHTML = "";
+      };
+    }
 
     // تنظیم جهت RTL
     am4core.options.defaultLocale = {
@@ -137,11 +169,11 @@ const ChartComponent = ({ chartType, filters }) => {
       let polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
       polygonSeries.useGeodata = true;
       polygonSeries.data = chartData;
-      polygonSeries.numberFormatter = numberFormatter; // اعمال فرمت فارسی به سری
+      polygonSeries.numberFormatter = numberFormatter;
 
       let polygonTemplate = polygonSeries.mapPolygons.template;
-      // تنظیم دستی تولتیپ با اعداد فارسی
-      polygonTemplate.tooltipText = "{name}: [bold]{value.formatNumber('#')}[/] نفر";
+      polygonTemplate.tooltipText =
+        "{name}: [bold]{value.formatNumber('#')}[/] نفر";
       polygonTemplate.fill = am4core.color("#cfcfcf");
       polygonTemplate.stroke = am4core.color("#ffffff");
       polygonTemplate.strokeWidth = 1;
@@ -167,11 +199,7 @@ const ChartComponent = ({ chartType, filters }) => {
       polygonTemplate.tooltip.label.textAlign = "right";
       polygonTemplate.tooltip.label.fill = am4core.color("#000000");
       polygonTemplate.tooltip.label.fontSize = 14;
-      polygonTemplate.tooltip.numberFormatter = numberFormatter; // اعمال فرمت فارسی
-
-      polygonSeries.dataFields.value = "value";
-      polygonSeries.dataFields.id = "id";
-      polygonSeries.dataFields.name = "name";
+      polygonTemplate.tooltip.numberFormatter = numberFormatter;
     } else {
       chart = am4core.create(chartRef.current, am4charts.XYChart);
       chart.data = chartData;

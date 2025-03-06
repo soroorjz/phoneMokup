@@ -2,7 +2,7 @@ const generateFakeChartData = (filters, chartType) => {
   const { examId, religion, quota, province, executiveBody, job, gender } =
     filters;
 
-  // لیست‌های پایه
+  // لیست‌های پایه (بدون تغییر)
   const provinces = [
     { id: "IR-07", name: "تهران", population: 13500000 },
     { id: "IR-04", name: "اصفهان", population: 5120000 },
@@ -50,7 +50,7 @@ const generateFakeChartData = (filters, chartType) => {
   ];
 
   const examTitles = [
-    "یازدهمین آزمون مشترک دستگاه های اجرایی",
+   "یازدهمین آزمون مشترک دستگاه های اجرایی",
     "آزمون حفاظت فیزیکی(نگهبانی) شرکت کار و تامین",
     "اولین آزمون استخدامی اختصاصی معلولان",
     "سیزدهمین آزمون مشترک",
@@ -81,11 +81,11 @@ const generateFakeChartData = (filters, chartType) => {
     "شهرداری",
   ];
 
-  // تابع کمکی برای تولید دیتا بر اساس جمعیت
+  // تابع کمکی برای تولید دیتا بر اساس جمعیت (بدون تغییر)
   const generatePopulationBasedValue = (population, multiplier = 0.0001) =>
     Math.round(population * multiplier * (0.5 + Math.random() * 1.0));
 
-  // تابع تعیین رنگ بر اساس رنج مقدار
+  // تابع تعیین رنگ بر اساس رنج مقدار (بدون تغییر)
   const getColorByValue = (value) => {
     if (value > 50000) return "#dc8c67";
     if (value > 25000) return "#dc6788";
@@ -95,7 +95,7 @@ const generateFakeChartData = (filters, chartType) => {
     return "#67b7dc";
   };
 
-  // تابع پیدا کردن اسم استان
+  // تابع پیدا کردن اسم استان (بدون تغییر)
   const getProvinceName = (provinceValue) => {
     console.log(
       "Province value received:",
@@ -115,7 +115,7 @@ const generateFakeChartData = (filters, chartType) => {
     return prov ? prov.name : "استان نامشخص";
   };
 
-  // تابع تولید توضیح داینامیک
+  // تابع تولید توضیح داینامیک (بدون تغییر)
   const generateDescription = () => {
     let desc = "";
     const provinceName = province ? getProvinceName(province) : null;
@@ -199,41 +199,48 @@ const generateFakeChartData = (filters, chartType) => {
     return desc || "داده‌ای برای نمایش وجود ندارد";
   };
 
+  // تابع کمکی برای تولید داده‌ها
+  const createData = (categories, values, isPercentage = false) => {
+    return categories.map((category, index) => ({
+      category: typeof category === "object" ? category.name : category,
+      value: values[index] || (isPercentage ? 50 : 1000),
+    }));
+  };
+
   // سناریو 1: فقط یک دین انتخاب شده
   if (religion && !examId && !quota && !province && !job && !gender) {
-    // قبولی‌های زن و مرد اون دین در آزمون‌های مختلف (دونات تو در تو)
     if (chartType === "nestedDonut") {
-      // حلقه بیرونی: جنسیت، حلقه درونی: آزمون‌ها
       const data = [
         {
           category: "مرد",
-          value: 55, // فرض بر برتری نسبی مردها در کل قبولی‌ها
+          value: 55,
           children: examTitles.slice(0, 5).map((exam) => ({
             category: exam,
-            value: Math.round(20 + Math.random() * 10), // اعداد منطقی و تصادفی برای هر آزمون
+            value: Math.round(20 + Math.random() * 10),
           })),
         },
         {
           category: "زن",
-          value: 45, // زن‌ها کمی کمتر از مردها
+          value: 45,
           children: examTitles.slice(0, 5).map((exam) => ({
             category: exam,
-            value: Math.round(15 + Math.random() * 8), // اعداد کمی کمتر برای زن‌ها
+            value: Math.round(15 + Math.random() * 8),
           })),
         },
       ];
-      return { data, description: generateDescription() };
-    }
-    // درصد قبولی هر دین در سهمیه‌های مختلف (انباشته)
-    else if (chartType === "stacked") {
-      // توزیع سهمیه‌ها بر اساس اولویت: شیعه > سایر اسلام > مسیحی > زرتشتی > یهودی
+      return {
+        data,
+        supportedCharts: ["nestedDonut", "stacked", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "stacked") {
       const quotaDistribution = {
         "اسلام(شیعه)": {
           آزاد: 20,
           "سهمیه3%": 25,
           "سهمیه5%": 25,
           "سهمیه25%": 30,
-        }, // شیعه سهمیه‌های درصدی بیشتر
+        },
         "اسلام(زیدی)": {
           آزاد: 50,
           "سهمیه3%": 20,
@@ -266,16 +273,24 @@ const generateFakeChartData = (filters, chartType) => {
         },
         مسیحی: { آزاد: 80, "سهمیه3%": 10, "سهمیه5%": 5, "سهمیه25%": 5 },
         زرتشتی: { آزاد: 85, "سهمیه3%": 5, "سهمیه5%": 5, "سهمیه25%": 5 },
-        یهودی: { آزاد: 90, "سهمیه3%": 5, "سهمیه5%": 3, "سهمیه25%": 2 }, // یهودی سهمیه آزاد غالب
+        یهودی: { آزاد: 90, "سهمیه3%": 5, "سهمیه5%": 3, "سهمیه25%": 2 },
       };
-      const data = quotas.map((q) => ({
-        category: q,
-        value: quotaDistribution[religion][q],
-      }));
-      return { data, description: generateDescription() };
-    }
-    // سناریوهای قدیمی (map و bar)
-    else if (chartType === "map") {
+      const data = createData(
+        quotas,
+        [
+          quotaDistribution[religion]["آزاد"],
+          quotaDistribution[religion]["سهمیه3%"],
+          quotaDistribution[religion]["سهمیه5%"],
+          quotaDistribution[religion]["سهمیه25%"],
+        ],
+        true
+      );
+      return {
+        data,
+        supportedCharts: ["nestedDonut", "stacked", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "map") {
       const data = provinces.map((prov) => {
         const value =
           religion === "اسلام(شیعه)"
@@ -288,7 +303,11 @@ const generateFakeChartData = (filters, chartType) => {
           fill: getColorByValue(value),
         };
       });
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["nestedDonut", "stacked", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
     } else if (chartType === "bar") {
       const data = provinces.map((prov) => ({
         category: prov.name,
@@ -297,32 +316,45 @@ const generateFakeChartData = (filters, chartType) => {
             ? generatePopulationBasedValue(prov.population, 0.005)
             : generatePopulationBasedValue(prov.population, 0.0005),
       }));
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["nestedDonut", "stacked", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
     } else if (chartType === "pie") {
       const data = [
         { category: "مرد", value: 55 + Math.round(Math.random() * 10) },
         { category: "زن", value: 45 - Math.round(Math.random() * 10) },
       ];
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["nestedDonut", "stacked", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
     }
-    return { data: [], description: generateDescription() };
+    return {
+      data: [],
+      supportedCharts: ["nestedDonut", "stacked", "map", "bar", "pie"],
+      description: generateDescription(),
+    };
   }
 
   // سناریو 2: یک دین + یک عنوان آزمون انتخاب شده
   if (religion && examId && !quota && !province && !job && !gender) {
-    // پراکندگی قبولی‌ها در استان‌ها (خطی)
     if (chartType === "line") {
       const data = provinces.slice(0, 10).map((prov) => ({
         category: prov.name,
         value:
           religion === "اسلام(شیعه)"
-            ? generatePopulationBasedValue(prov.population, 0.003) // شیعه قبولی بیشتری داره
-            : generatePopulationBasedValue(prov.population, 0.0003), // سایر ادیان کمتر
+            ? generatePopulationBasedValue(prov.population, 0.003)
+            : generatePopulationBasedValue(prov.population, 0.0003),
       }));
-      return { data, description: generateDescription() };
-    }
-    // ترکیب سهمیه‌ها و جنسیت (دونات تو در تو)
-    else if (chartType === "nestedDonut") {
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "nestedDonut") {
       const data = [
         {
           category: "سهمیه‌ها",
@@ -331,26 +363,28 @@ const generateFakeChartData = (filters, chartType) => {
             { category: "آزاد", value: 20 },
             { category: "سهمیه3%", value: 15 },
             { category: "سهمیه5%", value: 25 },
-            { category: "سهمیه25%", value: 40 }, // فرض بر سهمیه بالا برای شیعه
+            { category: "سهمیه25%", value: 40 },
           ],
         },
         {
           category: "جنسیت",
           value: 100,
           children: [
-            { category: "مرد", value: 70 }, // مردها غالب‌تر در اکثر آزمون‌ها
+            { category: "مرد", value: 70 },
             { category: "زن", value: 30 },
           ],
         },
       ];
-      return { data, description: generateDescription() };
-    }
-    // سناریوهای قدیمی
-    const isEngineeringExam =
-      examId.includes("دستگاه های اجرایی") || examId.includes("سیزدهمین");
-    const isMedicalEducationExam =
-      examId.includes("بهداشت") || examId.includes("آموزش");
-    if (chartType === "map") {
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "map") {
+      const isEngineeringExam =
+        examId.includes("دستگاه های اجرایی") || examId.includes("سیزدهمین");
+      const isMedicalEducationExam =
+        examId.includes("بهداشت") || examId.includes("آموزش");
       const data = provinces.map((prov) => {
         const value =
           religion === "اسلام(شیعه)"
@@ -366,8 +400,16 @@ const generateFakeChartData = (filters, chartType) => {
           fill: getColorByValue(value),
         };
       });
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
     } else if (chartType === "bar") {
+      const isEngineeringExam =
+        examId.includes("دستگاه های اجرایی") || examId.includes("سیزدهمین");
+      const isMedicalEducationExam =
+        examId.includes("بهداشت") || examId.includes("آموزش");
       const data = provinces.map((prov) => ({
         category: prov.name,
         value:
@@ -378,8 +420,16 @@ const generateFakeChartData = (filters, chartType) => {
               )
             : generatePopulationBasedValue(prov.population, 0.0004),
       }));
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
     } else if (chartType === "pie") {
+      const isEngineeringExam =
+        examId.includes("دستگاه های اجرایی") || examId.includes("سیزدهمین");
+      const isMedicalEducationExam =
+        examId.includes("بهداشت") || examId.includes("آموزش");
       const data = [
         {
           category: "مرد",
@@ -394,9 +444,17 @@ const generateFakeChartData = (filters, chartType) => {
             : 30 + Math.round(Math.random() * 10),
         },
       ];
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "map", "bar", "pie"],
+        description: generateDescription(),
+      };
     }
-    return { data: [], description: generateDescription() };
+    return {
+      data: [],
+      supportedCharts: ["line", "nestedDonut", "map", "bar", "pie"],
+      description: generateDescription(),
+    };
   }
 
   // سناریو 3: دین + یک استان انتخاب شده
@@ -404,33 +462,36 @@ const generateFakeChartData = (filters, chartType) => {
     const provPopulation =
       provinces.find((p) => p.id === province || p.name === province)
         ?.population || 1000000;
-    // تعداد قبولی‌ها در آزمون‌های مختلف (خطی)
     if (chartType === "line") {
       const data = examTitles.map((exam) => ({
         category: exam,
         value: generatePopulationBasedValue(
           provPopulation,
-          religion === "اسلام(شیعه)" ? 0.002 : 0.0005 // شیعه قبولی بیشتری داره
+          religion === "اسلام(شیعه)" ? 0.002 : 0.0005
         ),
       }));
-      return { data, description: generateDescription() };
-    }
-    // تعداد شغل‌های پیشنهادی از هر دستگاه (میله‌ای)
-    else if (chartType === "bar") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "nestedDonut", "pie", "pictorial"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "bar") {
       const data = executiveBodies.map((body) => ({
         category: body,
-        value: Math.round(5 + Math.random() * 10), // اعداد کم و منطقی برای هر دستگاه
+        value: Math.round(5 + Math.random() * 10),
       }));
-      return { data, description: generateDescription() };
-    }
-    // درخواست برای شغل‌های مختلف در هر جنسیت (دونات تو در تو)
-    else if (chartType === "nestedDonut") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "nestedDonut", "pie", "pictorial"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "nestedDonut") {
       const data = [
         {
           category: "مرد",
-          value: 60, // مردها غالب‌تر فرض شدن
+          value: 60,
           children: [
-            { category: "مهندس عمران", value: 25 }, // شغل‌های فنی برای مردها
+            { category: "مهندس عمران", value: 25 },
             { category: "نگهبان", value: 20 },
             { category: "کارشناس مالیاتی", value: 15 },
           ],
@@ -439,51 +500,64 @@ const generateFakeChartData = (filters, chartType) => {
           category: "زن",
           value: 40,
           children: [
-            { category: "معلم", value: 20 }, // شغل‌های آموزشی و بهداشتی برای زن‌ها
+            { category: "معلم", value: 20 },
             { category: "پرستار", value: 15 },
             { category: "پزشک عمومی", value: 5 },
           ],
         },
       ];
-      return { data, description: generateDescription() };
-    }
-    // هر دستگاه چند شغل ارائه داده (دایره‌ای)
-    else if (chartType === "pie") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "nestedDonut", "pie", "pictorial"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "pie") {
       const data = executiveBodies.map((body, index) => ({
         category: body,
-        value: [3, 2, 2, 1, 1, 1][index], // اعداد خیلی کم و منطقی
+        value: [3, 2, 2, 1, 1, 1][index],
       }));
-      return { data, description: generateDescription() };
-    }
-    // سناریوهای قدیمی
-    else if (chartType === "pictorial") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "nestedDonut", "pie", "pictorial"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "pictorial") {
       const data = executiveBodies.map((body) => ({
         category: body,
         value: Math.round(800 + Math.random() * 1200),
       }));
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "bar", "nestedDonut", "pie", "pictorial"],
+        description: generateDescription(),
+      };
     }
-    return { data: [], description: generateDescription() };
+    return {
+      data: [],
+      supportedCharts: ["line", "bar", "nestedDonut", "pie", "pictorial"],
+      description: generateDescription(),
+    };
   }
 
   // سناریو 4: فقط یک سهمیه انتخاب شده
   if (quota && !religion && !examId && !province && !job && !gender) {
-    // قبولی‌های این سهمیه بر اساس جنسیت (دایره‌ای)
     if (chartType === "pie") {
       const data =
         quota === "آزاد"
           ? [
               { category: "مرد", value: 45 },
-              { category: "زن", value: 55 }, // زن‌ها در سهمیه آزاد بیشتر
+              { category: "زن", value: 55 },
             ]
           : [
               { category: "مرد", value: quota === "سهمیه25%" ? 70 : 60 },
               { category: "زن", value: quota === "سهمیه25%" ? 30 : 40 },
             ];
-      return { data, description: generateDescription() };
-    }
-    // درصد قبولی این سهمیه نسبت به کل ظرفیت‌ها (نیم‌دایره‌ای)
-    else if (chartType === "semiCircle") {
+      return {
+        data,
+        supportedCharts: ["pie", "semiCircle", "line", "map", "bar"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "semiCircle") {
       const totalCapacity = 100;
       const quotaPercentage =
         quota === "آزاد"
@@ -497,10 +571,12 @@ const generateFakeChartData = (filters, chartType) => {
         { category: quota, value: quotaPercentage },
         { category: "سایر", value: 100 - quotaPercentage },
       ];
-      return { data, description: generateDescription() };
-    }
-    // قبولی‌های این سهمیه تو چند آزمون مختلف (خطی)
-    else if (chartType === "line") {
+      return {
+        data,
+        supportedCharts: ["pie", "semiCircle", "line", "map", "bar"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "line") {
       const data = examTitles.map((exam) => ({
         category: exam,
         value:
@@ -508,10 +584,12 @@ const generateFakeChartData = (filters, chartType) => {
             ? Math.round(100 + Math.random() * 50)
             : Math.round(20 + Math.random() * 30),
       }));
-      return { data, description: generateDescription() };
-    }
-    // سناریوهای قدیمی
-    else if (chartType === "map") {
+      return {
+        data,
+        supportedCharts: ["pie", "semiCircle", "line", "map", "bar"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "map") {
       const data = provinces.map((prov) => {
         const value =
           quota === "آزاد"
@@ -527,7 +605,11 @@ const generateFakeChartData = (filters, chartType) => {
           fill: getColorByValue(value),
         };
       });
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["pie", "semiCircle", "line", "map", "bar"],
+        description: generateDescription(),
+      };
     } else if (chartType === "bar") {
       const data = provinces.map((prov) => ({
         category: prov.name,
@@ -539,9 +621,17 @@ const generateFakeChartData = (filters, chartType) => {
                 0.001 + Math.random() * 0.001
               ),
       }));
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["pie", "semiCircle", "line", "map", "bar"],
+        description: generateDescription(),
+      };
     }
-    return { data: [], description: generateDescription() };
+    return {
+      data: [],
+      supportedCharts: ["pie", "semiCircle", "line", "map", "bar"],
+      description: generateDescription(),
+    };
   }
 
   // سناریو 5: سهمیه + استان انتخاب شده
@@ -549,7 +639,6 @@ const generateFakeChartData = (filters, chartType) => {
     const provPopulation =
       provinces.find((p) => p.id === province || p.name === province)
         ?.population || 1000000;
-    // روند تعداد قبولی‌ها در آزمون‌های مختلف (خطی)
     if (chartType === "line") {
       const data = examTitles.map((exam) => ({
         category: exam,
@@ -558,10 +647,12 @@ const generateFakeChartData = (filters, chartType) => {
           quota === "آزاد" ? 0.002 : 0.0005
         ),
       }));
-      return { data, description: generateDescription() };
-    }
-    // تعداد شغل‌های موجود (میله‌ای)
-    else if (chartType === "bar") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "stacked", "pie", "nestedDonut"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "bar") {
       const data = jobs.map((job) => ({
         category: job,
         value: generatePopulationBasedValue(
@@ -569,23 +660,31 @@ const generateFakeChartData = (filters, chartType) => {
           quota === "آزاد" ? 0.0005 : 0.0002
         ),
       }));
-      return { data, description: generateDescription() };
-    }
-    // تعداد قبولی‌ها با تفکیک دین‌ها (انباشته)
-    else if (chartType === "stacked") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "stacked", "pie", "nestedDonut"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "stacked") {
       const data = religions.slice(0, 4).map((r) => ({
         category: r,
-        value: r === "اسلام(شیعه)" ? 70 : 10 + Math.round(Math.random() * 10), // شیعه غالب
+        value: r === "اسلام(شیعه)" ? 70 : 10 + Math.round(Math.random() * 10),
       }));
-      return { data, description: generateDescription() };
-    }
-    // سناریوهای قدیمی
-    else if (chartType === "pie") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "stacked", "pie", "nestedDonut"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "pie") {
       const data = [
         { category: "مرد", value: 60 },
         { category: "زن", value: 40 },
       ];
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "bar", "stacked", "pie", "nestedDonut"],
+        description: generateDescription(),
+      };
     } else if (chartType === "nestedDonut") {
       const data = jobs.slice(0, 5).map((job) => ({
         category: job,
@@ -594,14 +693,21 @@ const generateFakeChartData = (filters, chartType) => {
           0.0008 + Math.random() * 0.0002
         ),
       }));
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "bar", "stacked", "pie", "nestedDonut"],
+        description: generateDescription(),
+      };
     }
-    return { data: [], description: generateDescription() };
+    return {
+      data: [],
+      supportedCharts: ["line", "bar", "stacked", "pie", "nestedDonut"],
+      description: generateDescription(),
+    };
   }
 
   // سناریو 6: فقط یک جنسیت انتخاب شده
   if (gender && !religion && !examId && !quota && !province && !job) {
-    // تعداد قبولی‌ها در آزمون‌های مختلف (خطی)
     if (chartType === "line") {
       const data = examTitles.map((exam) => ({
         category: exam,
@@ -610,10 +716,12 @@ const generateFakeChartData = (filters, chartType) => {
             ? Math.round(100 + Math.random() * 50)
             : Math.round(80 + Math.random() * 40),
       }));
-      return { data, description: generateDescription() };
-    }
-    // توزیع قبولی‌ها بر اساس دین و شغل (دونات تو در تو)
-    else if (chartType === "nestedDonut") {
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "pie", "map", "bar"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "nestedDonut") {
       const data = [
         {
           category: "دین",
@@ -627,7 +735,7 @@ const generateFakeChartData = (filters, chartType) => {
           category: "شغل",
           value: 100,
           children: jobs.slice(0, 4).map((j) => ({
-            category: j, // اسم شغل به جای ID
+            category: j,
             value:
               gender === "مرد" && j.includes("مهندس")
                 ? 40
@@ -638,18 +746,24 @@ const generateFakeChartData = (filters, chartType) => {
           })),
         },
       ];
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "pie", "map", "bar"],
+        description: generateDescription(),
+      };
     } else if (chartType === "pie") {
       const data = [
         { category: "آزاد", value: gender === "مرد" ? 40 : 50 },
         { category: "سهمیه3%", value: gender === "مرد" ? 20 : 15 },
         { category: "سهمیه5%", value: gender === "مرد" ? 20 : 15 },
-        { category: "سهمیه25%", value: gender === "مرد" ? 20 : 20 }, // جمع 100
+        { category: "سهمیه25%", value: gender === "مرد" ? 20 : 20 },
       ];
-      return { data, description: generateDescription() };
-    }
-    // سناریوهای قدیمی
-    else if (chartType === "map") {
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "pie", "map", "bar"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "map") {
       const data = provinces.map((prov) => {
         const value = generatePopulationBasedValue(
           prov.population,
@@ -662,7 +776,11 @@ const generateFakeChartData = (filters, chartType) => {
           fill: getColorByValue(value),
         };
       });
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "pie", "map", "bar"],
+        description: generateDescription(),
+      };
     } else if (chartType === "bar") {
       const data = provinces.map((prov) => ({
         category: prov.name,
@@ -671,9 +789,17 @@ const generateFakeChartData = (filters, chartType) => {
           gender === "مرد" ? 0.003 : 0.0025
         ),
       }));
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "nestedDonut", "pie", "map", "bar"],
+        description: generateDescription(),
+      };
     }
-    return { data: [], description: generateDescription() };
+    return {
+      data: [],
+      supportedCharts: ["line", "nestedDonut", "pie", "map", "bar"],
+      description: generateDescription(),
+    };
   }
 
   // سناریو 7: فقط یک استان انتخاب شده
@@ -681,7 +807,6 @@ const generateFakeChartData = (filters, chartType) => {
     const provPopulation =
       provinces.find((p) => p.id === province || p.name === province)
         ?.population || 1000000;
-    // پراکندگی شغل در هر دین (خطی)
     if (chartType === "line") {
       const data = religions.slice(0, 5).map((r) => ({
         category: r,
@@ -690,47 +815,55 @@ const generateFakeChartData = (filters, chartType) => {
           r === "اسلام(شیعه)" ? 0.001 : 0.0002
         ),
       }));
-      return { data, description: generateDescription() };
-    }
-    // ظرفیت‌های شغلی (میله‌ای)
-    else if (chartType === "bar") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "pie", "semiCircle", "nestedDonut"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "bar") {
       const data = jobs.slice(0, 5).map((job) => ({
         category: job,
-        value: generatePopulationBasedValue(provPopulation, 0.0003), // منطقی با جمعیت استان
+        value: generatePopulationBasedValue(provPopulation, 0.0003),
       }));
-      return { data, description: generateDescription() };
-    }
-    // نسبت قبولی‌ها بر اساس سهمیه‌ها (دایره‌ای)
-    else if (chartType === "pie") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "pie", "semiCircle", "nestedDonut"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "pie") {
       const data = [
         { category: "آزاد", value: 60 },
         { category: "سهمیه3%", value: 10 },
         { category: "سهمیه5%", value: 15 },
         { category: "سهمیه25%", value: 15 },
       ];
-      return { data, description: generateDescription() };
-    }
-    // درصد قبولی‌های موفق نسبت به کل داوطلبان (نیم‌دایره‌ای)
-    else if (chartType === "semiCircle") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "pie", "semiCircle", "nestedDonut"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "semiCircle") {
       const totalApplicants = generatePopulationBasedValue(
         provPopulation,
         0.01
       );
       const data = [
-        { category: "قبول‌شده", value: totalApplicants * 0.3 }, // 30% قبولی فرض شده
+        { category: "قبول‌شده", value: totalApplicants * 0.3 },
         { category: "مردود", value: totalApplicants * 0.7 },
       ];
-      return { data, description: generateDescription() };
-    }
-    // توزیع قبولی‌ها بر اساس جنسیت و دین (دونات تو در تو)
-    else if (chartType === "nestedDonut") {
+      return {
+        data,
+        supportedCharts: ["line", "bar", "pie", "semiCircle", "nestedDonut"],
+        description: generateDescription(),
+      };
+    } else if (chartType === "nestedDonut") {
       const data = [
         {
           category: "مرد",
           value: 55,
           children: religions.slice(0, 4).map((r) => ({
             category: r,
-            value: r === "اسلام(شیعه)" ? 40 : 5, // شیعه غالب
+            value: r === "اسلام(شیعه)" ? 40 : 5,
           })),
         },
         {
@@ -742,46 +875,80 @@ const generateFakeChartData = (filters, chartType) => {
           })),
         },
       ];
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: ["line", "bar", "pie", "semiCircle", "nestedDonut"],
+        description: generateDescription(),
+      };
     }
-    return { data: [], description: generateDescription() };
+    return {
+      data: [],
+      supportedCharts: ["line", "bar", "pie", "semiCircle", "nestedDonut"],
+      description: generateDescription(),
+    };
   }
 
   // سناریو 8: فقط یک شغل انتخاب شده
   if (job && !religion && !examId && !quota && !province && !gender) {
-    // نسبت ظرفیت درخواستی برای زن و مرد (دایره‌ای)
     if (chartType === "pie") {
       const data =
         job.includes("پرستار") || job.includes("معلم")
           ? [
               { category: "مرد", value: 30 },
-              { category: "زن", value: 70 }, // زن‌ها در این شغل‌ها غالب
+              { category: "زن", value: 70 },
             ]
           : [
-              { category: "مرد", value: 65 }, // مردها در شغل‌های فنی غالب
+              { category: "مرد", value: 65 },
               { category: "زن", value: 35 },
             ];
-      return { data, description: generateDescription() };
-    }
-    // ظرفیت این شغل در چند استان کلیدی (انباشته)
-    else if (chartType === "stacked") {
+      return {
+        data,
+        supportedCharts: [
+          "pie",
+          "stacked",
+          "semiCircle",
+          "map",
+          "nestedDonut",
+          "bar",
+        ],
+        description: generateDescription(),
+      };
+    } else if (chartType === "stacked") {
       const data = provinces.slice(0, 4).map((prov) => ({
         category: prov.name,
-        value: generatePopulationBasedValue(prov.population, 0.0005), // منطقی با جمعیت
+        value: generatePopulationBasedValue(prov.population, 0.0005),
       }));
-      return { data, description: generateDescription() };
-    }
-    // درصد ظرفیت پرشده این شغل (نیم‌دایره‌ای)
-    else if (chartType === "semiCircle") {
+      return {
+        data,
+        supportedCharts: [
+          "pie",
+          "stacked",
+          "semiCircle",
+          "map",
+          "nestedDonut",
+          "bar",
+        ],
+        description: generateDescription(),
+      };
+    } else if (chartType === "semiCircle") {
       const totalCapacity = 100;
       const data = [
         { category: "پرشده", value: 80 },
-        { category: "خالی", value: 20 }, // جمع 100
+        { category: "خالی", value: 20 },
       ];
-      return { data, description: generateDescription() };
-    }
-    // سناریوهای قدیمی
-    else if (chartType === "map") {
+      return {
+        data,
+        supportedCharts: [
+          "pie",
+          "stacked",
+          "semiCircle",
+          "map",
+          "nestedDonut",
+          "bar",
+        ],
+        description: generateDescription(),
+      };
+    } else if (chartType === "map") {
       const data = provinces.map((prov) => {
         const value = generatePopulationBasedValue(
           prov.population,
@@ -794,13 +961,35 @@ const generateFakeChartData = (filters, chartType) => {
           fill: getColorByValue(value),
         };
       });
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: [
+          "pie",
+          "stacked",
+          "semiCircle",
+          "map",
+          "nestedDonut",
+          "bar",
+        ],
+        description: generateDescription(),
+      };
     } else if (chartType === "nestedDonut") {
       const data = religions.slice(0, 4).map((r) => ({
         category: r,
         value: r === "اسلام(شیعه)" ? 85 : 5,
       }));
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: [
+          "pie",
+          "stacked",
+          "semiCircle",
+          "map",
+          "nestedDonut",
+          "bar",
+        ],
+        description: generateDescription(),
+      };
     } else if (chartType === "bar") {
       const data = [
         {
@@ -812,13 +1001,39 @@ const generateFakeChartData = (filters, chartType) => {
           value: job.includes("پرستار") || job === "معلم" ? 65 : 35,
         },
       ];
-      return { data, description: generateDescription() };
+      return {
+        data,
+        supportedCharts: [
+          "pie",
+          "stacked",
+          "semiCircle",
+          "map",
+          "nestedDonut",
+          "bar",
+        ],
+        description: generateDescription(),
+      };
     }
-    return { data: [], description: generateDescription() };
+    return {
+      data: [],
+      supportedCharts: [
+        "pie",
+        "stacked",
+        "semiCircle",
+        "map",
+        "nestedDonut",
+        "bar",
+      ],
+      description: generateDescription(),
+    };
   }
 
   // پیش‌فرض در صورت عدم تطابق
-  return { data: [], description: generateDescription() };
+  return {
+    data: [],
+    supportedCharts: [],
+    description: generateDescription(),
+  };
 };
 
 export default generateFakeChartData;
