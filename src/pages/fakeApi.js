@@ -180,7 +180,7 @@ const generateFakeChartData = (filters, chartType) => {
           : chartType === "pie"
           ? `نسبت قبولی‌ها بر اساس سهمیه‌ها در ${provinceName}`
           : chartType === "semiCircle"
-          ? `درصد قبولی‌های موفق در ${provinceName}`
+          ? `درصد قبولی‌های در ${provinceName}`
           : chartType === "nestedDonut"
           ? `توزیع قبولی‌ها بر اساس جنسیت و دین در ${provinceName}`
           : `نسبت قبولی‌ها با دین‌های مختلف در ${provinceName}`; // برای nestedDonut قدیمی
@@ -718,7 +718,7 @@ const generateFakeChartData = (filters, chartType) => {
       );
       const data = [
         { category: "قبول‌شده", value: totalApplicants * 0.3 }, // 30% قبولی فرض شده
-        { category: "ناموفق", value: totalApplicants * 0.7 },
+        { category: "مردود", value: totalApplicants * 0.7 },
       ];
       return { data, description: generateDescription() };
     }
