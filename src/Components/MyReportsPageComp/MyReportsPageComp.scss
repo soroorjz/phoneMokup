@@ -2,15 +2,14 @@
   width: 100%;
   padding-top: 20px;
   // background-color: #452c63;
-  background-image: url(../../../public/assets/images/e0674b2a40070a52716e2a49c8ccd198.gif);
-  background-position: bottom;
+  background-image: url(../../../public/assets/images/ezgif.com-animated-gif-maker.gif);
+  background-position: 100% 170%;
   // background-position: 100% 174%;
   background-repeat: no-repeat;
   background-size: cover;
   .myReportHeader {
     width: 90%;
     margin: 20px auto;
-    background-color: #2e184872;
     label {
       //   width: 95%;
       display: block;
@@ -19,6 +18,7 @@
       color: #fff;
       margin-bottom: 5px;
       text-align: center;
+      background-color: #2312367e;
     }
 
     select {

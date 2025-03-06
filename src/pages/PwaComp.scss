@@ -1,0 +1,36 @@
+#install-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: #290a4e;
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 1000;
+}
+
+#install-popup button {
+  margin: 10px 5px 0;
+  padding: 5px 10px;
+  background-color: #fff;
+  color: #2f3d58;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#cancel-button:hover {
+  background-color: #ff4b4b;
+  color: #fff;
+}
+#install-button:hover {
+  background-color: #225230;
+  color: #fff;
+}
