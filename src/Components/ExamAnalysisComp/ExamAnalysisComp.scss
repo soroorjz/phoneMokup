@@ -140,6 +140,42 @@
       }
     }
 
+    .filter-notes {
+      width: 90%;
+      margin: 20px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      .filter-note {
+        display: flex;
+        align-items: center;
+        background: #e9ecef;
+        padding: 5px 10px;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #555;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, background 0.3s ease;
+
+        &:hover {
+          transform: scale(1.02);
+          background: #d3d7db;
+        }
+
+        .remove-note {
+          margin-right: 5px;
+          cursor: pointer;
+          color: #dc3545;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: #a71d2a;
+          }
+        }
+      }
+    }
+
     .chart-section {
       width: 90%;
       margin: 0 auto;
@@ -288,6 +324,7 @@
   font-size: 24px;
   font-weight: 400;
 }
+
 .chart-container {
   position: relative;
   width: 100%;

@@ -1,39 +1,41 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { FaPen, FaPlus, FaExclamationCircle } from "react-icons/fa";
+import { FaPen, FaPlus, FaExclamationCircle, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import "./ExamAnalysisComp.scss";
 import { useReports } from "../../pages/ExamAnalysis/ReportsContext";
 import ChartComponent from "./ExamAnalysisChart";
 import DescriptionBoxComponent from "./DescriptionBoxComponent";
 import ExamAnalysisFilters from "./ExamAnalysisFilters";
-import generateFakeChartData from "../../pages/fakeApi"; // اضافه کردن فایل API
+import generateFakeChartData from "../../pages/fakeApi";
 
 am4core.useTheme(am4themes_animated);
 
 const ExamAnalysisComp = () => {
   const [examTitle, setExamTitle] = useState("");
-  const { filters, addReport } = useReports();
-  const [chartType, setChartType] = useState("line"); // مقدار اولیه موقت
+  const { filters, updateFilters, addReport } = useReports();
+  const [chartType, setChartType] = useState("line");
   const [descriptionBoxes, setDescriptionBoxes] = useState([]);
-  const [allGeographies, setAllGeographies] = useState([]);
   const chartRef = useRef(null);
   const [isTextVisible, setIsTextVisible] = useState(false);
 
-  // دریافت supportedCharts بر اساس فیلترها
-  const getSupportedCharts = useCallback(() => {
-    const result = generateFakeChartData(filters, chartType);
-    return result.supportedCharts || []; // لیست چارت‌های پشتیبانی‌شده
-  }, [filters, chartType]);
+  const [filterNotes, setFilterNotes] = useState([]);
 
-  // به‌روزرسانی chartType با اولین چارت پشتیبانی‌شده وقتی فیلترها تغییر می‌کنن
   useEffect(() => {
-    const supportedCharts = getSupportedCharts();
-    if (!supportedCharts.includes(chartType) && supportedCharts.length > 0) {
-      setChartType(supportedCharts[0]); // تنظیم به اولین چارت پشتیبانی‌شده
+    const notes = [];
+    // بررسی همه فیلترها
+    for (const [key, value] of Object.entries(filters)) {
+      if (value && value !== "") {
+        notes.push({ type: key, value });
+      }
     }
-  }, [filters, chartType, getSupportedCharts]);
+    setFilterNotes(notes);
+  }, [filters]);
+
+  const removeFilterNote = (type, value) => {
+    updateFilters(type, "");
+  };
 
   const addDescriptionBox = () => {
     setDescriptionBoxes([
@@ -117,7 +119,7 @@ const ExamAnalysisComp = () => {
 
         setTimeout(() => {
           setExamTitle("");
-          setChartType("line"); // ریست به مقدار اولیه (بعد از آپدیت فیلترها تنظیم می‌شه)
+          setChartType("line");
           setDescriptionBoxes([]);
           window.scrollTo({ top: 0, behavior: "smooth" });
         }, 3000);
@@ -128,6 +130,18 @@ const ExamAnalysisComp = () => {
   const toggleTextVisibility = () => {
     setIsTextVisible(!isTextVisible);
   };
+
+  const getSupportedCharts = useCallback(() => {
+    const result = generateFakeChartData(filters, chartType);
+    return result.supportedCharts || [];
+  }, [filters, chartType]);
+
+  useEffect(() => {
+    const supportedCharts = getSupportedCharts();
+    if (!supportedCharts.includes(chartType) && supportedCharts.length > 0) {
+      setChartType(supportedCharts[0]);
+    }
+  }, [filters, chartType, getSupportedCharts]);
 
   return (
     <div className="exam-analysis">
@@ -144,7 +158,34 @@ const ExamAnalysisComp = () => {
         </p>
       </div>
       <div className="examAnalysisInner">
-        <ExamAnalysisFilters />
+        <ExamAnalysisFilters filters={filters} updateFilters={updateFilters} />
+        <div className="filter-notes">
+          {filterNotes.map((note, index) => (
+            <div key={index} className="filter-note">
+              <span>{`${
+                note.type === "religion"
+                  ? "دین: "
+                  : note.type === "province"
+                  ? "استان: "
+                  : note.type === "quota"
+                  ? "سهمیه: "
+                  : note.type === "examId"
+                  ? "عنوان آزمون: "
+                  : note.type === "job"
+                  ? "شغل: "
+                  : note.type === "gender"
+                  ? "جنسیت: "
+                  : note.type === "executiveBody"
+                  ? "دستگاه اجرایی: "
+                  : `${note.type}: `
+              }${note.value}`}</span>
+              <FaTimes
+                className="remove-note"
+                onClick={() => removeFilterNote(note.type, note.value)}
+              />
+            </div>
+          ))}
+        </div>
         <div className="chart-section">
           <select
             className="chartType"
@@ -174,7 +215,6 @@ const ExamAnalysisComp = () => {
           <ChartComponent chartType={chartType} filters={filters} />
         </div>
 
-        {/* بخش توضیحات */}
         <div className="analysis-boxes">
           <div className="add-description" onClick={addDescriptionBox}>
             <span>افزودن توضیحات</span>
