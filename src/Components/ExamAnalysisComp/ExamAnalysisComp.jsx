@@ -19,22 +19,23 @@ const ExamAnalysisComp = () => {
   const [descriptionBoxes, setDescriptionBoxes] = useState([]);
   const chartRef = useRef(null);
   const [isTextVisible, setIsTextVisible] = useState(false);
-
   const [filterNotes, setFilterNotes] = useState([]);
 
+  // به‌روزرسانی filterNotes بر اساس filters
   useEffect(() => {
     const notes = [];
-    // بررسی همه فیلترها
     for (const [key, value] of Object.entries(filters)) {
       if (value && value !== "") {
         notes.push({ type: key, value });
       }
     }
     setFilterNotes(notes);
+    console.log("Updated filters:", filters); // برای دیباگ
   }, [filters]);
 
-  const removeFilterNote = (type, value) => {
-    updateFilters(type, "");
+  // حذف فیلتر
+  const removeFilterNote = (type) => {
+    updateFilters(type, ""); // فیلتر رو توی state به "" تغییر بده
   };
 
   const addDescriptionBox = () => {
@@ -181,7 +182,7 @@ const ExamAnalysisComp = () => {
               }${note.value}`}</span>
               <FaTimes
                 className="remove-note"
-                onClick={() => removeFilterNote(note.type, note.value)}
+                onClick={() => removeFilterNote(note.type)} // فقط type رو بفرست
               />
             </div>
           ))}

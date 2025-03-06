@@ -94,6 +94,7 @@ const ChartComponent = ({ chartType, filters }) => {
       series.columns.template.tooltipText = "{category}: {value} نفر";
       series.columns.template.fillOpacity = 0.8;
       series.columns.template.width = am4core.percent(70);
+
       series.numberFormatter = numberFormatter;
     } else if (chartType === "pie") {
       chart = am4core.create(chartRef.current, am4charts.PieChart);
@@ -106,6 +107,15 @@ const ChartComponent = ({ chartType, filters }) => {
       pieSeries.labels.template.text = "{category}: {value}%";
       pieSeries.labels.template.fontSize = 12;
       pieSeries.radius = am4core.percent(80);
+      // محدود کردن عرض برچسب‌ها
+      pieSeries.labels.template.maxWidth = 100; // حداکثر عرض برچسب (پیکسل)
+      pieSeries.labels.template.truncate = true; // کوتاه کردن متن با ...
+      pieSeries.labels.template.radius = am4core.percent(-5); // جابجایی برچسب به سمت داخل
+      pieSeries.labels.template.inside = true; // نمایش برچسب داخل دایره
+      pieSeries.labels.template.fontSize = 10; // کاهش اندازه فونت برای جایگیری بهتر
+      pieSeries.labels.template.location = 0.5; // تنظیم موقعیت برچسب‌ها روی لبه دایره
+      pieSeries.alignLabels = true; // هم‌تراز کردن خودکار برچسب‌ها
+
       pieSeries.numberFormatter = numberFormatter;
     } else if (chartType === "semiCircle") {
       chart = am4core.create(chartRef.current, am4charts.PieChart);
@@ -119,6 +129,8 @@ const ChartComponent = ({ chartType, filters }) => {
       series.dataFields.category = "category";
       series.labels.template.text = "{category}: {value}%";
       series.labels.template.fontSize = 12;
+      series.labels.template.radius = -15; // فاصله از لبه به پیکسل
+      series.labels.template.rotation = 45;
       series.radius = am4core.percent(80);
       series.numberFormatter = numberFormatter;
     } else if (chartType === "nestedDonut") {
@@ -179,15 +191,12 @@ const ChartComponent = ({ chartType, filters }) => {
       polygonTemplate.strokeWidth = 1;
       polygonTemplate.propertyFields.fill = "fill";
 
-      if (chart.container) {
-        chart.container.direction = "rtl";
-        chart.container.layout = "horizontal";
-      }
-      chart.rtl = true;
-
+      // اطمینان از وجود تولتیپ
       if (!polygonTemplate.tooltip) {
         polygonTemplate.tooltip = new am4core.Tooltip();
       }
+
+      // تنظیمات تولتیپ
       polygonTemplate.tooltip.getFillFromObject = false;
       polygonTemplate.tooltip.background.fill = am4core.color("#ffffff");
       polygonTemplate.tooltip.background.stroke = am4core.color("#000000");
@@ -200,6 +209,37 @@ const ChartComponent = ({ chartType, filters }) => {
       polygonTemplate.tooltip.label.fill = am4core.color("#000000");
       polygonTemplate.tooltip.label.fontSize = 14;
       polygonTemplate.tooltip.numberFormatter = numberFormatter;
+
+      // تنظیم موقعیت هوشمند تولتیپ با آداپتر
+      polygonTemplate.adapter.add("tooltipX", function (x, target) {
+        let tooltip = target.tooltip;
+        let chartWidth = chart.svgContainer.htmlElement.offsetWidth;
+        let tooltipWidth = tooltip.pixelWidth;
+
+        // اگر تولتیپ از سمت راست چارت خارج شود، به چپ منتقلش کن
+        if (x + tooltipWidth > chartWidth) {
+          return x - tooltipWidth - 20; // جابجایی به چپ
+        }
+        return x + 10; // جابجایی به راست
+      });
+
+      polygonTemplate.adapter.add("tooltipY", function (y, target) {
+        let tooltip = target.tooltip;
+        let chartHeight = chart.svgContainer.htmlElement.offsetHeight;
+        let tooltipHeight = tooltip.pixelHeight;
+
+        // اگر تولتیپ از پایین چارت خارج شود، به بالا منتقلش کن
+        if (y + tooltipHeight > chartHeight) {
+          return y - tooltipHeight - 10; // جابجایی به بالا
+        }
+        return y - 10; // جابجایی به بالا (پیش‌فرض)
+      });
+
+      if (chart.container) {
+        chart.container.direction = "rtl";
+        chart.container.layout = "horizontal";
+      }
+      chart.rtl = true;
     } else {
       chart = am4core.create(chartRef.current, am4charts.XYChart);
       chart.data = chartData;

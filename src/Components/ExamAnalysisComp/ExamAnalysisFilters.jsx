@@ -3,7 +3,7 @@ import axios from "axios";
 import { useReports } from "../../pages/ExamAnalysis/ReportsContext";
 
 const ExamAnalysisFilters = () => {
-  const { updateFilters } = useReports();
+  const { filters, updateFilters } = useReports();
   const [examTitles, setExamTitles] = useState([]);
   const [religions, setReligions] = useState([]);
   const [quotas, setQuotas] = useState([]);
@@ -14,9 +14,8 @@ const ExamAnalysisFilters = () => {
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const sidebarRef = useRef(null); // Ref برای سایدبار
+  const sidebarRef = useRef(null);
 
-  // تابع دریافت توکن (بدون تغییر)
   const fetchToken = useCallback(async () => {
     try {
       const response = await axios.post("/api/auth", null, {
@@ -26,9 +25,7 @@ const ExamAnalysisFilters = () => {
           "RAYAN-DEBUG": true,
         },
       });
-
       if (response.status !== 200) throw new Error("خطا در دریافت توکن!");
-
       const { token, expiresIn } = response.data;
       const expirationTime = Date.now() + expiresIn * 1000;
       setToken(token);
@@ -41,14 +38,12 @@ const ExamAnalysisFilters = () => {
     }
   }, []);
 
-  // بررسی انقضای توکن (بدون تغییر)
   const isTokenExpired = () => {
     const expirationTime = localStorage.getItem("tokenExpiration");
     if (!expirationTime) return true;
     return Date.now() > parseInt(expirationTime, 10);
   };
 
-  // تابع دریافت داده‌ها (بدون تغییر)
   const fetchData = useCallback(async () => {
     try {
       let currentToken = token;
@@ -132,7 +127,6 @@ const ExamAnalysisFilters = () => {
       const filteredProvinces = provincesResponse.data.filter(
         (province) => province.geographyParent === null
       );
-
       const filteredQuotas = quotasResponse.data.filter(
         (quota) => quota.quotaParent === null
       );
@@ -168,17 +162,14 @@ const ExamAnalysisFilters = () => {
     fetchData();
   }, [fetchData]);
 
-  // تابع تغییر وضعیت سایدبار
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // تابع بستن سایدبار
   const closeSidebar = () => {
     setIsSidebarOpen(false);
   };
 
-  // مدیریت کلیک خارج از سایدبار
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -189,7 +180,6 @@ const ExamAnalysisFilters = () => {
         closeSidebar();
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -200,8 +190,10 @@ const ExamAnalysisFilters = () => {
     <div>
       {error && <p>{error}</p>}
       <div className="filters">
-        {/* فیلتر عنوان آزمون جداگانه */}
-        <select onChange={(e) => updateFilters("examId", e.target.value)}>
+        <select
+          value={filters.examId} // مقدار انتخاب‌شده از filters
+          onChange={(e) => updateFilters("examId", e.target.value)}
+        >
           <option value="">عنوان آزمون</option>
           {examTitles.map((exam) => (
             <option key={exam.examId} value={exam.examName}>
@@ -210,12 +202,10 @@ const ExamAnalysisFilters = () => {
           ))}
         </select>
 
-        {/* آیکون فیلتر برای باز کردن سایدبار */}
         <button className="filter-icon" onClick={toggleSidebar}>
           فیلترها
         </button>
 
-        {/* سایدبار فیلترها */}
         <div
           className={`sidebar ${isSidebarOpen ? "open" : ""}`}
           ref={sidebarRef}
@@ -224,7 +214,10 @@ const ExamAnalysisFilters = () => {
             ✕
           </button>
 
-          <select onChange={(e) => updateFilters("religion", e.target.value)}>
+          <select
+            value={filters.religion}
+            onChange={(e) => updateFilters("religion", e.target.value)}
+          >
             <option value="">دین شرکت‌کنندگان</option>
             {religions.map((religion, index) => (
               <option key={index} value={religion.religionName}>
@@ -233,7 +226,10 @@ const ExamAnalysisFilters = () => {
             ))}
           </select>
 
-          <select onChange={(e) => updateFilters("quota", e.target.value)}>
+          <select
+            value={filters.quota}
+            onChange={(e) => updateFilters("quota", e.target.value)}
+          >
             <option value="">سهمیه</option>
             {quotas.map((quota) => (
               <option key={quota.id} value={quota.quotaTitle}>
@@ -242,7 +238,10 @@ const ExamAnalysisFilters = () => {
             ))}
           </select>
 
-          <select onChange={(e) => updateFilters("province", e.target.value)}>
+          <select
+            value={filters.province}
+            onChange={(e) => updateFilters("province", e.target.value)}
+          >
             <option value="">استان</option>
             {provinces.map((province) => (
               <option
@@ -255,6 +254,7 @@ const ExamAnalysisFilters = () => {
           </select>
 
           <select
+            value={filters.executiveBody}
             onChange={(e) => updateFilters("executiveBody", e.target.value)}
           >
             <option value="">دستگاه</option>
@@ -268,7 +268,10 @@ const ExamAnalysisFilters = () => {
             ))}
           </select>
 
-          <select onChange={(e) => updateFilters("job", e.target.value)}>
+          <select
+            value={filters.job}
+            onChange={(e) => updateFilters("job", e.target.value)}
+          >
             <option value="">شغل</option>
             {jobs.map((job) => (
               <option key={job.jobName} value={job.jobName}>
@@ -277,7 +280,10 @@ const ExamAnalysisFilters = () => {
             ))}
           </select>
 
-          <select onChange={(e) => updateFilters("gender", e.target.value)}>
+          <select
+            value={filters.gender}
+            onChange={(e) => updateFilters("gender", e.target.value)}
+          >
             <option value="">جنسیت</option>
             {genders.map((gender, index) => (
               <option key={index} value={gender.genderName}>
