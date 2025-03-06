@@ -57,11 +57,11 @@ const TrainingInranChart = ({ data }) => {
     // رنگ‌بندی شرطی بر اساس مقدار value
     polygonTemplate.adapter.add("fill", (fill, target) => {
       const value = target.dataItem?.dataContext?.value || 0;
-      if (value > 8000000) return am4core.color("#ff0000"); // قرمز برای جمعیت خیلی زیاد
-      if (value > 6000000) return am4core.color("#ff8c00"); // نارنجی
-      if (value > 4000000) return am4core.color("#ffff00"); // زرد
-      if (value > 2000000) return am4core.color("#32cd32"); // سبز روشن
-      return am4core.color("#008000"); // سبز تیره برای جمعیت کم
+      if (value > 8000000) return am4core.color("#dc8c67"); 
+      if (value > 6000000) return am4core.color("#dc6788"); 
+      if (value > 4000000) return am4core.color("#a367dc"); 
+      if (value > 2000000) return am4core.color("#8067dc"); 
+      return am4core.color("#67b7dc"); 
     });
 
     // ذخیره چارت در ref
