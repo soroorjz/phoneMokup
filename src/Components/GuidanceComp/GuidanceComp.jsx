@@ -10,6 +10,7 @@ import "swiper/css/effect-coverflow";
 import "./GuidanceComp.scss";
 import { FaChartBar, FaDatabase } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 const sentences = [
   { text: "امکان دریافت فایل اکسل", bg: "#8c76df" },
   { text: "امکان ساخت گزارش شخصی", bg: "#df9776" },
@@ -21,6 +22,13 @@ const GuidanceComp = () => {
 
   return (
     <div className="support-container">
+       <DotLottieReact
+      src="https://lottie.host/1ffa5243-af25-4d2b-a0b7-80c45b5f6504/eMmMth4rX1.lottie"
+      loop
+      autoplay
+      className="supportlottie-background"
+    />
+      <h2 className="support-containerTitle">راهنما و پشتیبانی</h2>
       <div className="GuidanceCompWrapper">
         <h2 className="row-title">آموزش</h2>
         <div className="row row-1">

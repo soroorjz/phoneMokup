@@ -3,6 +3,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import "./MyReportsPageComp.scss";
 import { useReports } from "../../pages/ExamAnalysis/ReportsContext";
 import ChartComponent from "../ExamAnalysisComp/ExamAnalysisChart";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const ReportDetails = ({ report }) => {
   return (
@@ -42,6 +43,13 @@ const MyReportsPageComp = () => {
 
   return (
     <div className="report-container">
+      
+    <DotLottieReact
+      src="https://lottie.host/1ffa5243-af25-4d2b-a0b7-80c45b5f6504/eMmMth4rX1.lottie"
+      loop
+      autoplay
+      className="lottie-background"
+    />
       <div className="myReportHeader">
         <label>گزارش موردنظر خود را انتخاب کنید:</label>
         <select onChange={handleSelectChange} value={selectedReport}>

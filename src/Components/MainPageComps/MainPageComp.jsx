@@ -18,6 +18,7 @@ import {
 } from "chart.js";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 ChartJS.register(
   ArcElement,
@@ -62,6 +63,12 @@ const MainPageComp = () => {
 
   return (
     <div className="exam-report-slider">
+      <DotLottieReact
+        src="https://lottie.host/1ffa5243-af25-4d2b-a0b7-80c45b5f6504/eMmMth4rX1.lottie"
+        loop
+        autoplay
+        className="home-lottie-background"
+      />
       <div className="exam-reportHeader">
         <div className="user-info">
           <div className="userName">

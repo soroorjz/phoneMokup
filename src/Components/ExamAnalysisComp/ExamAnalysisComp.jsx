@@ -9,6 +9,7 @@ import ChartComponent from "./ExamAnalysisChart";
 import DescriptionBoxComponent from "./DescriptionBoxComponent";
 import ExamAnalysisFilters from "./ExamAnalysisFilters";
 import generateFakeChartData from "../../pages/fakeApi";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 am4core.useTheme(am4themes_animated);
 
@@ -146,6 +147,12 @@ const ExamAnalysisComp = () => {
 
   return (
     <div className="exam-analysis">
+      <DotLottieReact
+        src="https://lottie.host/1ffa5243-af25-4d2b-a0b7-80c45b5f6504/eMmMth4rX1.lottie"
+        loop
+        autoplay
+        className="analysis-lottie-background"
+      />
       <div className="header-section">
         <div className="title-wrapper">
           <h2>گزارش‌ساز</h2>

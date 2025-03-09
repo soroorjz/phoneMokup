@@ -1,12 +1,16 @@
 .report-container {
   width: 100%;
   padding-top: 20px;
+  position: relative;
   background-color: #452c63;
-  background-image: url(../../../public/assets/images/ezgif.com-animated-gif-maker.gif);
-  background-position: 100% 170%;
-  // background-position: 100% 174%;
-  background-repeat: no-repeat;
-  background-size: cover;
+
+  .lottie-background {
+    position: absolute;
+    top: -161px;
+    left: -134px;
+    width: 150%;
+    opacity: 0.3;
+  }
   .myReportHeader {
     width: 90%;
     margin: 20px auto;
@@ -18,7 +22,7 @@
       color: #fff;
       margin-bottom: 5px;
       text-align: center;
-      background-color: #2312367e;
+      // background-color: #2312367e;
     }
 
     select {

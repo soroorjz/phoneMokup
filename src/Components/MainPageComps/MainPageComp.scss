@@ -3,6 +3,14 @@
   background-color: #452c63;
   margin: auto;
   text-align: center;
+  position: relative;
+  .home-lottie-background {
+    position: absolute;
+    top: -84px;
+    left: -134px;
+    width: 150%;
+    opacity: 0.3;
+  }
   .exam-reportHeader {
     width: 95%;
     margin: 0 auto;
@@ -56,7 +64,7 @@
       }
     }
     .logoPart {
-      width:15%;
+      width: 15%;
       img {
         width: 100%;
       }
@@ -64,7 +72,7 @@
   }
   .mainContentTitle {
     width: 80%;
-    
+
     margin: 25px auto;
     .filter-container {
       position: relative;
@@ -131,6 +139,7 @@
   }
 
   .mainContent {
+    position: relative;
     padding: 30px;
     width: 100%;
     display: flex;
@@ -147,7 +156,7 @@
         gap: 3px;
         align-items: center;
         background-color: #769edf;
-      text-shadow: 0px -2px 14px rgba(69,44,99,0.6);
+        text-shadow: 0px -2px 14px rgba(69, 44, 99, 0.6);
 
         width: 100%;
         margin: 0 auto;

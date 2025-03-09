@@ -4,6 +4,14 @@
   background-color: #452c63;
   flex-direction: column;
   padding-top: 20px;
+  position: relative;
+  .analysis-lottie-background {
+    position: absolute;
+    top: -192px;
+    left: -134px;
+    width: 150%;
+    opacity: 0.3;
+  }
 
   .header-section {
     width: 90%;
@@ -71,7 +79,7 @@
     background-color: #fff;
     border-radius: 50px 50px 0 0;
     padding: 40px 0;
-
+    position: relative;
     .filters {
       width: 90%;
       margin: 0 auto 40px;
