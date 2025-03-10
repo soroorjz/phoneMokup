@@ -434,7 +434,6 @@
 // export default ChartComponent;
 
 /////////////////////////
-
 import React, { useLayoutEffect, useRef } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
@@ -458,7 +457,13 @@ const convertChartJsToAmCharts = (data) => {
   return labels.map((label, index) => {
     const result = { category: label };
     data.datasets.forEach((dataset, datasetIndex) => {
-      result[`value${datasetIndex}`] = dataset.data[index] || 0;
+      // فقط برای سری اول (value0) مقدار رو برای هر دسته تنظیم کن
+      if (datasetIndex === 0) {
+        result[`value${datasetIndex}`] = dataset.data[index] || 0;
+      } else if (datasetIndex === 1) {
+        // برای سری دوم (value1)، فقط برای آخرین دسته مقدار 1500 رو اعمال کن
+        result[`value${datasetIndex}`] = index === labels.length - 1 ? dataset.data[0] : 0;
+      }
       result[`backgroundColor${datasetIndex}`] = dataset.backgroundColor
         ? Array.isArray(dataset.backgroundColor)
           ? dataset.backgroundColor[index] || dataset.backgroundColor[0]
@@ -530,18 +535,18 @@ const ChartComponent = ({ chartType, data }) => {
       chart.data = chartData;
       chart.rtl = true;
       chart.paddingRight = 20;
-      chart.paddingBottom = 70; // فضای بیشتر برای برچسب‌ها
+      chart.paddingBottom = 70;
 
       let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
       categoryAxis.dataFields.category = "category";
       categoryAxis.renderer.grid.template.location = 0;
-      categoryAxis.renderer.minGridDistance = 1; // فاصله خیلی کم برای جا دادن همه
-      categoryAxis.renderer.labels.template.rotation = -90; // چرخش برچسب‌ها
-      categoryAxis.renderer.labels.template.truncate = true; // کوتاه کردن برچسب‌های بلند
-      categoryAxis.renderer.labels.template.maxWidth = 80; // حداکثر عرض برچسب
+      categoryAxis.renderer.minGridDistance = 1;
+      categoryAxis.renderer.labels.template.rotation = -90;
+      categoryAxis.renderer.labels.template.truncate = true;
+      categoryAxis.renderer.labels.template.maxWidth = 80;
       categoryAxis.renderer.labels.template.fontSize = 10;
-      categoryAxis.renderer.labels.template.dx = -10; // متمایل کردن به چپ
-      categoryAxis.renderer.labels.template.textAlign = "right"; // تراز متن به راست
+      categoryAxis.renderer.labels.template.dx = -10;
+      categoryAxis.renderer.labels.template.textAlign = "right";
       categoryAxis.renderer.labels.template.horizontalCenter = "right";
 
       let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -551,21 +556,27 @@ const ChartComponent = ({ chartType, data }) => {
       valueAxis.renderer.labels.template.textAlign = "right";
       valueAxis.renderer.labels.template.horizontalCenter = "right";
 
-      // سری برای دیتاست اول (ظرفیت مشاغل)
       let series = chart.series.push(new am4charts.ColumnSeries());
-      series.dataFields.valueY = "value0"; // دیتاست اول
+      series.dataFields.valueY = "value0";
       series.dataFields.categoryX = "category";
       series.columns.template.tooltipText = "{category}: {value0}";
       series.columns.template.fillOpacity = 0.8;
-      series.columns.template.width = am4core.percent(15); // عرض میله کمتر
+      series.columns.template.width = am4core.percent(15);
       series.columns.template.propertyFields.fill = "backgroundColor0";
       series.columns.template.propertyFields.stroke = "borderColor0";
       series.columns.template.strokeWidth = 1;
       series.numberFormatter = numberFormatter;
 
-      // سری برای دیتاست دوم (کل ظرفیت)
+      // تعریف صریح تولتیپ برای سری اول
+      if (!series.columns.template.tooltip) {
+        series.columns.template.tooltip = new am4core.Tooltip();
+      }
+      series.columns.template.tooltip.background.fill = am4core.color("#ffffff");
+      series.columns.template.tooltip.label.fill = am4core.color("#000000");
+      series.columns.template.tooltip.label.textAlign = "right";
+
       let series2 = chart.series.push(new am4charts.ColumnSeries());
-      series2.dataFields.valueY = "value1"; // دیتاست دوم
+      series2.dataFields.valueY = "value1";
       series2.dataFields.categoryX = "category";
       series2.columns.template.tooltipText = "{category}: {value1}";
       series2.columns.template.fillOpacity = 0.8;
@@ -574,6 +585,14 @@ const ChartComponent = ({ chartType, data }) => {
       series2.columns.template.propertyFields.stroke = "borderColor1";
       series2.columns.template.strokeWidth = 1;
       series2.numberFormatter = numberFormatter;
+
+      // تعریف صریح تولتیپ برای سری دوم
+      if (!series2.columns.template.tooltip) {
+        series2.columns.template.tooltip = new am4core.Tooltip();
+      }
+      series2.columns.template.tooltip.background.fill = am4core.color("#ffffff");
+      series2.columns.template.tooltip.label.fill = am4core.color("#000000");
+      series2.columns.template.tooltip.label.textAlign = "right";
     } else if (chartType === "line") {
       chart = am4core.create(chartRef.current, am4charts.XYChart);
       chart.data = chartData;
@@ -605,6 +624,13 @@ const ChartComponent = ({ chartType, data }) => {
       series.strokeWidth = 2;
       series.tensionX = 0.1;
       series.numberFormatter = numberFormatter;
+
+      if (!series.tooltip) {
+        series.tooltip = new am4core.Tooltip();
+      }
+      series.tooltip.background.fill = am4core.color("#ffffff");
+      series.tooltip.label.fill = am4core.color("#000000");
+      series.tooltip.label.textAlign = "right";
     } else if (chartType === "pie") {
       chart = am4core.create(chartRef.current, am4charts.PieChart);
       chart.data = chartData;
@@ -630,6 +656,13 @@ const ChartComponent = ({ chartType, data }) => {
       pieSeries.slices.template.states.getKey("hover").properties.scale = 1.1;
       pieSeries.slices.template.states.getKey("active").properties.shiftRadius =
         0.05;
+
+      if (!pieSeries.slices.template.tooltip) {
+        pieSeries.slices.template.tooltip = new am4core.Tooltip();
+      }
+      pieSeries.slices.template.tooltip.background.fill = am4core.color("#ffffff");
+      pieSeries.slices.template.tooltip.label.fill = am4core.color("#000000");
+      pieSeries.slices.template.tooltip.label.textAlign = "right";
     } else if (chartType === "map") {
       chart = am4core.create(chartRef.current, am4maps.MapChart);
       chart.geodata = am4geodata_ir;
@@ -663,6 +696,7 @@ const ChartComponent = ({ chartType, data }) => {
       polygonTemplate.tooltip.label.fill = am4core.color("#000000");
       polygonTemplate.tooltip.label.fontSize = 14;
       polygonTemplate.tooltip.numberFormatter = numberFormatter;
+      polygonTemplate.tooltip.label.textAlign = "right";
 
       chart.rtl = true;
     }
@@ -673,11 +707,11 @@ const ChartComponent = ({ chartType, data }) => {
   }, [chartType, data]);
 
   return (
-    <div className="chart-container">
+    <div className="chart-container" style={{ width: "100%", height: "400px" }}>
       <div
         className="chart-placeholder"
         ref={chartRef}
-        style={{ width: "100%", height: "400px" }}
+        style={{ width: "100%", height: "100%" }}
       />
     </div>
   );
