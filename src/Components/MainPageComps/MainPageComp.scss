@@ -84,8 +84,10 @@
 
   .mainContentTitle {
     width: 80%;
-
     margin: 25px auto;
+    @include responsive($tablet){
+      margin: 100px auto 0;
+    }
     .filter-container {
       position: relative;
       display: flex;
@@ -163,6 +165,9 @@
     margin: 15px auto;
     background-color: white;
     flex-direction: column;
+    @include responsive($tablet){
+      border-radius: 0;
+    }
     .exam-section {
       margin: 20px 0;
       .exam-title {

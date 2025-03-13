@@ -1,3 +1,4 @@
+@import "../../styles/responsive.scss";
 .chart-tutorial-Container {
   width: 100%;
   position: relative;
@@ -29,6 +30,21 @@
         color: #666;
         text-align: center;
       }
+      .chart-container {
+        position: relative;
+        width: 62%;
+        margin: 0 auto;
+        canvas {
+          height: 250px;
+          width: 50%;
+          margin: 0 auto;
+        }
+        .TrainingInranChart {
+          height: 250px !important;
+          width: 50% !important;
+          margin: 0 auto;
+        }
+      }
     }
   }
   .backToGuidanceBtn {
@@ -45,7 +61,11 @@
     width: 50%;
     margin: 20px auto 0;
     padding: 12px;
+    color: white;
     cursor: pointer;
+    @include responsive($tablet){
+      width:25%;
+    }
     a {
       text-decoration: none;
       color: white;

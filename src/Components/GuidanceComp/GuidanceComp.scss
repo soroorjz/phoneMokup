@@ -24,7 +24,7 @@
     margin-bottom: 5px;
     text-align: center;
     padding: 50px 0;
-    @include responsive ($tablet){
+    @include responsive($tablet) {
       padding: 30px 0;
     }
   }
@@ -38,6 +38,9 @@
     border-radius: 50px 50px 0 0;
     display: flex;
     flex-direction: column;
+    @include responsive($tablet) {
+      border-radius: 0;
+    }
     .row-title {
       text-shadow: 0px -2px 14px rgba(69, 44, 99, 0.6);
       color: #452c63;
@@ -46,7 +49,9 @@
       font-size: 16px;
       font-weight: 900;
       @include responsive($tablet) {
-        width:65%;
+        width: 65%;
+        font-size: 18px;
+        margin: 30px auto 0;
       }
     }
 
@@ -57,6 +62,7 @@
       gap: 1rem;
       @include responsive($tablet) {
         width: 75%;
+        height: 100%;
       }
       &.row-1,
       &.row-3 {
@@ -84,7 +90,10 @@
         margin: 10px 0;
         width: 45%;
         cursor: pointer;
-
+        @include responsive($tablet) {
+          margin: 10px 0 50px;
+          height: 100%;
+        }
         .icon {
           font-size: 25px;
           margin-bottom: 0.5rem;
@@ -101,11 +110,12 @@
 
         &.large-box {
           width: 90%;
-          @include responsive($tablet){
-            // width: 75%;
-          }
           height: 150px;
           background-color: #8c76df;
+          @include responsive($tablet) {
+            height: 170px;
+            margin: 10px 0 0;
+          }
         }
 
         &.small-box {
@@ -114,6 +124,12 @@
           flex-direction: column;
           height: 160px;
           gap: 12px;
+          @include responsive($tablet) {
+            height: 100%;
+            svg{
+              font-size: 25px;
+            }
+          }
           &:nth-child(1) {
             background-color: #769edf;
           }

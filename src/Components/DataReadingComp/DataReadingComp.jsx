@@ -47,9 +47,10 @@ const DataReadingComp = () => {
           </div>
         ))}
       </div>
-      <button className="backToGuidanceBtn">
-        <Link to="/Guidance">بازگشت</Link>
-      </button>
+
+      <Link to="/Guidance">
+        <button className="backToGuidanceBtn">بازگشت</button>
+      </Link>
     </div>
   );
 };
