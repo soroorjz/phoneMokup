@@ -1,3 +1,4 @@
+@import "../../styles/responsive.scss";
 .categories-container {
   display: flex;
   flex-wrap: wrap;
@@ -11,11 +12,21 @@
   background-color: #fff;
   border-radius: 50px 50px 0 0;
   padding: 40px 0;
+  @include responsive($tablet){
+    border-radius: 0;
+  }
   .category-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 16px;
     width: 90%;
+    @include responsive($tablet){
+      grid-template-columns: 33% 33% 33%;
+      width: 62%;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      margin: 20px auto 0;
+    }
 
     .category-card {
       padding: 15px;
@@ -94,9 +105,19 @@
     padding: 20px;
     overflow-y: auto;
     z-index: 1000;
+    @include responsive($tablet){
+      width: 30%;
+      right: unset;
+      left: -100%;
+      transition: left 0.4s ease-in-out;
+    }
 
     &.open {
       right: 0;
+      @include responsive($tablet){
+        right: unset;
+    left: 0;
+      }
     }
 
     .close-btn {
@@ -107,6 +128,10 @@
       border: none;
       font-size: 24px;
       cursor: pointer;
+      @include responsive($tablet){
+        left: unset;
+        right: 25px;
+      }
     }
 
     h2 {

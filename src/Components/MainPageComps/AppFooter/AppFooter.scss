@@ -1,3 +1,5 @@
+@import "../../../styles/responsive.scss";
+
 .navbar {
   position: fixed;
   bottom: 0;
@@ -7,7 +9,13 @@
   background: #f5f5f5;
   padding: 10px;
   border-radius: 10px;
-
+  @include responsive($tablet) {
+    bottom: unset;
+    top: 0;
+    border-radius: 0;
+    background: #452c63;
+    justify-content: center;
+  }
   .nav-item {
     display: flex;
     flex-direction: column;
@@ -17,16 +25,25 @@
     cursor: pointer;
     color: #777;
     transition: color 0.3s ease-in-out;
+    font-size: 22px;
+    @include responsive($tablet){
+      width: 15%;
+    }
 
     &:hover {
       color: #452c63;
+      @include responsive($tablet) {
+        color: #f5f5f5;
+      }
     }
 
     &.active {
       color: #452c63;
       border-radius: 50%;
       font-weight: bold;
-
+      @include responsive($tablet) {
+        color: #f5f5f5;
+      }
     }
 
     span {

@@ -1,3 +1,4 @@
+@import "../../styles/responsive.scss";
 .exam-analysis {
   width: 100%;
   display: flex;
@@ -87,6 +88,9 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      @include responsive($tablet) {
+        width: 62%;
+      }
 
       select {
         width: 47%;
@@ -155,6 +159,9 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      @include responsive($tablet) {
+        width: 62%;
+      }
 
       .filter-note {
         display: flex;
@@ -188,6 +195,9 @@
     .chart-section {
       width: 90%;
       margin: 0 auto;
+      @include responsive($tablet) {
+        width: 62%;
+      }
 
       .title-input {
         width: 65%;
@@ -214,6 +224,10 @@
         border-radius: 10px;
         border: 1px solid #bebede;
       }
+      .chart-container {
+        width: 100%;
+        height: 400px;
+      }
     }
 
     .chart-placeholder {
@@ -232,10 +246,17 @@
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
-
+      @include responsive($tablet) {
+        flex-wrap: nowrap;
+        flex-direction: column;
+        justify-content: center;
+      }
       .add-description {
         display: flex;
         align-items: center;
+        @include responsive($tablet) {
+          justify-content: center;
+        }
 
         .addBtn {
           cursor: pointer;
@@ -254,7 +275,10 @@
         border: 1px solid #ddd;
         border-radius: 10px;
         background-color: #fff;
-
+        @include responsive($tablet) {
+          width: 62%;
+          margin: 0 auto;
+        }
         .boxTexArea {
           width: 100%;
           height: 74%;
@@ -306,7 +330,10 @@
       align-items: center;
       justify-content: center;
       gap: 5px;
-
+      @include responsive($tablet) {
+        width: 40%;
+        margin: 40px auto 0;
+      }
       button {
         align-self: self-end;
         display: block;

@@ -462,7 +462,8 @@ const convertChartJsToAmCharts = (data) => {
         result[`value${datasetIndex}`] = dataset.data[index] || 0;
       } else if (datasetIndex === 1) {
         // برای سری دوم (value1)، فقط برای آخرین دسته مقدار 1500 رو اعمال کن
-        result[`value${datasetIndex}`] = index === labels.length - 1 ? dataset.data[0] : 0;
+        result[`value${datasetIndex}`] =
+          index === labels.length - 1 ? dataset.data[0] : 0;
       }
       result[`backgroundColor${datasetIndex}`] = dataset.backgroundColor
         ? Array.isArray(dataset.backgroundColor)
@@ -571,7 +572,8 @@ const ChartComponent = ({ chartType, data }) => {
       if (!series.columns.template.tooltip) {
         series.columns.template.tooltip = new am4core.Tooltip();
       }
-      series.columns.template.tooltip.background.fill = am4core.color("#ffffff");
+      series.columns.template.tooltip.background.fill =
+        am4core.color("#ffffff");
       series.columns.template.tooltip.label.fill = am4core.color("#000000");
       series.columns.template.tooltip.label.textAlign = "right";
 
@@ -590,7 +592,8 @@ const ChartComponent = ({ chartType, data }) => {
       if (!series2.columns.template.tooltip) {
         series2.columns.template.tooltip = new am4core.Tooltip();
       }
-      series2.columns.template.tooltip.background.fill = am4core.color("#ffffff");
+      series2.columns.template.tooltip.background.fill =
+        am4core.color("#ffffff");
       series2.columns.template.tooltip.label.fill = am4core.color("#000000");
       series2.columns.template.tooltip.label.textAlign = "right";
     } else if (chartType === "line") {
@@ -654,13 +657,15 @@ const ChartComponent = ({ chartType, data }) => {
 
       pieSeries.hiddenState.properties.opacity = 0;
       pieSeries.slices.template.states.getKey("hover").properties.scale = 1.1;
-      pieSeries.slices.template.states.getKey("active").properties.shiftRadius =
-        0.05;
+      pieSeries.slices.template.states.getKey(
+        "active"
+      ).properties.shiftRadius = 0.05;
 
       if (!pieSeries.slices.template.tooltip) {
         pieSeries.slices.template.tooltip = new am4core.Tooltip();
       }
-      pieSeries.slices.template.tooltip.background.fill = am4core.color("#ffffff");
+      pieSeries.slices.template.tooltip.background.fill =
+        am4core.color("#ffffff");
       pieSeries.slices.template.tooltip.label.fill = am4core.color("#000000");
       pieSeries.slices.template.tooltip.label.textAlign = "right";
     } else if (chartType === "map") {
@@ -707,7 +712,7 @@ const ChartComponent = ({ chartType, data }) => {
   }, [chartType, data]);
 
   return (
-    <div className="chart-container" style={{ width: "100%", height: "400px" }}>
+    <div className="chart-container">
       <div
         className="chart-placeholder"
         ref={chartRef}

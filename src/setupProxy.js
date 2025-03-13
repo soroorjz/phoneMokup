@@ -2,11 +2,11 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = function(app) {
   app.use(
-    "/api",  // مسیر درخواست‌ها
+    "/api",  
     createProxyMiddleware({
-      target: "https://smp.devrayan.ir", // سرور مقصد
+      target: "https://smp.devrayan.ir", 
       changeOrigin: true,
-      secure: false, // در صورت مشکل SSL
+      secure: false, 
     })
   );
 };

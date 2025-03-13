@@ -1,3 +1,4 @@
+@import "../../styles/responsive.scss";
 .exam-report-slider {
   width: 100%;
   background-color: #452c63;
@@ -25,6 +26,9 @@
       flex-direction: column;
       // align-items: center;
       gap: 3px;
+      @include responsive($tablet) {
+        display: none;
+      }
       .userName {
         display: flex;
         gap: 3px;
@@ -45,12 +49,15 @@
       }
     }
     .search-bar {
+      @include responsive($tablet) {
+        display: none;
+      }
       display: flex;
       align-items: center;
       background: #f1f1f1;
-      padding: 5px 10px;
+      padding: 0 10px;
       border-radius: 5px;
-      width: 60%;
+      width: 55%;
       // margin: 20px auto;
       input {
         border: none;
@@ -65,12 +72,16 @@
       }
     }
     .logoPart {
+      @include responsive($tablet) {
+        display: none;
+      }
       width: 15%;
       img {
         width: 100%;
       }
     }
   }
+
   .mainContentTitle {
     width: 80%;
 
@@ -82,15 +93,13 @@
       justify-content: start;
       align-items: self-start;
       gap: 10px;
-      width: 100%;
+      width: fit-content;
 
       cursor: pointer;
       .selected-filter {
-        font-size: 18px;
-        // width: 100%;
-        // border: 1px solid #ccc;
+        font-size: 13px;
         background-color: #ececec;
-        padding: 10px;
+        padding: 5px;
         border-radius: 10px;
         font-weight: bold;
         color: #662d91;
@@ -130,7 +139,11 @@
           font-size: 14px;
           cursor: pointer;
           transition: background 0.3s ease;
-
+          width: 100%;
+          border-bottom: 1px solid #cccccc9c;
+          &:nth-last-child(1) {
+            border-bottom: none;
+          }
           &:hover {
             background: #f5f5f5;
           }
@@ -169,42 +182,55 @@
         margin-bottom: 50px;
         justify-content: center;
         color: #ffffff;
-      }
-      .slide {
-        //   padding: 20px;
-
-        .slide-title {
-          font-size: 18px;
-          // margin-bottom: 10px;
-          // font-weight: bold;
-          color: #444;
+        @include responsive($tablet) {
+          width: 50%;
         }
-
-        .chart-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
+      }
+      .mainPageSlider {
+        @include responsive($tablet) {
           width: 100%;
-          height: 400px;
+          margin: 0 auto 50px;
+        }
+        .slide {
+          //   padding: 20px;
+
+          .slide-title {
+            font-size: 18px;
+            // margin-bottom: 10px;
+            // font-weight: bold;
+            color: #444;
+          }
+
+          .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 400px;
+          }
+        }
+
+        .slick-dots {
+          bottom: -30px;
+        }
+
+        .slick-prev,
+        .slick-next {
+          z-index: 10;
+          display: none !important;
         }
       }
 
-      .slick-dots {
-        bottom: -30px;
-      }
-
-      .slick-prev,
-      .slick-next {
-        z-index: 10;
-        display: none !important;
-      }
       .MainPage-exam-stats {
         margin-top: 50px;
         // padding: 20px;
         // background: #f9f9f9;
         border-radius: 10px;
         // box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-
+        @include responsive($tablet) {
+          width: 50%;
+          margin: 0 auto;
+        }
         h3 {
           font-size: 18px;
           margin-bottom: 15px;

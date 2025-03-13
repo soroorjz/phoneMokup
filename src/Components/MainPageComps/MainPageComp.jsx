@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./MainPageComp.scss";
 import Slider from "react-slick";
 import { Pie, Bar } from "react-chartjs-2";
 import { IoMdSearch } from "react-icons/io";
 import { FaCircleUser } from "react-icons/fa6";
 import { examsData } from "./mainPageData";
-import { FaClipboard } from "react-icons/fa";
 import { LuFilter } from "react-icons/lu";
 import {
   Chart as ChartJS,
@@ -32,8 +31,8 @@ ChartJS.register(
 const MainPageComp = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("جدیدترین گزارشات");
-  const [selectedExam, setSelectedExam] = useState(examsData[0]); // مقدار پیش‌فرض اولین آزمون
-  const [searchTerm, setSearchTerm] = useState(""); // ذخیره مقدار جستجو
+  const [selectedExam, setSelectedExam] = useState(examsData[0]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filters = [
     "جدیدترین گزارشات",
@@ -46,6 +45,30 @@ const MainPageComp = () => {
     setFilterOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const filterContainer = document.querySelector(".filter-container");
+      const mainContentTitle = document.querySelector(".mainContentTitle");
+      const mainContent = document.querySelector(".mainContent");
+
+      if (
+        filterContainer &&
+        !filterContainer.contains(event.target) &&
+        (mainContentTitle?.contains(event.target) ||
+          mainContent?.contains(event.target))
+      ) {
+        setFilterOpen(false);
+      }
+    };
+
+    if (filterOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [filterOpen]);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -56,7 +79,6 @@ const MainPageComp = () => {
     autoplaySpeed: 3000,
   };
 
-  // فیلتر کردن آزمون‌ها بر اساس جستجو
   const filteredExams = examsData.filter((exam) =>
     exam.title.includes(searchTerm)
   );
@@ -93,7 +115,6 @@ const MainPageComp = () => {
         </div>
       </div>
 
-      {/* نمایش لیست آزمون‌های پیدا شده */}
       {searchTerm && (
         <ul className="exam-list">
           {filteredExams.map((exam, index) => (
@@ -129,14 +150,8 @@ const MainPageComp = () => {
       <div className="mainContent">
         {examsData.map((exam, examIndex) => (
           <div key={examIndex} className="exam-section">
-            {/* عنوان آزمون */}
-            <h2 className="exam-title">
-              {/* <FaClipboard /> */}
-              {exam.title}
-            </h2>
-
-            {/* اسلایدشو مربوط به هر آزمون */}
-            <Slider {...settings}>
+            <h2 className="exam-title">{exam.title}</h2>
+            <Slider {...settings} className="mainPageSlider">
               {exam.reportSlides.map((slide, index) => (
                 <div key={index} className="slide">
                   <h3 className="slide-title">{slide.title}</h3>
@@ -152,7 +167,6 @@ const MainPageComp = () => {
               ))}
             </Slider>
 
-            {/* باکس‌های توضیحات آزمون */}
             <div className="MainPage-exam-stats">
               <h3>نگاه کلی به آزمون</h3>
               <ul className="stats-list">
