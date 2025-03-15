@@ -39,9 +39,9 @@ const chartOptions = {
 const ChartTrainingComp = () => {
   return (
     <div className="chart-tutorial-Container">
+      <h1 className="chart-tutorial-Title">راهنمای انواع نمودار</h1>
       <div className="chart-tutorial">
         {chartData.map((chart, index) => {
-          // فارسی کردن labels
           const formattedData = { ...chart.chart.data };
           formattedData.labels = formattedData.labels?.map(toPersianDigits);
 
