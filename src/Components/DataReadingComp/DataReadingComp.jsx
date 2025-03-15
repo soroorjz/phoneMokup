@@ -31,6 +31,7 @@ ChartJS.register(
 const DataReadingComp = () => {
   return (
     <div className="DataReadingComp-Container">
+      <h1 className="DataReadingCompDesltop-Title">راهنمای تحلیل آزمون‌ها</h1>
       <div className="Data-Reading-Container">
         {DataReadingchartData.map((chart, index) => (
           <div className="chartContainer" key={index}>

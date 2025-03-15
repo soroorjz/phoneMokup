@@ -5,13 +5,25 @@
   background-color: #fff;
   margin-top: 20px;
   border-radius: 50px 50px 0 0;
+  .DataReadingCompDesltop-Title {
+    display: none;
+    @include responsive($tablet) {
+      display: block;
+      text-align: center;
+      padding: 40px 0 10px;
+      color: #452c63;
+      border-bottom: 1px solid rgba(69, 44, 99, 0.6);
+      width: 43%;
+      margin: 0 auto;
+    }
+  }
   .Data-Reading-Container {
     display: flex;
     flex-direction: column;
     gap: 20px;
     width: 90%;
     margin: 25px auto;
-    @include responsive($tablet){
+    @include responsive($tablet) {
       width: 62%;
     }
     .chartContainer {
@@ -27,7 +39,7 @@
         display: block;
         align-self: center;
         justify-self: center;
-        canvas{
+        canvas {
           width: 60% !important;
           margin: 0 auto;
         }
@@ -57,9 +69,9 @@
     margin: 20px auto 0;
     padding: 12px;
     cursor: pointer;
-    @include responsive($tablet){
-      width:25%;
-      color: #fff;
+    color: #fff;
+    @include responsive($tablet) {
+      width: 25%;
     }
     a {
       text-decoration: none;
