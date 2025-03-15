@@ -142,9 +142,10 @@
 .report-details {
   width: 90%;
   margin: 20px auto 0;
-  padding-bottom: 20px;
+  padding-bottom: 30px;
   @include responsive($tablet) {
     width: 62%;
+    // height: 50vh;
   }
 
   h3 {
@@ -154,14 +155,25 @@
 
   .chart-wrapper {
     margin: 20px 0;
+    height: 75vh;
     @include responsive($tablet) {
-      width: 62%;
+      width: 100%;
       margin: 0 auto;
+      // height: 100%;
+    }
+    .chart-container{
       height: 100%;
+      // @include responsive($tablet){
+      //   height: 100%;
+      // }
     }
   }
 
   .description-boxes {
+    @include responsive($tablet){
+      width: 62%;
+      margin: 0 auto;
+    }
     .description-box {
       padding: 10px;
       margin: 10px 0;
