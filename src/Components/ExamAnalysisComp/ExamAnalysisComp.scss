@@ -136,9 +136,18 @@
         flex-direction: column;
         gap: 10px;
         z-index: 1000;
-
+        @include responsive($tablet){
+          width: 320px;
+          transition: left 0.3s ease;
+          left: -320px;
+          right: unset;
+        }
         &.open {
           right: 0;
+          @include responsive($tablet){
+            right: unset;
+            left: 0;
+          }
         }
 
         .close-btn {
@@ -148,7 +157,9 @@
           font-size: 20px;
           color: #555;
           cursor: pointer;
-
+          @include responsive($tablet){
+            align-self: flex-start;
+          }
           &:hover {
             color: #ff0000;
           }
@@ -159,6 +170,9 @@
           padding: 5px;
           border-radius: 10px;
           border: 1px solid #bebede;
+          @include responsive($tablet){
+            padding: 10px;
+          }
         }
       }
     }
