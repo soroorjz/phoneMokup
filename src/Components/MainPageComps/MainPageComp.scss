@@ -5,13 +5,14 @@
   margin: auto;
   text-align: center;
   position: relative;
+  overflow-x: hidden;
   .home-lottie-background {
     position: absolute;
-    top: -84px;
-    left: -134px;
-    width: 150%;
+    top: 23px;
+    left: 0;
+    width: 100%;
     opacity: 0.3;
-    display: none;
+    transform: scale(1.5);
   }
   .exam-reportHeader {
     width: 95%;
@@ -85,7 +86,7 @@
   .mainContentTitle {
     width: 80%;
     margin: 25px auto;
-    @include responsive($tablet){
+    @include responsive($tablet) {
       margin: 100px auto 0;
     }
     .filter-container {
@@ -165,7 +166,7 @@
     margin: 15px auto;
     background-color: white;
     flex-direction: column;
-    @include responsive($tablet){
+    @include responsive($tablet) {
       border-radius: 0;
     }
     .exam-section {
