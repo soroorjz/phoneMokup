@@ -6,6 +6,7 @@
   padding-top: 50px;
   justify-content: flex-end;
   position: relative;
+  overflow-x: hidden;
   h2 {
     color: #fff;
     text-align: center;
@@ -14,10 +15,10 @@
   }
   .Category-lottie-background {
     position: absolute;
-    top: -192px;
-    display: none;
-    left: -134px;
-    width: 150%;
+    top: -50px;
+    left: 0;
+    width: 100%;
     opacity: 0.3;
+    transform: scale(1.5);
   }
 }
