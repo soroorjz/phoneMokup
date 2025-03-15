@@ -8,13 +8,15 @@
   flex-direction: column;
   justify-content: flex-end;
   position: relative;
+  overflow-x: hidden;
   .supportlottie-background {
     position: absolute;
-    top: -211px;
-    left: -134px;
-    width: 150%;
-    display: none;
+    top: -40px;
+    left: 0;
+    width: 100%;
+    // display: none;
     opacity: 0.3;
+    transform: scale(2);
   }
   .support-containerTitle {
     display: block;
