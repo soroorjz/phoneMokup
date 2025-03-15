@@ -1,4 +1,5 @@
 @import "../../styles/responsive.scss";
+
 .categories-container {
   display: flex;
   flex-wrap: wrap;
@@ -8,19 +9,19 @@
   position: relative;
   justify-content: center;
   width: 100%;
-  // margin-top: 20px;
   background-color: #fff;
   border-radius: 50px 50px 0 0;
   padding: 40px 0;
-  @include responsive($tablet){
+  @include responsive($tablet) {
     border-radius: 0;
   }
+
   .category-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 16px;
     width: 90%;
-    @include responsive($tablet){
+    @include responsive($tablet) {
       grid-template-columns: 33% 33% 33%;
       width: 62%;
       flex-direction: column;
@@ -34,19 +35,26 @@
       display: flex;
       flex-direction: column;
       border-radius: 10px;
-      // border: 2px solid #bebede;
       background-color: #c1d3fe;
       cursor: pointer;
-      transition: background 0.4sease;
+      transition: background 0.4s ease; // اصلاح typo: "0.4sease" به "0.4s ease"
       position: relative;
       text-shadow: 0px -2px 14px rgba(69, 44, 99, 0.6);
-
       color: #452c63;
       align-items: center;
       justify-content: center;
 
       &:hover {
         background: #abc4ff;
+      }
+
+      &.disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        background-color: #d3d3d3; // رنگ خاکستری برای حالت غیرفعال
+        &:hover {
+          background: #d3d3d3; // جلوگیری از تغییر رنگ در هاور
+        }
       }
 
       .category-title {
@@ -76,8 +84,35 @@
           }
         }
       }
+
+      .tooltip {
+        position: absolute;
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #452c63; // استفاده از رنگ اصلی پروژه
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 10;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+        &:after {
+          content: "";
+          position: absolute;
+          bottom: -5px;
+          left: 50%;
+          transform: translateX(-50%);
+          border-width: 5px 5px 0;
+          border-style: solid;
+          border-color: #452c63 transparent transparent transparent;
+        }
+      }
     }
   }
+
   .showReportBtn {
     align-self: self-end;
     display: block;
@@ -93,6 +128,7 @@
       background-color: #33006f;
     }
   }
+
   .sidebar {
     position: fixed;
     top: 0;
@@ -105,7 +141,7 @@
     padding: 20px;
     overflow-y: auto;
     z-index: 1000;
-    @include responsive($tablet){
+    @include responsive($tablet) {
       width: 30%;
       right: unset;
       left: -100%;
@@ -114,9 +150,9 @@
 
     &.open {
       right: 0;
-      @include responsive($tablet){
+      @include responsive($tablet) {
         right: unset;
-    left: 0;
+        left: 0;
       }
     }
 
@@ -128,7 +164,7 @@
       border: none;
       font-size: 24px;
       cursor: pointer;
-      @include responsive($tablet){
+      @include responsive($tablet) {
         left: unset;
         right: 25px;
       }

@@ -17,6 +17,7 @@ const CategoryComp = () => {
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
   const [geographies, setGeographies] = useState([]);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [dynamicCategories, setDynamicCategories] = useState({
     جنسیت: [],
     سهمیه: [],
@@ -196,6 +197,11 @@ const CategoryComp = () => {
   ];
 
   const handleCategoryClick = (category) => {
+    if (category.title === "شهرستان" && !selectedOptions["استان"]) {
+      setShowTooltip(true); // نمایش توتیپ
+      setTimeout(() => setShowTooltip(false), 3000); // مخفی کردن بعد از 3 ثانیه
+      return;
+    }
     setSelectedCategory(category);
   };
 
@@ -261,7 +267,11 @@ const CategoryComp = () => {
         {categories.map((category, index) => (
           <div
             key={index}
-            className="category-card"
+            className={`category-card ${
+              category.title === "شهرستان" && !selectedOptions["استان"]
+                ? "disabled"
+                : ""
+            }`}
             onClick={() => handleCategoryClick(category)}
           >
             <div className="category-title">{category.title}</div>
@@ -279,6 +289,11 @@ const CategoryComp = () => {
                 >
                   ✖
                 </button>
+              </div>
+            )}
+            {category.title === "شهرستان" && showTooltip && (
+              <div className="tooltip">
+                برای انتخاب شهر ابتدا استان مورد نظر را انتخاب کنید
               </div>
             )}
           </div>
@@ -313,3 +328,5 @@ const CategoryComp = () => {
 };
 
 export default CategoryComp;
+
+
