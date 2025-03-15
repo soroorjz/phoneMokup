@@ -173,6 +173,36 @@ const CategoryComp = () => {
     fetchData();
   }, [fetchData]);
 
+  // اضافه کردن شنونده برای بستن سایدبار با کلیک خارج از دکمه‌ها
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectedCategory) {
+        const sidebar = document.querySelector(".sidebar");
+        const categoryCards = document.querySelectorAll(".category-card");
+
+        // بررسی اینکه کلیک داخل سایدبار نباشد
+        if (sidebar && !sidebar.contains(event.target)) {
+          let clickedOnCategoryCard = false;
+          categoryCards.forEach((card) => {
+            if (card.contains(event.target)) {
+              clickedOnCategoryCard = true;
+            }
+          });
+
+          // اگر کلیک خارج از دکمه‌های دسته‌بندی باشد، سایدبار بسته شود
+          if (!clickedOnCategoryCard) {
+            closeSidebar();
+          }
+        }
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [selectedCategory]);
+
   const provinces = geographies.filter((g) => g.geographyParent === null);
   const counties = selectedOptions["استان"]
     ? geographies.filter(
@@ -198,8 +228,8 @@ const CategoryComp = () => {
 
   const handleCategoryClick = (category) => {
     if (category.title === "شهرستان" && !selectedOptions["استان"]) {
-      setShowTooltip(true); // نمایش توتیپ
-      setTimeout(() => setShowTooltip(false), 3000); // مخفی کردن بعد از 3 ثانیه
+      setShowTooltip(true);
+      setTimeout(() => setShowTooltip(false), 3000);
       return;
     }
     setSelectedCategory(category);
@@ -328,5 +358,3 @@ const CategoryComp = () => {
 };
 
 export default CategoryComp;
-
-
