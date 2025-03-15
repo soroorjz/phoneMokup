@@ -4,14 +4,20 @@
   padding-top: 20px;
   position: relative;
   background-color: #452c63;
-
-  .lottie-background {
+  overflow-x: hidden;
+  @include responsive($tablet) {
+    overflow-x: unset;
+  }
+  .MyReportsPageComp-lottie-background {
     position: absolute;
-    top: -161px;
-    left: -134px;
-    width: 150%;
-    display: none;
+    top: -92px;
+    left: 0;
+    width: 100%;
     opacity: 0.3;
+    transform: scale(1.5);
+    @include responsive($tablet) {
+      display: none;
+    }
   }
   .myReportHeader {
     width: 90%;
@@ -58,7 +64,7 @@
     }
     ul {
       width: 90%;
-      margin: 5px auto;
+      margin: 5px auto 0;
       padding-top: 50px;
       display: flex;
       flex-direction: column-reverse;
@@ -161,7 +167,7 @@
       margin: 0 auto;
       // height: 100%;
     }
-    .chart-container{
+    .chart-container {
       height: 100%;
       // @include responsive($tablet){
       //   height: 100%;
@@ -170,7 +176,7 @@
   }
 
   .description-boxes {
-    @include responsive($tablet){
+    @include responsive($tablet) {
       width: 62%;
       margin: 0 auto;
     }

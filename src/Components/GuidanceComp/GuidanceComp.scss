@@ -9,13 +9,17 @@
   justify-content: flex-end;
   position: relative;
   overflow-x: hidden;
+  @include responsive($tablet) {
+   overflow-x: unset;
+  }
+  
   .supportlottie-background {
     position: absolute;
     top: -40px;
     left: 0;
     width: 100%;
     opacity: 0.3;
-    transform: scale(2);
+    transform: scale(1.5);
     @include responsive($tablet) {
       display: none;
     }

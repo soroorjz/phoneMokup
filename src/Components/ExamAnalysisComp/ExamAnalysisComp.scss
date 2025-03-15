@@ -13,6 +13,9 @@
     left: -134px;
     width: 150%;
     opacity: 0.3;
+    @include responsive($tablet){
+      display: none;
+    }
   }
 
   .header-section {

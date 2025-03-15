@@ -169,7 +169,7 @@ const ReportDetails = ({ report }) => {
         <ChartComponent
           chartType={report.chartType}
           filters={report.filters}
-          data={report.data} // داده‌ها رو می‌فرستیم
+          data={report.data} 
         />
       </div>
       <div className="description-boxes">
@@ -209,7 +209,7 @@ const MyReportsPageComp = () => {
         src="https://lottie.host/1ffa5243-af25-4d2b-a0b7-80c45b5f6504/eMmMth4rX1.lottie"
         loop
         autoplay
-        className="lottie-background"
+        className="MyReportsPageComp-lottie-background"
       />
       <div className="myReportHeader">
         <label>گزارش موردنظر خود را انتخاب کنید:</label>
