@@ -41,21 +41,36 @@
         font-size: 1rem;
         color: #666;
         text-align: center;
+        width: 65%;
+        margin: 0 auto;
+      }
+      .chart-type-description {
+        color: #000;
+        font-weight: 700;
+        margin-bottom: 15px;
+        width: 100%;
       }
       .chart-container {
         position: relative;
         width: 62%;
         margin: 0 auto;
         canvas {
-          height: 250px;
-          width: 50%;
+       
           margin: 0 auto;
+
+          @include responsive($tablet) {
+            height: 250px;
+            width: 50%;
+          }
         }
         .TrainingInranChart {
           height: 250px !important;
           width: 50% !important;
           margin: 0 auto;
         }
+      }
+      .chart-analysis {
+        width: 100%;
       }
     }
   }
