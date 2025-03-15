@@ -28,7 +28,7 @@ const LogIn = () => {
 
       setTimeout(() => {
         setAnimationType("default");
-      }, 2000); // بازگشت به انیمیشن پیش‌فرض بعد از ۲ ثانیه
+      }, 2000); 
     }
   };
   return (
@@ -39,13 +39,13 @@ const LogIn = () => {
             id="loginAnim"
             src={
               animationType === "success"
-                ? LootieAnime // انیمیشن موفق
+                ? LootieAnime 
                 : animationType === "error"
-                ? "https://lottie.host/89138cb4-e80f-4771-ab37-f8749d088e25/Uky1oW3Iz3.lottie" // انیمیشن خطا
-                : LootieAnime // انیمیشن پیش‌فرض (لوتی اصلی)
+                ? "https://lottie.host/89138cb4-e80f-4771-ab37-f8749d088e25/Uky1oW3Iz3.lottie" 
+                : LootieAnime 
             }
-            autoplay={animationType !== "default"} // انیمیشن فقط در صورت موفقیت یا خطا پخش می‌شود
-            loop={animationType !== "default"} // انیمیشن فقط یکبار پخش شود
+            autoplay={animationType !== "default"} 
+            loop={animationType !== "default"} 
           />
         </div>
       <div className="login-left">
