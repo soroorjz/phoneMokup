@@ -22,7 +22,6 @@ const ExamAnalysisComp = () => {
   const [isTextVisible, setIsTextVisible] = useState(false);
   const [filterNotes, setFilterNotes] = useState([]);
 
-  // به‌روزرسانی filterNotes بر اساس filters
   useEffect(() => {
     const notes = [];
     for (const [key, value] of Object.entries(filters)) {
@@ -31,12 +30,11 @@ const ExamAnalysisComp = () => {
       }
     }
     setFilterNotes(notes);
-    console.log("Updated filters:", filters); // برای دیباگ
+    console.log("Updated filters:", filters); 
   }, [filters]);
 
-  // حذف فیلتر
   const removeFilterNote = (type) => {
-    updateFilters(type, ""); // فیلتر رو توی state به "" تغییر بده
+    updateFilters(type, ""); 
   };
 
   const addDescriptionBox = () => {
@@ -189,7 +187,7 @@ const ExamAnalysisComp = () => {
               }${note.value}`}</span>
               <FaTimes
                 className="remove-note"
-                onClick={() => removeFilterNote(note.type)} // فقط type رو بفرست
+                onClick={() => removeFilterNote(note.type)}
               />
             </div>
           ))}
