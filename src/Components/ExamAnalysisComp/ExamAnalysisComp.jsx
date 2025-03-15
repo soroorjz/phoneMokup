@@ -30,11 +30,11 @@ const ExamAnalysisComp = () => {
       }
     }
     setFilterNotes(notes);
-    console.log("Updated filters:", filters); 
+    console.log("Updated filters:", filters);
   }, [filters]);
 
   const removeFilterNote = (type) => {
-    updateFilters(type, ""); 
+    updateFilters(type, "");
   };
 
   const addDescriptionBox = () => {
@@ -146,7 +146,7 @@ const ExamAnalysisComp = () => {
   return (
     <div className="exam-analysis">
       <DotLottieReact
-        src="https://lottie.host/1ffa5243-af25-4d2b-a0b7-80c45b5f6504/eMmMth4rX1.lottie"
+        src="/assets/Lootie/eMmMth4rX1.lottie"
         loop
         autoplay
         className="analysis-lottie-background"

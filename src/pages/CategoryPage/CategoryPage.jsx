@@ -8,7 +8,7 @@ const CategoryPage = () => {
   return (
     <div className="CategoryPage">
       <DotLottieReact
-        src="https://lottie.host/1ffa5243-af25-4d2b-a0b7-80c45b5f6504/eMmMth4rX1.lottie"
+        src="/assets/Lootie/eMmMth4rX1.lottie"
         loop
         autoplay
         className="Category-lottie-background"

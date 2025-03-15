@@ -7,13 +7,17 @@
   padding-top: 20px;
   position: relative;
   overflow-x: hidden;
+  @include responsive($tablet){
+    overflow-x: unset;
+  }
   .analysis-lottie-background {
     position: absolute;
-    top: -192px;
-    left: -134px;
-    width: 150%;
+    top: -67px;
+    left: 0;
+    width: 100%;
     opacity: 0.3;
-    @include responsive($tablet){
+    transform: scale(1.5);
+    @include responsive($tablet) {
       display: none;
     }
   }

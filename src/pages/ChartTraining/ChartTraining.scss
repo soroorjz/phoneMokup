@@ -1,9 +1,25 @@
+@import "../../styles/responsive.scss";
 .ChartTrainingContainer {
   width: 100%;
   background-color: #452c63;
   margin-bottom: 40px;
-
-  h2{
+  position: relative;
+  overflow-x: hidden;
+  @include responsive($tablet) {
+    overflow-x: unset;
+  }
+  .ChartTraining-lottie-background {
+    position: absolute;
+    top: -80px;
+    left: 0;
+    width: 100%;
+    opacity: 0.3;
+    transform: scale(1.5);
+    @include responsive($tablet) {
+      display: none;
+    }
+  }
+  h2 {
     padding: 25px 0;
     text-align: center;
     color: #ffffff;
