@@ -5,7 +5,7 @@
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.39",
     "@amcharts/amcharts4-geodata": "^4.1.30",
-    "@lottiefiles/dotlottie-react": "^0.13.0",
+    "@lottiefiles/dotlottie-react": "^0.13.2",
     "axios": "^1.8.1",
     "chart.js": "^4.4.8",
     "cra-template": "1.2.0",
