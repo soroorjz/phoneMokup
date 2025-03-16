@@ -1,6 +1,5 @@
-// src/services/dataService.js
 import axios from "axios";
-
+import moment from "jalali-moment";
 const apiClient = axios.create({
   baseURL: "/api",
   headers: {
@@ -151,7 +150,6 @@ export const fetchReligionData = async () => {
         (r) => r.religionId === profile?.profileReligionRef
       );
 
-      // لاگ برای دیباگ
       if (!religion) {
         console.log(`داوطلب نامشخص:`, {
           preRegisterId: candidate.preRegisterId,
@@ -205,20 +203,160 @@ export const fetchReligionData = async () => {
   } catch (error) {
     console.error("Error fetching religion data:", error);
     return {
-      LABELS: [],
+      labels: [],
       datasets: [{ label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] }],
     };
   }
 };
 
-export const fetchExamsData = async () => {
+export const fetchProvinceData = async () => {
   try {
+    //  داوطلب‌ها
     const preregisterResponse = await apiClient.get(
       "/preregister/preregisters"
     );
     const candidates = preregisterResponse.data;
+    console.log("داوطلب‌ها از /preregister/preregisters:", candidates);
+
+    //  انتخاب‌ها
+    const choiceResponse = await apiClient.get("/choice/choices");
+    const choices = choiceResponse.data;
+    console.log("انتخاب‌ها از /choice/choices:", choices);
+
+    //   ( استان‌ها)
+    const geographyResponse = await apiClient.get("/geography/geographies");
+    const geographies = geographyResponse.data.filter(
+      (g) => g.geographyParent === null
+    );
+    console.log("استان‌ها از /geography/geographies:", geographies);
+
+    //  provinceMap
+    const provinceMap = [
+      { id: "IR-01", name: "آذربایجان شرقی" },
+      { id: "IR-02", name: "آذربایجان غربی" },
+      { id: "IR-03", name: "اردبیل" },
+      { id: "IR-04", name: "اصفهان" },
+      { id: "IR-32", name: "البرز" },
+      { id: "IR-05", name: "ایلام" },
+      { id: "IR-06", name: "بوشهر" },
+      { id: "IR-07", name: "تهران" },
+      { id: "IR-08", name: "چهارمحال و بختیاری" },
+      { id: "IR-29", name: "خراسان جنوبی" },
+      { id: "IR-30", name: "خراسان رضوی" },
+      { id: "IR-31", name: "خراسان شمالی" },
+      { id: "IR-10", name: "خوزستان" },
+      { id: "IR-11", name: "زنجان" },
+      { id: "IR-12", name: "سمنان" },
+      { id: "IR-13", name: "سیستان و بلوچستان" },
+      { id: "IR-14", name: "فارس" },
+      { id: "IR-28", name: "قزوین" },
+      { id: "IR-26", name: "قم" },
+      { id: "IR-16", name: "کردستان" },
+      { id: "IR-15", name: "کرمان" },
+      { id: "IR-17", name: "کرمانشاه" },
+      { id: "IR-18", name: "کهگیلویه و بویراحمد" },
+      { id: "IR-27", name: "گلستان" },
+      { id: "IR-19", name: "گیلان" },
+      { id: "IR-20", name: "لرستان" },
+      { id: "IR-21", name: "مازندران" },
+      { id: "IR-22", name: "مرکزی" },
+      { id: "IR-23", name: "هرمزگان" },
+      { id: "IR-24", name: "همدان" },
+      { id: "IR-25", name: "یزد" },
+    ];
+
+    // محاسبه تعداد داوطلب‌ها در هر استان
+    const provinceData = candidates.map((candidate) => {
+      const choice = choices.find(
+        (c) => c.choicePreRegisterRef === candidate.preRegisterId
+      );
+      const province = geographies.find(
+        (g) => g.geographyId === choice?.choiceExamProvinceRef
+      );
+      console.log(`داوطلب ${candidate.preRegisterId}:`, {
+        choiceFound: !!choice,
+        choicePreRegisterRef: choice?.choicePreRegisterRef,
+        choiceExamProvinceRef: choice?.choiceExamProvinceRef,
+        provinceName: province?.geographyName || "نامشخص",
+      });
+      return {
+        provinceName: province?.geographyName || "نامشخص",
+      };
+    });
+
+    const provinceCounts = provinceData.reduce((acc, data) => {
+      acc[data.provinceName] = (acc[data.provinceName] || 0) + 1;
+      return acc;
+    }, {});
+    console.log("شمارش استان‌ها:", provinceCounts);
+
+    // تبدیل به فرمت amCharts
+    const amChartData = provinceMap.map((province) => ({
+      id: province.id,
+      value: provinceCounts[province.name] || 0,
+      name: province.name,
+    }));
+
+    console.log("داده‌های نقشه استان‌ها:", amChartData);
+    return amChartData;
+  } catch (error) {
+    console.error("Error fetching province data:", error);
+    const provinceMapFallback = [
+      { id: "IR-01", name: "آذربایجان شرقی" },
+      { id: "IR-02", name: "آذربایجان غربی" },
+      { id: "IR-03", name: "اردبیل" },
+      { id: "IR-04", name: "اصفهان" },
+      { id: "IR-32", name: "البرز" },
+      { id: "IR-05", name: "ایلام" },
+      { id: "IR-06", name: "بوشهر" },
+      { id: "IR-07", name: "تهران" },
+      { id: "IR-08", name: "چهارمحال و بختیاری" },
+      { id: "IR-29", name: "خراسان جنوبی" },
+      { id: "IR-30", name: "خراسان رضوی" },
+      { id: "IR-31", name: "خراسان شمالی" },
+      { id: "IR-10", name: "خوزستان" },
+      { id: "IR-11", name: "زنجان" },
+      { id: "IR-12", name: "سمنان" },
+      { id: "IR-13", name: "سیستان و بلوچستان" },
+      { id: "IR-14", name: "فارس" },
+      { id: "IR-28", name: "قزوین" },
+      { id: "IR-26", name: "قم" },
+      { id: "IR-16", name: "کردستان" },
+      { id: "IR-15", name: "کرمان" },
+      { id: "IR-17", name: "کرمانشاه" },
+      { id: "IR-18", name: "کهگیلویه و بویراحمد" },
+      { id: "IR-27", name: "گلستان" },
+      { id: "IR-19", name: "گیلان" },
+      { id: "IR-20", name: "لرستان" },
+      { id: "IR-21", name: "مازندران" },
+      { id: "IR-22", name: "مرکزی" },
+      { id: "IR-23", name: "هرمزگان" },
+      { id: "IR-24", name: "همدان" },
+      { id: "IR-25", name: "یزد" },
+    ];
+    return provinceMapFallback.map((province) => ({
+      id: province.id,
+      value: 0,
+      name: province.name,
+    }));
+  }
+};
+
+
+export const fetchExamsData = async () => {
+  try {
+    const preregisterResponse = await apiClient.get("/preregister/preregisters");
+    const candidates = preregisterResponse.data;
     const handednessData = await fetchHandednessData();
     const religionData = await fetchReligionData();
+    const provinceData = await fetchProvinceData();
+
+    const applicantResponse = await apiClient.get("/applicant/applicants");
+    const applicants = applicantResponse.data;
+    const profileResponse = await apiClient.get("/profile/profiles");
+    const profiles = profileResponse.data;
+    const marriageResponse = await apiClient.get("/marriage/marriages");
+    const marriages = marriageResponse.data;
 
     if (!candidates.length) {
       console.warn("No candidates found in response");
@@ -226,38 +364,104 @@ export const fetchExamsData = async () => {
     }
 
     const totalCandidates = candidates.length;
+
+    // محاسبه سن‌ها
+    const today = moment();
+    const ages = candidates.map((candidate) => {
+      const applicant = applicants.find((a) => a.applicantId === candidate.preRegisterApplicantRef);
+      const profile = profiles.find((p) => p.profileId === applicant?.applicantProfileRef);
+      if (!profile?.profileBirthDate) return null;
+      const birthDate = moment(profile.profileBirthDate, "jYYYY/jMM/jDD");
+      if (!birthDate.isValid()) return null;
+      return today.diff(birthDate, "years");
+    }).filter((age) => age !== null && age >= 0 && age < 150);
+
+    const averageAge = ages.length
+      ? (ages.reduce((a, b) => a + b, 0) / ages.length).toFixed(1)
+      : "نامشخص";
+
+    // داده هیستوگرام سن با بازه ۲ سال
+    const ageBins = {};
+    ages.forEach((age) => {
+      const bin = Math.floor(age / 2) * 2; // بازه‌های ۲ تایی (مثلاً 20-21، 22-23)
+      ageBins[bin] = (ageBins[bin] || 0) + 1;
+    });
+    const ageHistogramData = {
+      labels: Object.keys(ageBins).map((bin) => `${bin}-${parseInt(bin) + 1}`),
+      datasets: [
+        {
+          label: "تعداد داوطلب‌ها",
+          data: Object.values(ageBins),
+          backgroundColor: "rgba(103, 183, 220, 0.6)", // آبی کم‌رنگ
+          borderColor: "rgba(103, 183, 220, 1)",
+          borderWidth: 1,
+          barThickness: 10, // میله‌ها باریک‌تر
+        },
+      ],
+    };
+
+    // محاسبه تأهل
+    const marriageCounts = candidates.reduce(
+      (acc, candidate) => {
+        const applicant = applicants.find((a) => a.applicantId === candidate.preRegisterApplicantRef);
+        const profile = profiles.find((p) => p.profileId === applicant?.applicantProfileRef);
+        const marriage = marriages.find((m) => m.marriageId === profile?.profileMarriageRef);
+        const status = marriage?.marriageName || "نامشخص";
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      },
+      {}
+    );
+
+    const marriedCount = marriageCounts["متاهل"] || 0;
+
+    // داده دونات تأهل
+    const marriageDoughnutData = {
+      labels: Object.keys(marriageCounts),
+      datasets: [
+        {
+          data: Object.values(marriageCounts),
+          backgroundColor: ["#dc67dc", "#67b7dc", "#a367dc"],
+          borderWidth: 1,
+        },
+      ],
+    };
+
     const examData = {
       title: "آزمون‌های پیش‌ثبت‌نام‌شده",
       reportSlides: [
-        {
-          title: "تعداد کل داوطلب‌ها",
-          type: "pie",
-          data: {
-            labels: ["داوطلب‌ها"],
-            datasets: [
-              {
-                data: [totalCandidates],
-                backgroundColor: ["#6794dc"],
-              },
-            ],
-          },
-        },
         {
           title: "تحلیل چپ‌دست و راست‌دست",
           type: "pie",
           data: handednessData,
         },
+        {
+          title: "پراکندگی ثبت‌نام در استان‌های کشور",
+          type: "map",
+          data: provinceData,
+        },
+        {
+          title: "تحلیل دین داوطلب‌ها",
+          type: "bar",
+          data: religionData,
+        },
+        {
+          title: "توزیع سنی داوطلب‌ها",
+          type: "histogram",
+          data: ageHistogramData,
+        },
+        {
+          title: "وضعیت تأهل داوطلب‌ها",
+          type: "doughnut",
+          data: marriageDoughnutData,
+        },
       ],
       examStats: [
         { label: "تعداد کل شرکت‌کنندگان", value: `${totalCandidates} نفر` },
-        {
-          label: "چپ‌دست‌ها",
-          value: `${handednessData.datasets[0].data[0]} نفر`,
-        },
-        {
-          label: "راست‌دست‌ها",
-          value: `${handednessData.datasets[0].data[1]} نفر`,
-        },
+        { label: "چپ‌دست‌ها", value: `${handednessData.datasets[0].data[0]} نفر` },
+        { label: "راست‌دست‌ها", value: `${handednessData.datasets[0].data[1]} نفر` },
+        { label: "تعداد متأهل‌ها", value: `${marriedCount} نفر` },
+        { label: "میانگین سنی", value: `${averageAge} سال` },
       ],
       religionChart: religionData,
     };
@@ -266,18 +470,11 @@ export const fetchExamsData = async () => {
     return [examData];
   } catch (error) {
     console.error("Error fetching exams data:", error);
-    return [
-      {
-        title: "آزمون‌های پیش‌ثبت‌نام‌شده",
-        reportSlides: [],
-        examStats: [],
-        religionChart: {
-          labels: [],
-          datasets: [
-            { label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] },
-          ],
-        },
-      },
-    ];
+    return [{
+      title: "آزمون‌های پیش‌ثبت‌نام‌شده",
+      reportSlides: [],
+      examStats: [],
+      religionChart: { labels: [], datasets: [{ label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] }] },
+    }];
   }
 };

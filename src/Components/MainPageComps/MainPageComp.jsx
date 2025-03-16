@@ -1,7 +1,8 @@
+// src/components/MainPageComp.jsx
 import React, { useState, useEffect } from "react";
 import "./MainPageComp.scss";
 import Slider from "react-slick";
-import { Pie, Bar } from "react-chartjs-2";
+import { Pie, Bar, Doughnut } from "react-chartjs-2";
 import { IoMdSearch } from "react-icons/io";
 import { FaCircleUser } from "react-icons/fa6";
 import { LuFilter } from "react-icons/lu";
@@ -18,6 +19,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { fetchExamsData } from "../../dataService";
+import ProvinceMapChart from "./ProvinceMapChart/ProvinceMapChart";
 
 ChartJS.register(
   ArcElement,
@@ -89,17 +91,24 @@ const MainPageComp = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
+    lazyLoad: "ondemand",
+    afterChange: () => {
+      window.dispatchEvent(new Event("resize"));
+    },
   };
 
   const filteredExams = examsData.filter((exam) =>
     exam.title.includes(searchTerm)
   );
 
+  if (loading) {
+    return <div>در حال بارگذاری...</div>;
+  }
+
   return (
     <div className="exam-report-slider">
       <DotLottieReact
         src="/assets/Lootie/eMmMth4rX1.lottie"
-        key="background-animation"
         loop
         autoplay
         className="home-lottie-background"
@@ -170,7 +179,52 @@ const MainPageComp = () => {
                   <h3 className="slide-title">{slide.title}</h3>
                   <div className="chart-container">
                     {slide.type === "pie" && <Pie data={slide.data} />}
-                    {slide.type === "bar" && <Bar data={slide.data} />}
+                    {slide.type === "bar" && (
+                      <Bar
+                        data={slide.data}
+                        options={{
+                          scales: {
+                            y: {
+                              beginAtZero: true,
+                              title: { display: true, text: "تعداد داوطلب‌ها" },
+                            },
+                            x: { title: { display: true, text: "دین" } },
+                          },
+                        }}
+                      />
+                    )}
+                    {slide.type === "map" && (
+                      <ProvinceMapChart data={slide.data} />
+                    )}
+
+                    {slide.type === "histogram" && (
+                      <Bar
+                        data={slide.data}
+                        options={{
+                          scales: {
+                            y: {
+                              beginAtZero: true,
+                              title: { display: true, text: "تعداد داوطلب‌ها" },
+                            },
+                            x: {
+                              title: { display: true, text: "سن (سال)" },
+                              ticks: {
+                                autoSkip: false, // همه برچسب‌ها رو نشون بده
+                                maxRotation: 45, // زاویه‌دار کردن برچسب‌ها اگه زیاد بشن
+                              },
+                            },
+                          },
+                          plugins: {
+                            legend: { display: false }, // بدون لجند
+                          },
+                          barPercentage: 1.0, // میله‌ها به هم بچسبن
+                          categoryPercentage: 1.0, // فاصله بین میله‌ها صفر بشه
+                        }}
+                      />
+                    )}
+                    {slide.type === "doughnut" && (
+                      <Doughnut data={slide.data} />
+                    )}
                   </div>
                 </div>
               ))}
@@ -184,30 +238,6 @@ const MainPageComp = () => {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="religion-chart">
-              <h3>تحلیل دین داوطلب‌ها</h3>
-              <div className="chart-container">
-                {exam.religionChart && exam.religionChart.labels.length > 0 ? (
-                  <Bar
-                    data={exam.religionChart}
-                    options={{
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          suggestedMax: exam.examStats[0].value.split(" ")[0],
-                          title: { display: true, text: "تعداد داوطلب‌ها" },
-                        },
-                        x: {
-                          title: { display: true, text: "دین" },
-                        },
-                      },
-                    }}
-                  />
-                ) : (
-                  <p>داده‌ای برای نمایش وجود ندارد</p>
-                )}
-              </div>
             </div>
           </div>
         ))}
