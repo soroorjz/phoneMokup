@@ -20,7 +20,6 @@ import "slick-carousel/slick/slick-theme.css";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { fetchExamsData } from "../../dataService";
 import ProvinceMapChart from "./ProvinceMapChart/ProvinceMapChart";
-
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -85,12 +84,11 @@ const MainPageComp = () => {
 
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
+    autoplay: false,
     lazyLoad: "ondemand",
     afterChange: () => {
       window.dispatchEvent(new Event("resize"));
@@ -170,82 +168,126 @@ const MainPageComp = () => {
       </div>
 
       <div className="mainContent">
-        {examsData.map((exam, examIndex) => (
-          <div key={examIndex} className="exam-section">
-            <h2 className="exam-title">{exam.title}</h2>
-            <Slider {...settings} className="mainPageSlider">
-              {exam.reportSlides.map((slide, index) => (
-                <div key={index} className="slide">
-                  <h3 className="slide-title">{slide.title}</h3>
-                  <div className="chart-container">
-                    {slide.type === "pie" && <Pie data={slide.data} />}
-                    {slide.type === "bar" && (
-                      <Bar
-                        data={slide.data}
-                        options={{
-                          scales: {
-                            y: {
-                              beginAtZero: true,
-                              title: { display: true, text: "تعداد داوطلب‌ها" },
-                            },
-                            x: { title: { display: true, text: "دین" } },
-                          },
-                        }}
-                      />
-                    )}
-                    {slide.type === "map" && (
-                      <ProvinceMapChart data={slide.data} />
-                    )}
-
-                    {slide.type === "histogram" && (
-                      <Bar
-                        data={slide.data}
-                        options={{
-                          scales: {
-                            y: {
-                              beginAtZero: true,
-                              title: { display: true, text: "تعداد داوطلب‌ها" },
-                            },
-                            x: {
-                              title: { display: true, text: "سن (سال)" },
-                              ticks: {
-                                autoSkip: false, 
-                                maxRotation: 45, 
+        {examsData.map((exam, examIndex) => {
+          console.log(
+            `رندر بخش ${examIndex}: ${exam.title}`,
+            exam.reportSlides
+          );
+          return (
+            <div key={examIndex} className="exam-section">
+              <h2 className="exam-title">{exam.title}</h2>
+              <Slider {...settings} className="mainPageSlider">
+                {exam.reportSlides.map((slide, slideIndex) => (
+                  <div key={slideIndex} className="slide">
+                    <h3 className="slide-title">{slide.title}</h3>
+                    <div className="chart-container">
+                      {slide.type === "pie" && <Pie data={slide.data} />}
+                      {slide.type === "bar" && (
+                        <Bar
+                          data={slide.data}
+                          options={{
+                            scales: {
+                              y: {
+                                beginAtZero: true,
+                                title: {
+                                  display: true,
+                                  text: "تعداد داوطلب‌ها",
+                                },
+                              },
+                              x: {
+                                title: {
+                                  display: true,
+                                  text: slide.title.includes("آزمون")
+                                    ? "آزمون‌ها"
+                                    : "دین",
+                                },
+                                ticks: { maxRotation: 45, minRotation: 45 },
                               },
                             },
-                          },
-                          plugins: {
-                            legend: { display: false }, 
-                          },
-                          barPercentage: 1.0, 
-                          categoryPercentage: 1.0, 
-                        }}
-                      />
-                    )}
-                    {slide.type === "doughnut" && (
-                      <Doughnut data={slide.data} />
-                    )}
+                          }}
+                        />
+                      )}
+                      {slide.type === "map" && (
+                        <ProvinceMapChart data={slide.data} />
+                      )}
+                      {slide.type === "histogram" && (
+                        <Bar
+                          data={slide.data}
+                          options={{
+                            scales: {
+                              y: {
+                                beginAtZero: true,
+                                title: {
+                                  display: true,
+                                  text: "تعداد داوطلب‌ها",
+                                },
+                              },
+                              x: {
+                                title: { display: true, text: "سن (سال)" },
+                                ticks: { autoSkip: false, maxRotation: 45 },
+                              },
+                            },
+                            plugins: { legend: { display: false } },
+                            barPercentage: 1.0,
+                            categoryPercentage: 1.0,
+                          }}
+                        />
+                      )}
+                      {slide.type === "doughnut" && (
+                        <Doughnut data={slide.data} />
+                      )}
+                      {slide.type === "nestedDoughnut" && (
+                        <Doughnut
+                          data={slide.data}
+                          options={{
+                            cutout: "20%", 
+                            plugins: {
+                              legend: {
+                                position: "right",
+                                labels: {
+                                  filter: (item) => {
+                                    // فقط مجری‌ها (لایه داخلی) توی لجند باشن
+                                    return (
+                                      slide.data.datasets[1].data[
+                                        item.index
+                                      ] !== undefined
+                                    );
+                                  },
+                                },
+                              },
+                              tooltip: {
+                                callbacks: {
+                                  label: (context) => {
+                                    const datasetLabel =
+                                      context.dataset.label || "";
+                                    const label = context.label || "";
+                                    return `${datasetLabel}: ${label}`;
+                                  },
+                                },
+                              },
+                            },
+                          }}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </Slider>
-            <div className="MainPage-exam-stats">
-              <h3>
-               توضیحات گزارش‌ها
-                </h3>
-              <ul className="stats-list">
-                {exam.examStats.map((stat, index) => (
-                  <li key={index} className="stats-item">
-                    <strong>{stat.label}: </strong> {stat.value}
-                  </li>
                 ))}
-              </ul>
+              </Slider>
+              <div className="MainPage-exam-stats">
+                <h3>نگاه کلی</h3>
+                <ul className="stats-list">
+                  {exam.examStats.map((stat, statIndex) => (
+                    <li key={statIndex} className="stats-item">
+                      <strong>{stat.label}: </strong> {stat.value}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 };
-
 export default MainPageComp;

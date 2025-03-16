@@ -1,5 +1,8 @@
+// src/services/dataService.js (کامل با تغییرات)
 import axios from "axios";
+import { organizerColors } from "./Components/MainPageComps/colors";
 import moment from "jalali-moment";
+
 const apiClient = axios.create({
   baseURL: "/api",
   headers: {
@@ -211,19 +214,16 @@ export const fetchReligionData = async () => {
 
 export const fetchProvinceData = async () => {
   try {
-    //  داوطلب‌ها
     const preregisterResponse = await apiClient.get(
       "/preregister/preregisters"
     );
     const candidates = preregisterResponse.data;
     console.log("داوطلب‌ها از /preregister/preregisters:", candidates);
 
-    //  انتخاب‌ها
     const choiceResponse = await apiClient.get("/choice/choices");
     const choices = choiceResponse.data;
     console.log("انتخاب‌ها از /choice/choices:", choices);
 
-    //   ( استان‌ها)
     const geographyResponse = await apiClient.get("/geography/geographies");
     const geographies = geographyResponse.data.filter(
       (g) => g.geographyParent === null
@@ -338,7 +338,7 @@ export const fetchProvinceData = async () => {
     }));
   }
 };
-
+// src/services/dataService.js (فقط بخش fetchExamsData)
 export const fetchExamsData = async () => {
   try {
     const preregisterResponse = await apiClient.get(
@@ -355,6 +355,10 @@ export const fetchExamsData = async () => {
     const profiles = profileResponse.data;
     const marriageResponse = await apiClient.get("/marriage/marriages");
     const marriages = marriageResponse.data;
+    const examResponse = await apiClient.get("/exam/exams");
+    const exams = examResponse.data;
+    const organizerResponse = await apiClient.get("/organizer/organizers");
+    const organizers = organizerResponse.data;
 
     if (!candidates.length) {
       console.warn("No candidates found in response");
@@ -403,7 +407,7 @@ export const fetchExamsData = async () => {
       ],
     };
 
-    //  تأهل
+    // تأهل
     const marriageCounts = candidates.reduce((acc, candidate) => {
       const applicant = applicants.find(
         (a) => a.applicantId === candidate.preRegisterApplicantRef
@@ -421,7 +425,7 @@ export const fetchExamsData = async () => {
 
     const marriedCount = marriageCounts["متاهل"] || 0;
 
-    //  دونات تأهل
+    // دونات تأهل
     const marriageDoughnutData = {
       labels: Object.keys(marriageCounts),
       datasets: [
@@ -433,13 +437,13 @@ export const fetchExamsData = async () => {
       ],
     };
 
-    //   استان با بیشترین داوطلب
+    // استان با بیشترین داوطلب
     const maxProvince = provinceData.reduce(
       (max, current) => (current.value > max.value ? current : max),
       { value: 0, name: "نامشخص" }
     );
 
-    //   دین غالب
+    // دین غالب
     const religionCounts = religionData.datasets[0].data;
     const religionLabels = religionData.labels;
     const maxReligionIndex = religionCounts.indexOf(
@@ -447,63 +451,187 @@ export const fetchExamsData = async () => {
     );
     const dominantReligion = religionLabels[maxReligionIndex] || "نامشخص";
 
-    const examData = {
-      title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
-      reportSlides: [
-        {
-          title: "مقایسه داوطلب‌های چپ‌دست و راست‌دست",
-          type: "pie",
-          data: handednessData,
-        },
-        {
-          title: "پراکندگی تعداد داوطلب‌ها در استان‌های کشور",
-          type: "map",
-          data: provinceData,
-        },
-        {
-          title: "توزیع دین داوطلب‌ها",
-          type: "bar",
-          data: religionData,
-        },
-        {
-          title: "توزیع سنی داوطلب‌ها",
-          type: "histogram",
-          data: ageHistogramData,
-        },
-        {
-          title: "وضعیت تأهل داوطلب‌ها",
-          type: "doughnut",
-          data: marriageDoughnutData,
-        },
-      ],
-      examStats: [
-        { label: "تعداد کل شرکت‌کنندگان", value: `${totalCandidates} نفر` },
-        { label: "تعداد داوطلب‌های متأهل", value: `${marriedCount} نفر` },
-        { label: "میانگین سنی داوطلب‌ها", value: `${averageAge} سال` },
+    // محاسبه تعداد داوطلب‌ها برای هر آزمون
+    const examCounts = exams.reduce((acc, exam) => {
+      acc[exam.examId] = { name: exam.examName, count: 0 };
+      return acc;
+    }, {});
+    candidates.forEach((candidate) => {
+      const examId = candidate.preRegisterExamRef;
+      if (examCounts[examId]) {
+        examCounts[examId].count += 1;
+      } else {
+        console.warn(`آزمون با ID ${examId} در لیست آزمون‌ها یافت نشد`);
+      }
+    });
 
+    const examBarData = {
+      labels: Object.values(examCounts).map((exam) => exam.name),
+      datasets: [
         {
-          label: "بیشترین داوطلب‌ها از استان",
-          value: `${maxProvince.name} (${maxProvince.value} نفر)`,
-        },
-        {
-          label: "دین غالب داوطلب‌ها",
-          value: dominantReligion,
-        },
-        {
-          label: "تعداد داوطلب‌های چپ‌دست",
-          value: `${handednessData.datasets[0].data[0]} نفر`,
+          label: "تعداد داوطلب‌ها",
+          data: Object.values(examCounts).map((exam) => exam.count),
+          backgroundColor: "rgba(220, 103, 220, 0.6)",
+          borderColor: "rgba(220, 103, 220, 1)",
+          borderWidth: 1,
         },
       ],
-      religionChart: religionData,
     };
 
+    // پیدا کردن آزمون با بیشترین داوطلب
+    const maxExam = Object.values(examCounts).reduce(
+      (max, current) => (current.count > max.count ? current : max),
+      { name: "نامشخص", count: 0 }
+    );
+
+    // محاسبه داده‌های دونات تودرتو (مجری‌ها داخلی، آزمون‌ها خارجی)
+    const organizerExamData = organizers.reduce((acc, organizer) => {
+      acc[organizer.organizerId] = {
+        name: organizer.organizerName,
+        exams: [],
+      };
+      return acc;
+    }, {});
+
+    exams.forEach((exam) => {
+      const organizerId = exam.examOrganizerRef;
+      if (organizerExamData[organizerId]) {
+        organizerExamData[organizerId].exams.push(exam.examName);
+      } else {
+        console.warn(`مجری با ID ${organizerId} در لیست مجری‌ها یافت نشد`);
+      }
+    });
+
+    // ساخت برچسب‌ها و داده‌ها برای دونات تودرتو
+    const nestedLabels = [];
+    const innerData = []; // مجری‌ها (داخلی)
+    const outerData = []; // آزمون‌ها (خارجی)
+    const innerColors = []; // رنگ‌های مجری‌ها
+    const outerColors = []; // رنگ‌های آزمون‌ها
+
+    Object.values(organizerExamData).forEach((organizer) => {
+      const organizerId = String(organizer.organizerId); // تبدیل به رشته
+      // لایه داخلی: مجری‌ها
+      nestedLabels.push(organizer.name);
+      innerData.push(organizer.exams.length || 1); // تعداد آزمون‌ها یا 1 اگه هیچی نبود
+      innerColors.push(organizerColors[organizerId] || "#CCCCCC"); // استفاده از رنگ‌های مشترک
+
+      // لایه خارجی: آزمون‌ها
+      if (organizer.exams.length > 0) {
+        organizer.exams.forEach((examName, examIndex) => {
+          nestedLabels.push(examName);
+          outerData.push(1); // هر آزمون یه واحد
+          outerColors.push(
+            `hsl(${270 - examIndex * 20}, 70%, ${50 - examIndex * 5}%)`
+          ); // طیف بنفش برای آزمون‌ها
+        });
+      } else {
+        nestedLabels.push(`${organizer.name} - بدون آزمون`);
+        outerData.push(1);
+        outerColors.push("rgba(0, 0, 0, 0)"); // بی‌رنگ برای بدون آزمون
+      }
+    });
+
+    const nestedDoughnutData = {
+      labels: nestedLabels,
+      datasets: [
+        {
+          label: "آزمون‌ها",
+          data: outerData,
+          backgroundColor: outerColors,
+          borderWidth: 1,
+          weight: 2, // لایه خارجی
+        },
+        {
+          label: "مجری‌ها",
+          data: innerData,
+          backgroundColor: innerColors,
+          borderWidth: 1,
+          weight: 1, // لایه داخلی
+        },
+      ],
+    };
+
+    const examData = [
+      {
+        title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
+        reportSlides: [
+          {
+            title: "مقایسه داوطلب‌های چپ‌دست و راست‌دست",
+            type: "pie",
+            data: handednessData,
+          },
+          {
+            title: "پراکندگی تعداد داوطلب‌ها در استان‌های کشور",
+            type: "map",
+            data: provinceData,
+          },
+          {
+            title: "توزیع دین داوطلب‌ها",
+            type: "bar",
+            data: religionData,
+          },
+          {
+            title: "توزیع سنی داوطلب‌ها",
+            type: "histogram",
+            data: ageHistogramData,
+          },
+          {
+            title: "وضعیت تأهل داوطلب‌ها",
+            type: "doughnut",
+            data: marriageDoughnutData,
+          },
+        ],
+        examStats: [
+          { label: "تعداد کل شرکت‌کنندگان", value: `${totalCandidates} نفر` },
+          { label: "تعداد داوطلب‌های متأهل", value: `${marriedCount} نفر` },
+          { label: "میانگین سنی داوطلب‌ها", value: `${averageAge} سال` },
+          {
+            label: "بیشترین داوطلب‌ها از استان",
+            value: `${maxProvince.name} (${maxProvince.value} نفر)`,
+          },
+          {
+            label: "دین غالب داوطلب‌ها",
+            value: dominantReligion,
+          },
+          {
+            label: "تعداد داوطلب‌های چپ‌دست",
+            value: `${handednessData.datasets[0].data[0]} نفر`,
+          },
+        ],
+        religionChart: religionData,
+      },
+      {
+        title: "مقایسه آزمون‌ها",
+        reportSlides: [
+          {
+            title: "تعداد داوطلب‌ها در هر آزمون",
+            type: "bar",
+            data: examBarData,
+          },
+          {
+            title: "توزیع آزمون‌ها بر اساس مجری",
+            type: "nestedDoughnut",
+            data: nestedDoughnutData,
+          },
+        ],
+        examStats: [
+          {
+            label: "بیشترین تعداد داوطلب",
+            value: `${maxExam.name} (${maxExam.count} نفر)`,
+          },
+        ],
+      },
+    ];
+
     console.log("داده‌های نهایی fetchExamsData:", examData);
-    return [examData];
+    console.log("داده‌های دونات تودرتو:", nestedDoughnutData);
+    return examData;
   } catch (error) {
     console.error("Error fetching exams data:", error);
     return [
       {
-        title: "آزمون‌های پیش‌ثبت‌نام‌شده",
+        title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
         reportSlides: [],
         examStats: [],
         religionChart: {
@@ -512,6 +640,11 @@ export const fetchExamsData = async () => {
             { label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] },
           ],
         },
+      },
+      {
+        title: "مقایسه آزمون‌ها",
+        reportSlides: [],
+        examStats: [],
       },
     ];
   }
