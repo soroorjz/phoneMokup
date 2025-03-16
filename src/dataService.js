@@ -230,7 +230,6 @@ export const fetchProvinceData = async () => {
     );
     console.log("استان‌ها از /geography/geographies:", geographies);
 
-    //  provinceMap
     const provinceMap = [
       { id: "IR-01", name: "آذربایجان شرقی" },
       { id: "IR-02", name: "آذربایجان غربی" },
@@ -265,7 +264,6 @@ export const fetchProvinceData = async () => {
       { id: "IR-25", name: "یزد" },
     ];
 
-    // محاسبه تعداد داوطلب‌ها در هر استان
     const provinceData = candidates.map((candidate) => {
       const choice = choices.find(
         (c) => c.choicePreRegisterRef === candidate.preRegisterId
@@ -290,7 +288,6 @@ export const fetchProvinceData = async () => {
     }, {});
     console.log("شمارش استان‌ها:", provinceCounts);
 
-    // تبدیل به فرمت amCharts
     const amChartData = provinceMap.map((province) => ({
       id: province.id,
       value: provinceCounts[province.name] || 0,
@@ -342,10 +339,11 @@ export const fetchProvinceData = async () => {
   }
 };
 
-
 export const fetchExamsData = async () => {
   try {
-    const preregisterResponse = await apiClient.get("/preregister/preregisters");
+    const preregisterResponse = await apiClient.get(
+      "/preregister/preregisters"
+    );
     const candidates = preregisterResponse.data;
     const handednessData = await fetchHandednessData();
     const religionData = await fetchReligionData();
@@ -367,23 +365,28 @@ export const fetchExamsData = async () => {
 
     // محاسبه سن‌ها
     const today = moment();
-    const ages = candidates.map((candidate) => {
-      const applicant = applicants.find((a) => a.applicantId === candidate.preRegisterApplicantRef);
-      const profile = profiles.find((p) => p.profileId === applicant?.applicantProfileRef);
-      if (!profile?.profileBirthDate) return null;
-      const birthDate = moment(profile.profileBirthDate, "jYYYY/jMM/jDD");
-      if (!birthDate.isValid()) return null;
-      return today.diff(birthDate, "years");
-    }).filter((age) => age !== null && age >= 0 && age < 150);
+    const ages = candidates
+      .map((candidate) => {
+        const applicant = applicants.find(
+          (a) => a.applicantId === candidate.preRegisterApplicantRef
+        );
+        const profile = profiles.find(
+          (p) => p.profileId === applicant?.applicantProfileRef
+        );
+        if (!profile?.profileBirthDate) return null;
+        const birthDate = moment(profile.profileBirthDate, "jYYYY/jMM/jDD");
+        if (!birthDate.isValid()) return null;
+        return today.diff(birthDate, "years");
+      })
+      .filter((age) => age !== null && age >= 0 && age < 150);
 
     const averageAge = ages.length
       ? (ages.reduce((a, b) => a + b, 0) / ages.length).toFixed(1)
       : "نامشخص";
 
-    // داده هیستوگرام سن با بازه ۲ سال
     const ageBins = {};
     ages.forEach((age) => {
-      const bin = Math.floor(age / 2) * 2; // بازه‌های ۲ تایی (مثلاً 20-21، 22-23)
+      const bin = Math.floor(age / 2) * 2;
       ageBins[bin] = (ageBins[bin] || 0) + 1;
     });
     const ageHistogramData = {
@@ -392,30 +395,33 @@ export const fetchExamsData = async () => {
         {
           label: "تعداد داوطلب‌ها",
           data: Object.values(ageBins),
-          backgroundColor: "rgba(103, 183, 220, 0.6)", // آبی کم‌رنگ
+          backgroundColor: "rgba(103, 183, 220, 0.6)",
           borderColor: "rgba(103, 183, 220, 1)",
           borderWidth: 1,
-          barThickness: 10, // میله‌ها باریک‌تر
+          barThickness: 10,
         },
       ],
     };
 
-    // محاسبه تأهل
-    const marriageCounts = candidates.reduce(
-      (acc, candidate) => {
-        const applicant = applicants.find((a) => a.applicantId === candidate.preRegisterApplicantRef);
-        const profile = profiles.find((p) => p.profileId === applicant?.applicantProfileRef);
-        const marriage = marriages.find((m) => m.marriageId === profile?.profileMarriageRef);
-        const status = marriage?.marriageName || "نامشخص";
-        acc[status] = (acc[status] || 0) + 1;
-        return acc;
-      },
-      {}
-    );
+    //  تأهل
+    const marriageCounts = candidates.reduce((acc, candidate) => {
+      const applicant = applicants.find(
+        (a) => a.applicantId === candidate.preRegisterApplicantRef
+      );
+      const profile = profiles.find(
+        (p) => p.profileId === applicant?.applicantProfileRef
+      );
+      const marriage = marriages.find(
+        (m) => m.marriageId === profile?.profileMarriageRef
+      );
+      const status = marriage?.marriageName || "نامشخص";
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    }, {});
 
     const marriedCount = marriageCounts["متاهل"] || 0;
 
-    // داده دونات تأهل
+    //  دونات تأهل
     const marriageDoughnutData = {
       labels: Object.keys(marriageCounts),
       datasets: [
@@ -427,21 +433,35 @@ export const fetchExamsData = async () => {
       ],
     };
 
+    //   استان با بیشترین داوطلب
+    const maxProvince = provinceData.reduce(
+      (max, current) => (current.value > max.value ? current : max),
+      { value: 0, name: "نامشخص" }
+    );
+
+    //   دین غالب
+    const religionCounts = religionData.datasets[0].data;
+    const religionLabels = religionData.labels;
+    const maxReligionIndex = religionCounts.indexOf(
+      Math.max(...religionCounts)
+    );
+    const dominantReligion = religionLabels[maxReligionIndex] || "نامشخص";
+
     const examData = {
-      title: "آزمون‌های پیش‌ثبت‌نام‌شده",
+      title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
       reportSlides: [
         {
-          title: "تحلیل چپ‌دست و راست‌دست",
+          title: "مقایسه داوطلب‌های چپ‌دست و راست‌دست",
           type: "pie",
           data: handednessData,
         },
         {
-          title: "پراکندگی ثبت‌نام در استان‌های کشور",
+          title: "پراکندگی تعداد داوطلب‌ها در استان‌های کشور",
           type: "map",
           data: provinceData,
         },
         {
-          title: "تحلیل دین داوطلب‌ها",
+          title: "توزیع دین داوطلب‌ها",
           type: "bar",
           data: religionData,
         },
@@ -458,10 +478,21 @@ export const fetchExamsData = async () => {
       ],
       examStats: [
         { label: "تعداد کل شرکت‌کنندگان", value: `${totalCandidates} نفر` },
-        { label: "چپ‌دست‌ها", value: `${handednessData.datasets[0].data[0]} نفر` },
-        { label: "راست‌دست‌ها", value: `${handednessData.datasets[0].data[1]} نفر` },
-        { label: "تعداد متأهل‌ها", value: `${marriedCount} نفر` },
-        { label: "میانگین سنی", value: `${averageAge} سال` },
+        { label: "تعداد داوطلب‌های متأهل", value: `${marriedCount} نفر` },
+        { label: "میانگین سنی داوطلب‌ها", value: `${averageAge} سال` },
+
+        {
+          label: "بیشترین داوطلب‌ها از استان",
+          value: `${maxProvince.name} (${maxProvince.value} نفر)`,
+        },
+        {
+          label: "دین غالب داوطلب‌ها",
+          value: dominantReligion,
+        },
+        {
+          label: "تعداد داوطلب‌های چپ‌دست",
+          value: `${handednessData.datasets[0].data[0]} نفر`,
+        },
       ],
       religionChart: religionData,
     };
@@ -470,11 +501,18 @@ export const fetchExamsData = async () => {
     return [examData];
   } catch (error) {
     console.error("Error fetching exams data:", error);
-    return [{
-      title: "آزمون‌های پیش‌ثبت‌نام‌شده",
-      reportSlides: [],
-      examStats: [],
-      religionChart: { labels: [], datasets: [{ label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] }] },
-    }];
+    return [
+      {
+        title: "آزمون‌های پیش‌ثبت‌نام‌شده",
+        reportSlides: [],
+        examStats: [],
+        religionChart: {
+          labels: [],
+          datasets: [
+            { label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] },
+          ],
+        },
+      },
+    ];
   }
 };

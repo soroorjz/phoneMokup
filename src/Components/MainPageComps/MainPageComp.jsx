@@ -209,16 +209,16 @@ const MainPageComp = () => {
                             x: {
                               title: { display: true, text: "سن (سال)" },
                               ticks: {
-                                autoSkip: false, // همه برچسب‌ها رو نشون بده
-                                maxRotation: 45, // زاویه‌دار کردن برچسب‌ها اگه زیاد بشن
+                                autoSkip: false, 
+                                maxRotation: 45, 
                               },
                             },
                           },
                           plugins: {
-                            legend: { display: false }, // بدون لجند
+                            legend: { display: false }, 
                           },
-                          barPercentage: 1.0, // میله‌ها به هم بچسبن
-                          categoryPercentage: 1.0, // فاصله بین میله‌ها صفر بشه
+                          barPercentage: 1.0, 
+                          categoryPercentage: 1.0, 
                         }}
                       />
                     )}
@@ -230,7 +230,9 @@ const MainPageComp = () => {
               ))}
             </Slider>
             <div className="MainPage-exam-stats">
-              <h3>نگاه کلی به آزمون</h3>
+              <h3>
+               توضیحات گزارش‌ها
+                </h3>
               <ul className="stats-list">
                 {exam.examStats.map((stat, index) => (
                   <li key={index} className="stats-item">
