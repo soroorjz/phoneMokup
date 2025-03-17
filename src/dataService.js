@@ -3,7 +3,7 @@ import axios from "axios";
 import { organizerColors } from "./Components/MainPageComps/colors";
 import moment from "jalali-moment";
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
   baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
@@ -214,122 +214,165 @@ export const fetchReligionData = async () => {
 
 export const fetchProvinceData = async () => {
   try {
+    // گرفتن دیتای داوطلب‌ها
     const preregisterResponse = await apiClient.get(
       "/preregister/preregisters"
     );
     const candidates = preregisterResponse.data;
     console.log("داوطلب‌ها از /preregister/preregisters:", candidates);
 
-    const choiceResponse = await apiClient.get("/choice/choices");
-    const choices = choiceResponse.data;
-    console.log("انتخاب‌ها از /choice/choices:", choices);
-
+    // گرفتن دیتای جغرافیایی
     const geographyResponse = await apiClient.get("/geography/geographies");
-    const geographies = geographyResponse.data.filter(
-      (g) => g.geographyParent === null
-    );
+    const geographies = geographyResponse.data;
     console.log("استان‌ها از /geography/geographies:", geographies);
 
+    // مپ کردن geographyId به idهای AmCharts
+    const provinceIdMap = {
+      1: "IR-01", // آذربایجان شرقی
+      2: "IR-02", // آذربایجان غربی
+      3: "IR-03", // اردبیل
+      4: "IR-04", // اصفهان
+      5: "IR-32", // البرز
+      6: "IR-05", // ایلام
+      7: "IR-06", // بوشهر
+      8: "IR-07", // تهران
+      9: "IR-08", // چهارمحال و بختیاری
+      10: "IR-29", // خراسان جنوبی
+      11: "IR-30", // خراسان رضوی
+      12: "IR-31", // خراسان شمالی
+      13: "IR-10", // خوزستان
+      14: "IR-11", // زنجان
+      15: "IR-12", // سمنان
+      16: "IR-13", // سیستان و بلوچستان
+      17: "IR-14", // فارس
+      18: "IR-28", // قزوین
+      19: "IR-26", // قم
+      20: "IR-16", // کردستان
+      21: "IR-15", // کرمان
+      22: "IR-17", // کرمانشاه
+      23: "IR-18", // کهگیلویه و بویراحمد
+      24: "IR-27", // گلستان
+      25: "IR-19", // گیلان
+      26: "IR-20", // لرستان
+      27: "IR-21", // مازندران
+      28: "IR-22", // مرکزی
+      29: "IR-23", // هرمزگان
+      30: "IR-24", // همدان
+      31: "IR-25", // یزد
+    };
+
+    // لیست استاندارد AmCharts برای نمایش همه استان‌ها
     const provinceMap = [
-      { id: "IR-01", name: "آذربایجان شرقی" },
-      { id: "IR-02", name: "آذربایجان غربی" },
-      { id: "IR-03", name: "اردبیل" },
+      { id: "IR-01", name: "آذربايجان شرقي" },
+      { id: "IR-02", name: "آذربايجان غربي" },
+      { id: "IR-03", name: "اردبيل" },
       { id: "IR-04", name: "اصفهان" },
       { id: "IR-32", name: "البرز" },
-      { id: "IR-05", name: "ایلام" },
+      { id: "IR-05", name: "ايلام" },
       { id: "IR-06", name: "بوشهر" },
       { id: "IR-07", name: "تهران" },
-      { id: "IR-08", name: "چهارمحال و بختیاری" },
-      { id: "IR-29", name: "خراسان جنوبی" },
-      { id: "IR-30", name: "خراسان رضوی" },
-      { id: "IR-31", name: "خراسان شمالی" },
+      { id: "IR-08", name: "چهارمحال و بختياري" },
+      { id: "IR-29", name: "خراسان جنوبي" },
+      { id: "IR-30", name: "خراسان رضوي" },
+      { id: "IR-31", name: "خراسان شمالي" },
       { id: "IR-10", name: "خوزستان" },
       { id: "IR-11", name: "زنجان" },
       { id: "IR-12", name: "سمنان" },
-      { id: "IR-13", name: "سیستان و بلوچستان" },
+      { id: "IR-13", name: "سيستان و بلوچستان" },
       { id: "IR-14", name: "فارس" },
-      { id: "IR-28", name: "قزوین" },
+      { id: "IR-28", name: "قزوين" },
       { id: "IR-26", name: "قم" },
-      { id: "IR-16", name: "کردستان" },
-      { id: "IR-15", name: "کرمان" },
-      { id: "IR-17", name: "کرمانشاه" },
-      { id: "IR-18", name: "کهگیلویه و بویراحمد" },
+      { id: "IR-16", name: "كردستان" },
+      { id: "IR-15", name: "كرمان" },
+      { id: "IR-17", name: "كرمانشاه" },
+      { id: "IR-18", name: "كهكيلويه و بويراحمد" },
       { id: "IR-27", name: "گلستان" },
-      { id: "IR-19", name: "گیلان" },
+      { id: "IR-19", name: "گيلان" },
       { id: "IR-20", name: "لرستان" },
       { id: "IR-21", name: "مازندران" },
-      { id: "IR-22", name: "مرکزی" },
+      { id: "IR-22", name: "مركزي" },
       { id: "IR-23", name: "هرمزگان" },
       { id: "IR-24", name: "همدان" },
-      { id: "IR-25", name: "یزد" },
+      { id: "IR-25", name: "يزد" },
     ];
 
+    // مپ کردن داوطلب‌ها به اسم استان‌ها
     const provinceData = candidates.map((candidate) => {
-      const choice = choices.find(
-        (c) => c.choicePreRegisterRef === candidate.preRegisterId
-      );
-      const province = geographies.find(
-        (g) => g.geographyId === choice?.choiceExamProvinceRef
+      const geography = geographies.find(
+        (g) => g.geographyId === candidate.preRegisterSelectedProvince
       );
       console.log(`داوطلب ${candidate.preRegisterId}:`, {
-        choiceFound: !!choice,
-        choicePreRegisterRef: choice?.choicePreRegisterRef,
-        choiceExamProvinceRef: choice?.choiceExamProvinceRef,
-        provinceName: province?.geographyName || "نامشخص",
+        preRegisterSelectedProvince: candidate.preRegisterSelectedProvince,
+        geographyName: geography?.geographyName || "نامشخص",
       });
       return {
-        provinceName: province?.geographyName || "نامشخص",
+        provinceName: geography?.geographyName || "نامشخص",
+        geographyId: candidate.preRegisterSelectedProvince,
       };
     });
 
+    // شمارش داوطلب‌ها توی هر استان
     const provinceCounts = provinceData.reduce((acc, data) => {
       acc[data.provinceName] = (acc[data.provinceName] || 0) + 1;
       return acc;
     }, {});
     console.log("شمارش استان‌ها:", provinceCounts);
 
-    const amChartData = provinceMap.map((province) => ({
-      id: province.id,
-      value: provinceCounts[province.name] || 0,
-      name: province.name,
-    }));
+    // ساخت دیتای نهایی برای نقشه (شامل همه استان‌ها)
+    const amChartData = provinceMap.map((province) => {
+      const geoId = provinceData.find(
+        (p) => p.provinceName === province.name
+      )?.geographyId;
+      const expectedId = Object.keys(provinceIdMap).find(
+        (key) => provinceIdMap[key] === province.id
+      );
+      const value =
+        geoId && provinceIdMap[geoId] === province.id
+          ? provinceCounts[province.name] || 0
+          : 0;
+      return {
+        id: province.id,
+        value: value,
+        name: province.name,
+      };
+    });
 
     console.log("داده‌های نقشه استان‌ها:", amChartData);
     return amChartData;
   } catch (error) {
     console.error("Error fetching province data:", error);
     const provinceMapFallback = [
-      { id: "IR-01", name: "آذربایجان شرقی" },
-      { id: "IR-02", name: "آذربایجان غربی" },
-      { id: "IR-03", name: "اردبیل" },
+      { id: "IR-01", name: "آذربايجان شرقي" },
+      { id: "IR-02", name: "آذربايجان غربي" },
+      { id: "IR-03", name: "اردبيل" },
       { id: "IR-04", name: "اصفهان" },
       { id: "IR-32", name: "البرز" },
-      { id: "IR-05", name: "ایلام" },
+      { id: "IR-05", name: "ايلام" },
       { id: "IR-06", name: "بوشهر" },
       { id: "IR-07", name: "تهران" },
-      { id: "IR-08", name: "چهارمحال و بختیاری" },
-      { id: "IR-29", name: "خراسان جنوبی" },
-      { id: "IR-30", name: "خراسان رضوی" },
-      { id: "IR-31", name: "خراسان شمالی" },
+      { id: "IR-08", name: "چهارمحال و بختياري" },
+      { id: "IR-29", name: "خراسان جنوبي" },
+      { id: "IR-30", name: "خراسان رضوي" },
+      { id: "IR-31", name: "خراسان شمالي" },
       { id: "IR-10", name: "خوزستان" },
       { id: "IR-11", name: "زنجان" },
       { id: "IR-12", name: "سمنان" },
-      { id: "IR-13", name: "سیستان و بلوچستان" },
+      { id: "IR-13", name: "سيستان و بلوچستان" },
       { id: "IR-14", name: "فارس" },
-      { id: "IR-28", name: "قزوین" },
+      { id: "IR-28", name: "قزوين" },
       { id: "IR-26", name: "قم" },
-      { id: "IR-16", name: "کردستان" },
-      { id: "IR-15", name: "کرمان" },
-      { id: "IR-17", name: "کرمانشاه" },
-      { id: "IR-18", name: "کهگیلویه و بویراحمد" },
+      { id: "IR-16", name: "كردستان" },
+      { id: "IR-15", name: "كرمان" },
+      { id: "IR-17", name: "كرمانشاه" },
+      { id: "IR-18", name: "كهكيلويه و بويراحمد" },
       { id: "IR-27", name: "گلستان" },
-      { id: "IR-19", name: "گیلان" },
+      { id: "IR-19", name: "گيلان" },
       { id: "IR-20", name: "لرستان" },
       { id: "IR-21", name: "مازندران" },
-      { id: "IR-22", name: "مرکزی" },
+      { id: "IR-22", name: "مركزي" },
       { id: "IR-23", name: "هرمزگان" },
       { id: "IR-24", name: "همدان" },
-      { id: "IR-25", name: "یزد" },
+      { id: "IR-25", name: "يزد" },
     ];
     return provinceMapFallback.map((province) => ({
       id: province.id,
@@ -338,7 +381,6 @@ export const fetchProvinceData = async () => {
     }));
   }
 };
-// src/services/dataService.js (فقط بخش fetchExamsData)
 export const fetchExamsData = async () => {
   try {
     const preregisterResponse = await apiClient.get(
@@ -362,7 +404,7 @@ export const fetchExamsData = async () => {
 
     if (!candidates.length) {
       console.warn("No candidates found in response");
-      return [];
+      return { examData: [], organizers: [] };
     }
 
     const totalCandidates = candidates.length;
@@ -484,7 +526,6 @@ export const fetchExamsData = async () => {
       { name: "نامشخص", count: 0 }
     );
 
-    // محاسبه داده‌های دونات تودرتو (مجری‌ها داخلی، آزمون‌ها خارجی)
     const organizerExamData = organizers.reduce((acc, organizer) => {
       acc[organizer.organizerId] = {
         name: organizer.organizerName,
@@ -502,33 +543,49 @@ export const fetchExamsData = async () => {
       }
     });
 
-    // ساخت برچسب‌ها و داده‌ها برای دونات تودرتو
     const nestedLabels = [];
     const innerData = []; // مجری‌ها (داخلی)
     const outerData = []; // آزمون‌ها (خارجی)
     const innerColors = []; // رنگ‌های مجری‌ها
     const outerColors = []; // رنگ‌های آزمون‌ها
 
-    Object.values(organizerExamData).forEach((organizer) => {
-      const organizerId = String(organizer.organizerId); // تبدیل به رشته
+    const organizerColors = {
+      1: "#FF4500", // مرکز آموزشی و پژوهشی رایانگان
+      2: "#32CD32", // شرکت آزمون گستر
+      4: "#FFD700", // سازمان سنجش و آموزش کشور
+      5: "#00CED1", // جهاد دانشگاهی
+    };
+
+    organizers.forEach((organizer) => {
+      const organizerId = String(organizer.organizerId);
+      console.log(
+        `Processing organizer: ${organizer.organizerName} (ID: ${organizerId})`
+      );
       // لایه داخلی: مجری‌ها
-      nestedLabels.push(organizer.name);
-      innerData.push(organizer.exams.length || 1); // تعداد آزمون‌ها یا 1 اگه هیچی نبود
-      innerColors.push(organizerColors[organizerId] || "#CCCCCC"); // استفاده از رنگ‌های مشترک
+      nestedLabels.push(organizer.organizerName);
+      innerData.push(
+        organizerExamData[organizer.organizerId].exams.length || 1
+      );
+      innerColors.push(organizerColors[organizerId] || "#CCCCCC");
 
       // لایه خارجی: آزمون‌ها
-      if (organizer.exams.length > 0) {
-        organizer.exams.forEach((examName, examIndex) => {
-          nestedLabels.push(examName);
-          outerData.push(1); // هر آزمون یه واحد
-          outerColors.push(
-            `hsl(${270 - examIndex * 20}, 70%, ${50 - examIndex * 5}%)`
-          ); // طیف بنفش برای آزمون‌ها
-        });
+      if (organizerExamData[organizer.organizerId].exams.length > 0) {
+        organizerExamData[organizer.organizerId].exams.forEach(
+          (examName, examIndex) => {
+            console.log(
+              `Adding exam: ${examName} for organizer: ${organizer.organizerName}`
+            );
+            nestedLabels.push(examName);
+            outerData.push(1);
+            outerColors.push(
+              `hsl(${270 - examIndex * 20}, 70%, ${50 - examIndex * 5}%)`
+            );
+          }
+        );
       } else {
-        nestedLabels.push(`${organizer.name} - بدون آزمون`);
+        nestedLabels.push(`${organizer.organizerName} - بدون آزمون`);
         outerData.push(1);
-        outerColors.push("rgba(0, 0, 0, 0)"); // بی‌رنگ برای بدون آزمون
+        outerColors.push("rgba(0, 0, 0, 0)");
       }
     });
 
@@ -551,7 +608,6 @@ export const fetchExamsData = async () => {
         },
       ],
     };
-
     const examData = [
       {
         title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
@@ -626,26 +682,30 @@ export const fetchExamsData = async () => {
 
     console.log("داده‌های نهایی fetchExamsData:", examData);
     console.log("داده‌های دونات تودرتو:", nestedDoughnutData);
-    return examData;
+    console.log("دیتای organizers:", organizers); // برای دیباگ
+    return { examData, organizers }; // برگردوندن examData و organizers
   } catch (error) {
     console.error("Error fetching exams data:", error);
-    return [
-      {
-        title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
-        reportSlides: [],
-        examStats: [],
-        religionChart: {
-          labels: [],
-          datasets: [
-            { label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] },
-          ],
+    return {
+      examData: [
+        {
+          title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
+          reportSlides: [],
+          examStats: [],
+          religionChart: {
+            labels: [],
+            datasets: [
+              { label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] },
+            ],
+          },
         },
-      },
-      {
-        title: "مقایسه آزمون‌ها",
-        reportSlides: [],
-        examStats: [],
-      },
-    ];
+        {
+          title: "مقایسه آزمون‌ها",
+          reportSlides: [],
+          examStats: [],
+        },
+      ],
+      organizers: [],
+    };
   }
 };

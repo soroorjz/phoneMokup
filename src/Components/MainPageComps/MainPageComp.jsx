@@ -1,4 +1,3 @@
-// src/components/MainPageComp.jsx
 import React, { useState, useEffect } from "react";
 import "./MainPageComp.scss";
 import Slider from "react-slick";
@@ -20,6 +19,9 @@ import "slick-carousel/slick/slick-theme.css";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { fetchExamsData } from "../../dataService";
 import ProvinceMapChart from "./ProvinceMapChart/ProvinceMapChart";
+import { organizerColors } from "./colors";
+import { apiClient } from "../../dataService";
+
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -33,6 +35,7 @@ const MainPageComp = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("جدیدترین گزارشات");
   const [examsData, setExamsData] = useState([]);
+  const [organizers, setOrganizers] = useState([]); // اضافه کردن state برای organizers
   const [selectedExam, setSelectedExam] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -46,10 +49,12 @@ const MainPageComp = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      const data = await fetchExamsData();
-      console.log("Data loaded:", data);
-      setExamsData(data);
-      setSelectedExam(data[0] || null);
+      const { examData, organizers } = await fetchExamsData(); // گرفتن examData و organizers
+      console.log("Data loaded:", examData);
+      console.log("Organizers:", organizers);
+      setExamsData(examData);
+      setOrganizers(organizers);
+      setSelectedExam(examData[0] || null);
       setLoading(false);
     };
     loadData();
@@ -240,17 +245,35 @@ const MainPageComp = () => {
                         <Doughnut
                           data={slide.data}
                           options={{
-                            cutout: "20%", 
+                            cutout: "20%", // سوراخ تنگ‌تر
                             plugins: {
                               legend: {
                                 position: "right",
                                 labels: {
                                   filter: (item) => {
-                                    // فقط مجری‌ها (لایه داخلی) توی لجند باشن
                                     return (
+                                      item.index < organizers.length &&
                                       slide.data.datasets[1].data[
                                         item.index
                                       ] !== undefined
+                                    );
+                                  },
+                                  generateLabels: (chart) => {
+                                    const datasets = chart.data.datasets;
+                                    const innerData = datasets[1].data;
+                                    return organizers.map(
+                                      (organizer, index) => {
+                                        const color =
+                                          organizerColors[
+                                            String(organizer.organizerId)
+                                          ] || "#CCCCCC";
+                                        return {
+                                          text: organizer.organizerName,
+                                          fillStyle: color,
+                                          hidden: !innerData[index],
+                                          index,
+                                        };
+                                      }
                                     );
                                   },
                                 },
@@ -258,10 +281,21 @@ const MainPageComp = () => {
                               tooltip: {
                                 callbacks: {
                                   label: (context) => {
-                                    const datasetLabel =
-                                      context.dataset.label || "";
-                                    const label = context.label || "";
-                                    return `${datasetLabel}: ${label}`;
+                                    const datasetIndex = context.datasetIndex;
+                                    const index = context.dataIndex;
+
+                                    if (datasetIndex === 0) {
+                                      // فقط برای لایه خارجی (آزمون‌ها)
+                                      const label = slide.data.labels[index];
+                                      if (
+                                        index >= organizers.length &&
+                                        !label.includes("بدون آزمون")
+                                      ) {
+                                        return label; // فقط اسم آزمون
+                                      }
+                                      return ""; // برای "بدون آزمون" یا اندیس‌های مربوط به مجری‌ها، چیزی نشون نده
+                                    }
+                                    return ""; // برای لایه داخلی چیزی نشون نده
                                   },
                                 },
                               },
@@ -290,4 +324,5 @@ const MainPageComp = () => {
     </div>
   );
 };
+
 export default MainPageComp;
