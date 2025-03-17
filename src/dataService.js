@@ -1,4 +1,3 @@
-// src/services/dataService.js (کامل با تغییرات)
 import axios from "axios";
 import { organizerColors } from "./Components/MainPageComps/colors";
 import moment from "jalali-moment";
@@ -214,19 +213,16 @@ export const fetchReligionData = async () => {
 
 export const fetchProvinceData = async () => {
   try {
-    // گرفتن دیتای داوطلب‌ها
     const preregisterResponse = await apiClient.get(
       "/preregister/preregisters"
     );
     const candidates = preregisterResponse.data;
     console.log("داوطلب‌ها از /preregister/preregisters:", candidates);
 
-    // گرفتن دیتای جغرافیایی
     const geographyResponse = await apiClient.get("/geography/geographies");
     const geographies = geographyResponse.data;
     console.log("استان‌ها از /geography/geographies:", geographies);
 
-    // مپ کردن geographyId به idهای AmCharts
     const provinceIdMap = {
       1: "IR-01", // آذربایجان شرقی
       2: "IR-02", // آذربایجان غربی
@@ -261,7 +257,6 @@ export const fetchProvinceData = async () => {
       31: "IR-25", // یزد
     };
 
-    // لیست استاندارد AmCharts برای نمایش همه استان‌ها
     const provinceMap = [
       { id: "IR-01", name: "آذربايجان شرقي" },
       { id: "IR-02", name: "آذربايجان غربي" },
@@ -296,7 +291,6 @@ export const fetchProvinceData = async () => {
       { id: "IR-25", name: "يزد" },
     ];
 
-    // مپ کردن داوطلب‌ها به اسم استان‌ها
     const provinceData = candidates.map((candidate) => {
       const geography = geographies.find(
         (g) => g.geographyId === candidate.preRegisterSelectedProvince
@@ -311,14 +305,12 @@ export const fetchProvinceData = async () => {
       };
     });
 
-    // شمارش داوطلب‌ها توی هر استان
     const provinceCounts = provinceData.reduce((acc, data) => {
       acc[data.provinceName] = (acc[data.provinceName] || 0) + 1;
       return acc;
     }, {});
     console.log("شمارش استان‌ها:", provinceCounts);
 
-    // ساخت دیتای نهایی برای نقشه (شامل همه استان‌ها)
     const amChartData = provinceMap.map((province) => {
       const geoId = provinceData.find(
         (p) => p.provinceName === province.name
@@ -516,6 +508,7 @@ export const fetchExamsData = async () => {
           backgroundColor: "rgba(220, 103, 220, 0.6)",
           borderColor: "rgba(220, 103, 220, 1)",
           borderWidth: 1,
+          ticks: { maxRotation: 45, minRotation: 45},
         },
       ],
     };
@@ -555,7 +548,11 @@ export const fetchExamsData = async () => {
       4: "#FFD700", // سازمان سنجش و آموزش کشور
       5: "#00CED1", // جهاد دانشگاهی
     };
-
+    const maxOrganizer = Object.values(organizerExamData).reduce(
+      (max, current) =>
+        current.exams.length > max.exams.length ? current : max,
+      { name: "نامشخص", exams: [] }
+    );
     organizers.forEach((organizer) => {
       const organizerId = String(organizer.organizerId);
       console.log(
@@ -675,6 +672,10 @@ export const fetchExamsData = async () => {
           {
             label: "بیشترین تعداد داوطلب",
             value: `${maxExam.name} (${maxExam.count} نفر)`,
+          },
+          {
+            label: "بیشترین آزمون برگزار شده توسط",
+            value: `${maxOrganizer.name} (${maxOrganizer.exams.length} آزمون)`,
           },
         ],
       },

@@ -20,7 +20,6 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { fetchExamsData } from "../../dataService";
 import ProvinceMapChart from "./ProvinceMapChart/ProvinceMapChart";
 import { organizerColors } from "./colors";
-import { apiClient } from "../../dataService";
 
 ChartJS.register(
   ArcElement,
@@ -35,7 +34,7 @@ const MainPageComp = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("جدیدترین گزارشات");
   const [examsData, setExamsData] = useState([]);
-  const [organizers, setOrganizers] = useState([]); // اضافه کردن state برای organizers
+  const [organizers, setOrganizers] = useState([]);
   const [selectedExam, setSelectedExam] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -104,9 +103,9 @@ const MainPageComp = () => {
     exam.title.includes(searchTerm)
   );
 
-  if (loading) {
-    return <div>در حال بارگذاری...</div>;
-  }
+  // if (loading) {
+  //   return <div>در حال بارگذاری...</div>;
+  // }
 
   return (
     <div className="exam-report-slider">
@@ -206,7 +205,10 @@ const MainPageComp = () => {
                                     ? "آزمون‌ها"
                                     : "دین",
                                 },
-                                ticks: { maxRotation: 45, minRotation: 45 },
+                                ticks: {
+                                  maxRotation: 45,
+                                  minRotation: 45,
+                                },
                               },
                             },
                           }}
