@@ -16,7 +16,7 @@ am4core.useTheme(am4themes_animated);
 const ExamAnalysisComp = () => {
   const [examTitle, setExamTitle] = useState("");
   const { filters, updateFilters, addReport } = useReports();
-  const [chartType, setChartType] = useState("line");
+  const [chartType, setChartType] = useState("pie");
   const [descriptionBoxes, setDescriptionBoxes] = useState([]);
   const chartRef = useRef(null);
   const [isTextVisible, setIsTextVisible] = useState(false);
@@ -72,6 +72,29 @@ const ExamAnalysisComp = () => {
     );
   };
 
+  const getSupportedCharts = useCallback(() => {
+    const result = generateFakeChartData(filters, chartType);
+    console.log(
+      "getSupportedCharts - Filters:",
+      filters,
+      "ChartType:",
+      chartType,
+      "SupportedCharts:",
+      result.supportedCharts
+    );
+    return result.supportedCharts?.length
+      ? result.supportedCharts
+      : ["pie", "bar", "line", "map", "nestedDonut"];
+  }, [filters, chartType]);
+
+  useEffect(() => {
+    const supportedCharts = getSupportedCharts();
+    if (!supportedCharts.includes(chartType) && supportedCharts.length > 0) {
+      console.log("Resetting chartType to:", supportedCharts[0]);
+      setChartType(supportedCharts[0]);
+    }
+  }, [filters, getSupportedCharts]);
+
   const handleSubmitReport = () => {
     Swal.fire({
       title: "عنوان گزارش خود را وارد کنید",
@@ -95,14 +118,16 @@ const ExamAnalysisComp = () => {
       if (result.isConfirmed) {
         const title = result.value;
         setExamTitle(title);
-
+        const { data, description } = generateFakeChartData(filters, chartType);
         const report = {
           id: Date.now(),
           title,
           chartType,
+          data,
           descriptionBoxes,
           filters,
           date: new Date().toLocaleDateString("fa-IR"),
+          description,
         };
         addReport(report);
 
@@ -119,7 +144,7 @@ const ExamAnalysisComp = () => {
 
         setTimeout(() => {
           setExamTitle("");
-          setChartType("line");
+          setChartType("pie");
           setDescriptionBoxes([]);
           window.scrollTo({ top: 0, behavior: "smooth" });
         }, 3000);
@@ -131,17 +156,7 @@ const ExamAnalysisComp = () => {
     setIsTextVisible(!isTextVisible);
   };
 
-  const getSupportedCharts = useCallback(() => {
-    const result = generateFakeChartData(filters, chartType);
-    return result.supportedCharts || [];
-  }, [filters, chartType]);
-
-  useEffect(() => {
-    const supportedCharts = getSupportedCharts();
-    if (!supportedCharts.includes(chartType) && supportedCharts.length > 0) {
-      setChartType(supportedCharts[0]);
-    }
-  }, [filters, chartType, getSupportedCharts]);
+  const chartData = generateFakeChartData(filters, chartType).data;
 
   return (
     <div className="exam-analysis">
@@ -198,27 +213,33 @@ const ExamAnalysisComp = () => {
             value={chartType}
             onChange={(e) => setChartType(e.target.value)}
           >
-            {getSupportedCharts().map((type) => (
-              <option key={type} value={type}>
-                {type === "line"
-                  ? "نمودار خطی"
-                  : type === "bar"
-                  ? "نمودار میله‌ای"
-                  : type === "pie"
-                  ? "نمودار دایره‌ای"
-                  : type === "map"
-                  ? "نمودار پراکندگی در کشور"
-                  : type === "semiCircle"
-                  ? "نیم‌دایره"
-                  : type === "nestedDonut"
-                  ? "دونات تودرتو"
-                  : type === "pictorial"
-                  ? "تصویری انباشته"
-                  : type}
+            {getSupportedCharts().length > 0 ? (
+              getSupportedCharts().map((type) => (
+                <option key={type} value={type}>
+                  {type === "line"
+                    ? "نمودار خطی"
+                    : type === "bar"
+                    ? "نمودار میله‌ای"
+                    : type === "pie"
+                    ? "نمودار دایره‌ای"
+                    : type === "map"
+                    ? "نمودار پراکندگی در کشور"
+                    : type === "semiCircle"
+                    ? "نیم‌دایره"
+                    : type === "nestedDonut"
+                    ? "دونات تودرتو"
+                    : type === "pictorial"
+                    ? "تصویری انباشته"
+                    : type}
+                </option>
+              ))
+            ) : (
+              <option value="" disabled>
+                هیچ نموداری موجود نیست
               </option>
-            ))}
+            )}
           </select>
-          <ChartComponent chartType={chartType} filters={filters} />
+          <ChartComponent chartType={chartType} data={chartData} />
         </div>
 
         <div className="analysis-boxes">

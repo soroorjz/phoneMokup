@@ -50,7 +50,7 @@ const generateFakeChartData = (filters, chartType) => {
   ];
 
   const examTitles = [
-   "یازدهمین آزمون مشترک دستگاه های اجرایی",
+    "یازدهمین آزمون مشترک دستگاه های اجرایی",
     "آزمون حفاظت فیزیکی(نگهبانی) شرکت کار و تامین",
     "اولین آزمون استخدامی اختصاصی معلولان",
     "سیزدهمین آزمون مشترک",
@@ -1031,7 +1031,7 @@ const generateFakeChartData = (filters, chartType) => {
   // پیش‌فرض در صورت عدم تطابق
   return {
     data: [],
-    supportedCharts: [],
+    supportedCharts: ["line", "bar", "pie", "nestedDonut", "map"], // پیش‌فرض
     description: generateDescription(),
   };
 };
