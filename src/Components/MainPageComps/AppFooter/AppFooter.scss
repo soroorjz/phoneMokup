@@ -11,8 +11,8 @@
   border-radius: 10px;
   text-align: center;
   @include responsive($tablet) {
-    bottom: unset;
-    top: 0;
+    // bottom: unset;
+    // top: 0;
     border-radius: 0;
     background: #452c63;
     justify-content: center;

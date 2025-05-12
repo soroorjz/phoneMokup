@@ -17,6 +17,10 @@
     transform: scale(1.5);
     @include responsive($tablet) {
       display: none;
+          // top: -150px;
+        // bottom: 600px;
+        /* width: 100%; */
+        // transform: scale(25.5);
     }
   }
   .myReportHeader {
@@ -111,9 +115,10 @@
       font-size: 28px;
       cursor: pointer;
       @include responsive($tablet) {
-        left: unset;
-        right: 53px;
-        transform: rotate(180deg);
+        // left: unset;
+        // right: 53px;
+        left: 90px;
+        // transform: rotate(180deg);
         font-size: 40px;
       }
       :hover {
