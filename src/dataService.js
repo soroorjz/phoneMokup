@@ -20,7 +20,7 @@ const fetchToken = async (force = false) => {
   }
 
   try {
-    const response = await fetch("/api/auth", {
+    const response = await fetch("https://smp.devrayan.ir/api/auth", {
       headers: {
         "RAYAN-USERNAME": "S.JAMEIE",
         "RAYAN-PASSWORD": "1156789",
@@ -508,7 +508,7 @@ export const fetchExamsData = async () => {
           backgroundColor: "rgba(220, 103, 220, 0.6)",
           borderColor: "rgba(220, 103, 220, 1)",
           borderWidth: 1,
-          ticks: { maxRotation: 45, minRotation: 45},
+          ticks: { maxRotation: 45, minRotation: 45 },
         },
       ],
     };
