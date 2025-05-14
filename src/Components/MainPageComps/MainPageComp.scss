@@ -93,7 +93,7 @@
     width: 80%;
     margin: 25px auto;
     @include responsive($tablet) {
-      margin: 100px auto 0;
+      // margin: 100px auto 0;
     }
     .filter-container {
       position: relative;
