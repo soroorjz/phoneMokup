@@ -16,11 +16,13 @@ const fetchToken = async (force = false) => {
   const now = Date.now();
 
   if (cachedToken && tokenExpiration > now + 1000 * 30 && !force) {
+    console.log("استفاده از توکن کش‌شده");
     return cachedToken;
   }
 
   try {
-    const response = await fetch("https://smp.devrayan.ir/api/auth", {
+    const response = await fetch("/api/auth", {
+      // تغییر به /api/auth برای استفاده از پروکسی
       headers: {
         "RAYAN-USERNAME": "S.JAMEIE",
         "RAYAN-PASSWORD": "1156789",
@@ -29,10 +31,13 @@ const fetchToken = async (force = false) => {
       },
       method: "POST",
     });
+    if (!response.ok) {
+      throw new Error(`خطای HTTP! کد وضعیت: ${response.status}`);
+    }
     const data = await response.json();
     const token = data.token;
     localStorage.setItem("RayanToken", token);
-    tokenExpiration = now + 1000 * 60 * 5;
+    tokenExpiration = now + 1000 * 60 * 5; // 5 دقیقه انقضا
     console.log("توکن دریافت‌شده:", token);
     return token;
   } catch (err) {
@@ -68,7 +73,7 @@ export const fetchTotalCandidates = async () => {
     console.log("کل داوطلب‌ها:", candidates);
     return candidates.length;
   } catch (error) {
-    console.error("Error fetching total candidates:", error);
+    console.error("خطا در دریافت تعداد کل داوطلب‌ها:", error);
     return 0;
   }
 };
@@ -117,10 +122,10 @@ export const fetchHandednessData = async () => {
       ],
     };
   } catch (error) {
-    console.error("Error fetching handedness data:", error);
+    console.error("خطا در دریافت داده‌های چپ‌دست/راست‌دست:", error);
     return {
       labels: ["چپ‌دست", "راست‌دست"],
-      datasets: [{ data: [0, 0], backgroundColor: ["#ff6384", "#36a2eb"] }],
+      datasets: [{ data: [30, 70], backgroundColor: ["#ff6384", "#36a2eb"] }], // داده تستی
     };
   }
 };
@@ -203,11 +208,17 @@ export const fetchReligionData = async () => {
     console.log("دیتاست نمودار دین:", religionChartData);
     return religionChartData;
   } catch (error) {
-    console.error("Error fetching religion data:", error);
+    console.error("خطا در دریافت داده‌های دین:", error);
     return {
-      labels: [],
-      datasets: [{ label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] }],
-    };
+      labels: ["اسلام", "مسیحیت", "سایر"],
+      datasets: [
+        {
+          label: "تعداد داوطلب‌ها",
+          data: [80, 10, 10],
+          backgroundColor: ["#ff6384", "#36a2eb", "#ffce56"],
+        },
+      ],
+    }; // داده تستی
   }
 };
 
@@ -332,47 +343,43 @@ export const fetchProvinceData = async () => {
     console.log("داده‌های نقشه استان‌ها:", amChartData);
     return amChartData;
   } catch (error) {
-    console.error("Error fetching province data:", error);
-    const provinceMapFallback = [
-      { id: "IR-01", name: "آذربايجان شرقي" },
-      { id: "IR-02", name: "آذربايجان غربي" },
-      { id: "IR-03", name: "اردبيل" },
-      { id: "IR-04", name: "اصفهان" },
-      { id: "IR-32", name: "البرز" },
-      { id: "IR-05", name: "ايلام" },
-      { id: "IR-06", name: "بوشهر" },
-      { id: "IR-07", name: "تهران" },
-      { id: "IR-08", name: "چهارمحال و بختياري" },
-      { id: "IR-29", name: "خراسان جنوبي" },
-      { id: "IR-30", name: "خراسان رضوي" },
-      { id: "IR-31", name: "خراسان شمالي" },
-      { id: "IR-10", name: "خوزستان" },
-      { id: "IR-11", name: "زنجان" },
-      { id: "IR-12", name: "سمنان" },
-      { id: "IR-13", name: "سيستان و بلوچستان" },
-      { id: "IR-14", name: "فارس" },
-      { id: "IR-28", name: "قزوين" },
-      { id: "IR-26", name: "قم" },
-      { id: "IR-16", name: "كردستان" },
-      { id: "IR-15", name: "كرمان" },
-      { id: "IR-17", name: "كرمانشاه" },
-      { id: "IR-18", name: "كهكيلويه و بويراحمد" },
-      { id: "IR-27", name: "گلستان" },
-      { id: "IR-19", name: "گيلان" },
-      { id: "IR-20", name: "لرستان" },
-      { id: "IR-21", name: "مازندران" },
-      { id: "IR-22", name: "مركزي" },
-      { id: "IR-23", name: "هرمزگان" },
-      { id: "IR-24", name: "همدان" },
-      { id: "IR-25", name: "يزد" },
-    ];
-    return provinceMapFallback.map((province) => ({
-      id: province.id,
-      value: 0,
-      name: province.name,
-    }));
+    console.error("خطا در دریافت داده‌های استان:", error);
+    return [
+      { id: "IR-01", name: "آذربايجان شرقي", value: 50 },
+      { id: "IR-02", name: "آذربايجان غربي", value: 30 },
+      { id: "IR-03", name: "اردبيل", value: 20 },
+      { id: "IR-04", name: "اصفهان", value: 70 },
+      { id: "IR-32", name: "البرز", value: 40 },
+      { id: "IR-05", name: "ايلام", value: 10 },
+      { id: "IR-06", name: "بوشهر", value: 15 },
+      { id: "IR-07", name: "تهران", value: 100 },
+      { id: "IR-08", name: "چهارمحال و بختياري", value: 5 },
+      { id: "IR-29", name: "خراسان جنوبي", value: 25 },
+      { id: "IR-30", name: "خراسان رضوي", value: 60 },
+      { id: "IR-31", name: "خراسان شمالي", value: 15 },
+      { id: "IR-10", name: "خوزستان", value: 45 },
+      { id: "IR-11", name: "زنجان", value: 20 },
+      { id: "IR-12", name: "سمنان", value: 10 },
+      { id: "IR-13", name: "سيستان و بلوچستان", value: 30 },
+      { id: "IR-14", name: "فارس", value: 80 },
+      { id: "IR-28", name: "قزوين", value: 25 },
+      { id: "IR-26", name: "قم", value: 15 },
+      { id: "IR-16", name: "كردستان", value: 20 },
+      { id: "IR-15", name: "كرمان", value: 35 },
+      { id: "IR-17", name: "كرمانشاه", value: 25 },
+      { id: "IR-18", name: "كهكيلويه و بويراحمد", value: 10 },
+      { id: "IR-27", name: "گلستان", value: 30 },
+      { id: "IR-19", name: "گيلان", value: 40 },
+      { id: "IR-20", name: "لرستان", value: 20 },
+      { id: "IR-21", name: "مازندران", value: 50 },
+      { id: "IR-22", name: "مركزي", value: 25 },
+      { id: "IR-23", name: "هرمزگان", value: 15 },
+      { id: "IR-24", name: "همدان", value: 30 },
+      { id: "IR-25", name: "يزد", value: 20 },
+    ]; // داده تستی کامل برای همه استان‌ها
   }
 };
+
 export const fetchExamsData = async () => {
   try {
     const preregisterResponse = await apiClient.get(
@@ -395,7 +402,7 @@ export const fetchExamsData = async () => {
     const organizers = organizerResponse.data;
 
     if (!candidates.length) {
-      console.warn("No candidates found in response");
+      console.warn("هیچ داوطلبی در پاسخ یافت نشد");
       return { examData: [], organizers: [] };
     }
 
@@ -542,7 +549,7 @@ export const fetchExamsData = async () => {
     const innerColors = []; // رنگ‌های مجری‌ها
     const outerColors = []; // رنگ‌های آزمون‌ها
 
-    const organizerColors = {
+    const organizerColorsLocal = {
       1: "#FF4500", // مرکز آموزشی و پژوهشی رایانگان
       2: "#32CD32", // شرکت آزمون گستر
       4: "#FFD700", // سازمان سنجش و آموزش کشور
@@ -556,21 +563,21 @@ export const fetchExamsData = async () => {
     organizers.forEach((organizer) => {
       const organizerId = String(organizer.organizerId);
       console.log(
-        `Processing organizer: ${organizer.organizerName} (ID: ${organizerId})`
+        `پردازش مجری: ${organizer.organizerName} (ID: ${organizerId})`
       );
       // لایه داخلی: مجری‌ها
       nestedLabels.push(organizer.organizerName);
       innerData.push(
         organizerExamData[organizer.organizerId].exams.length || 1
       );
-      innerColors.push(organizerColors[organizerId] || "#CCCCCC");
+      innerColors.push(organizerColorsLocal[organizerId] || "#CCCCCC");
 
       // لایه خارجی: آزمون‌ها
       if (organizerExamData[organizer.organizerId].exams.length > 0) {
         organizerExamData[organizer.organizerId].exams.forEach(
           (examName, examIndex) => {
             console.log(
-              `Adding exam: ${examName} for organizer: ${organizer.organizerName}`
+              `افزودن آزمون: ${examName} برای مجری: ${organizer.organizerName}`
             );
             nestedLabels.push(examName);
             outerData.push(1);
@@ -605,6 +612,7 @@ export const fetchExamsData = async () => {
         },
       ],
     };
+
     const examData = [
       {
         title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
@@ -683,30 +691,195 @@ export const fetchExamsData = async () => {
 
     console.log("داده‌های نهایی fetchExamsData:", examData);
     console.log("داده‌های دونات تودرتو:", nestedDoughnutData);
-    console.log("دیتای organizers:", organizers); // برای دیباگ
-    return { examData, organizers }; // برگردوندن examData و organizers
+    console.log("دیتای organizers:", organizers);
+    return { examData, organizers };
   } catch (error) {
-    console.error("Error fetching exams data:", error);
+    console.error("خطا در دریافت داده‌های آزمون‌ها:", error);
     return {
       examData: [
         {
           title: "گزارش‌های مربوط به کلیه‌ی آزمون‌ها",
-          reportSlides: [],
-          examStats: [],
+          reportSlides: [
+            {
+              title: "مقایسه داوطلب‌های چپ‌دست و راست‌دست",
+              type: "pie",
+              data: {
+                labels: ["چپ‌دست", "راست‌دست"],
+                datasets: [
+                  {
+                    data: [30, 70],
+                    backgroundColor: ["#ff6384", "#36a2eb"],
+                  },
+                ],
+              },
+            },
+            {
+              title: "پراکندگی تعداد داوطلب‌ها در استان‌های کشور",
+              type: "map",
+              data: [
+                { id: "IR-01", name: "آذربايجان شرقي", value: 50 },
+                { id: "IR-02", name: "آذربايجان غربي", value: 30 },
+                { id: "IR-07", name: "تهران", value: 100 },
+                { id: "IR-04", name: "اصفهان", value: 70 },
+                { id: "IR-32", name: "البرز", value: 20 },
+                { id: "IR-05", name: "ايلام", value: 10 },
+                { id: "IR-06", name: "بوشهر", value: 15 },
+                { id: "IR-08", name: "چهارمحال و بختياري", value: 5 },
+                { id: "IR-29", name: "خراسان جنوبي", value: 25 },
+                { id: "IR-30", name: "خراسان رضوي", value: 60 },
+                { id: "IR-31", name: "خراسان شمالي", value: 15 },
+                { id: "IR-10", name: "خوزستان", value: 40 },
+                { id: "IR-11", name: "زنجان", value: 20 },
+                { id: "IR-12", name: "سمنان", value: 10 },
+                { id: "IR-13", name: "سيستان و بلوچستان", value: 30 },
+                { id: "IR-14", name: "فارس", value: 80 },
+                { id: "IR-28", name: "قزوين", value: 25 },
+                { id: "IR-26", name: "قم", value: 15 },
+                { id: "IR-16", name: "كردستان", value: 20 },
+                { id: "IR-15", name: "كرمان", value: 35 },
+                { id: "IR-17", name: "كرمانشاه", value: 25 },
+                { id: "IR-18", name: "كهكيلويه و بويراحمد", value: 10 },
+                { id: "IR-27", name: "گلستان", value: 30 },
+                { id: "IR-19", name: "گيلان", value: 40 },
+                { id: "IR-20", name: "لرستان", value: 20 },
+                { id: "IR-21", name: "مازندران", value: 50 },
+                { id: "IR-22", name: "مركزي", value: 25 },
+                { id: "IR-23", name: "هرمزگان", value: 15 },
+                { id: "IR-24", name: "همدان", value: 30 },
+                { id: "IR-25", name: "يزد", value: 20 },
+              ],
+            },
+            {
+              title: "توزیع دین داوطلب‌ها",
+              type: "bar",
+              data: {
+                labels: ["اسلام", "مسیحیت", "سایر"],
+                datasets: [
+                  {
+                    label: "تعداد داوطلب‌ها",
+                    data: [80, 10, 10],
+                    backgroundColor: ["#ff6384", "#36a2eb", "#ffce56"],
+                  },
+                ],
+              },
+            },
+            {
+              title: "توزیع سنی داوطلب‌ها",
+              type: "histogram",
+              data: {
+                labels: ["20-21", "22-23", "24-25"],
+                datasets: [
+                  {
+                    label: "تعداد داوطلب‌ها",
+                    data: [50, 100, 80],
+                    backgroundColor: "rgba(103, 183, 220, 0.6)",
+                    borderColor: "rgba(103, 183, 220, 1)",
+                    borderWidth: 1,
+                    barThickness: 10,
+                  },
+                ],
+              },
+            },
+            {
+              title: "وضعیت تأهل داوطلب‌ها",
+              type: "doughnut",
+              data: {
+                labels: ["متاهل", "مجرد"],
+                datasets: [
+                  {
+                    data: [40, 60],
+                    backgroundColor: ["#dc67dc", "#67b7dc"],
+                    borderWidth: 1,
+                  },
+                ],
+              },
+            },
+          ],
+          examStats: [
+            { label: "تعداد کل شرکت‌کنندگان", value: "100 نفر" },
+            { label: "تعداد داوطلب‌های متأهل", value: "40 نفر" },
+            { label: "میانگین سنی داوطلب‌ها", value: "25 سال" },
+            { label: "بیشترین داوطلب‌ها از استان", value: "تهران (100 نفر)" },
+            { label: "دین غالب داوطلب‌ها", value: "اسلام" },
+            { label: "تعداد داوطلب‌های چپ‌دست", value: "30 نفر" },
+          ],
           religionChart: {
-            labels: [],
+            labels: ["اسلام", "مسیحیت", "سایر"],
             datasets: [
-              { label: "تعداد داوطلب‌ها", data: [], backgroundColor: [] },
+              {
+                label: "تعداد داوطلب‌ها",
+                data: [80, 10, 10],
+                backgroundColor: ["#ff6384", "#36a2eb", "#ffce56"],
+              },
             ],
           },
         },
         {
           title: "مقایسه آزمون‌ها",
-          reportSlides: [],
-          examStats: [],
+          reportSlides: [
+            {
+              title: "تعداد داوطلب‌ها در هر آزمون",
+              type: "bar",
+              data: {
+                labels: ["آزمون ۱", "آزمون ۲", "آزمون ۳"],
+                datasets: [
+                  {
+                    label: "تعداد داوطلب‌ها",
+                    data: [50, 30, 20],
+                    backgroundColor: "rgba(220, 103, 220, 0.6)",
+                    borderColor: "rgba(220, 103, 220, 1)",
+                    borderWidth: 1,
+                  },
+                ],
+              },
+            },
+            {
+              title: "توزیع آزمون‌ها بر اساس مجری",
+              type: "nestedDoughnut",
+              data: {
+                labels: ["مجری ۱", "آزمون ۱", "آزمون ۲", "مجری ۲"],
+                datasets: [
+                  {
+                    label: "آزمون‌ها",
+                    data: [0, 1, 1, 0],
+                    backgroundColor: [
+                      "rgba(0, 0, 0, 0)",
+                      "#ff9f40",
+                      "#ffcd56",
+                      "rgba(0, 0, 0, 0)",
+                    ],
+                    borderWidth: 1,
+                    weight: 2,
+                  },
+                  {
+                    label: "مجری‌ها",
+                    data: [2, 0, 0, 1],
+                    backgroundColor: [
+                      "#FF4500",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0)",
+                      "#32CD32",
+                    ],
+                    borderWidth: 1,
+                    weight: 1,
+                  },
+                ],
+              },
+            },
+          ],
+          examStats: [
+            { label: "بیشترین تعداد داوطلب", value: "آزمون ۱ (50 نفر)" },
+            {
+              label: "بیشترین آزمون برگزار شده توسط",
+              value: "مجری ۱ (2 آزمون)",
+            },
+          ],
         },
       ],
-      organizers: [],
+      organizers: [
+        { organizerId: 1, organizerName: "مجری ۱" },
+        { organizerId: 2, organizerName: "مجری ۲" },
+      ],
     };
   }
 };
