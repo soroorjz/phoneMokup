@@ -216,9 +216,9 @@
           .chart-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            width: 100%;
+            width: 45%;
             height: 400px;
+            margin: 0 auto;
           }
         }
 
@@ -283,5 +283,4 @@
       }
     }
   }
- 
 }
