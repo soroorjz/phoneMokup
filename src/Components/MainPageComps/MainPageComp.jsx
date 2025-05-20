@@ -17,6 +17,7 @@ import {
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchExamsData } from "../../dataService";
 import ProvinceMapChart from "./ProvinceMapChart/ProvinceMapChart";
 import { organizerColors } from "./colors";
@@ -31,7 +32,7 @@ ChartJS.register(
   LinearScale
 );
 
-// کامپوننت جدید برای مدیریت resize
+// کامپوننت برای مدیریت resize
 const ChartWrapper = ({ children }) => {
   const containerRef = useRef(null);
 
@@ -44,7 +45,6 @@ const ChartWrapper = ({ children }) => {
       resizeObserver.observe(containerRef.current);
     }
 
-    // Trigger اولیه برای رندر
     window.dispatchEvent(new Event("resize"));
 
     return () => {
@@ -64,11 +64,8 @@ const ChartWrapper = ({ children }) => {
 const MainPageComp = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("جدیدترین گزارشات");
-  const [examsData, setExamsData] = useState([]);
-  const [organizers, setOrganizers] = useState([]);
   const [selectedExam, setSelectedExam] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
 
   const filters = [
     "جدیدترین گزارشات",
@@ -76,30 +73,29 @@ const MainPageComp = () => {
     "بیشترین تعداد جذب",
   ];
 
+  // استفاده از useQuery برای لود داده‌ها
+  const {
+    data: examResponse,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["examsData"],
+    queryFn: fetchExamsData,
+  });
+
+  // مدیریت انتخاب آزمون بعد از لود داده‌ها
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        const { examData, organizers } = await fetchExamsData();
-        console.log("داده‌های لودشده:", examData);
-        console.log("مجری‌ها:", organizers);
-        setExamsData(examData);
-        setOrganizers(organizers);
-        setSelectedExam(examData[0] || null);
-      } catch (error) {
-        console.error("خطا در لود داده‌ها:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, []);
+    if (examResponse && examResponse.examData) {
+      setSelectedExam(examResponse.examData[0] || null);
+    }
+  }, [examResponse]);
 
   const handleFilterSelect = (filter) => {
     setSelectedFilter(filter);
     setFilterOpen(false);
   };
 
+  // مدیریت کلیک خارج از فیلتر
   useEffect(() => {
     const handleClickOutside = (event) => {
       const filterContainer = document.querySelector(".filter-container");
@@ -129,34 +125,38 @@ const MainPageComp = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: false,
-    lazyLoad: false, // غیرفعال کردن lazyLoad
-    initialSlide: 0, // لود اسلاید اول
+    lazyLoad: false,
+    initialSlide: 0,
     afterChange: () => {
       window.dispatchEvent(new Event("resize"));
     },
   };
 
-  const filteredExams = examsData.filter((exam) =>
-    exam.title.includes(searchTerm)
-  );
-
-  if (loading) {
+  // مدیریت لودینگ
+  if (isLoading) {
     return (
       <div className="loading">
-        {/* <DotLottieReact
-          src="/assets/Lootie/loading.lottie"
-          loop
-          autoplay
-          style={{ width: "200px", height: "200px" }}
-        /> */}
         <MainPageSkeleton />
       </div>
     );
   }
 
-  if (!examsData.length || !selectedExam) {
+  // مدیریت خطا
+  if (error) {
+    return <div className="error">خطا در لود داده‌ها: {error.message}</div>;
+  }
+
+  // بررسی داده‌های خالی
+  if (!examResponse?.examData?.length || !selectedExam) {
     return <div className="error">داده‌ای برای نمایش وجود ندارد!</div>;
   }
+
+  const examsData = examResponse.examData;
+  const organizers = examResponse.organizers;
+
+  const filteredExams = examsData.filter((exam) =>
+    exam.title.includes(searchTerm)
+  );
 
   return (
     <div className="exam-report-slider">
@@ -403,7 +403,6 @@ const MainPageComp = () => {
           );
         })}
       </div>
-      {/* <MainPageSkeleton/> */}
     </div>
   );
 };
