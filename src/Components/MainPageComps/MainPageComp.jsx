@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./MainPageComp.scss";
 import Slider from "react-slick";
 import { Pie, Bar, Doughnut } from "react-chartjs-2";
@@ -20,6 +20,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { fetchExamsData } from "../../dataService";
 import ProvinceMapChart from "./ProvinceMapChart/ProvinceMapChart";
 import { organizerColors } from "./colors";
+import MainPageSkeleton from "./MainPageSkeleton/MainPageSkeleton";
 
 ChartJS.register(
   ArcElement,
@@ -29,6 +30,36 @@ ChartJS.register(
   CategoryScale,
   LinearScale
 );
+
+// کامپوننت جدید برای مدیریت resize
+const ChartWrapper = ({ children }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    // Trigger اولیه برای رندر
+    window.dispatchEvent(new Event("resize"));
+
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div ref={containerRef} className="chart-wrapper">
+      {children}
+    </div>
+  );
+};
 
 const MainPageComp = () => {
   const [filterOpen, setFilterOpen] = useState(false);
@@ -48,13 +79,18 @@ const MainPageComp = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      const { examData, organizers } = await fetchExamsData(); // گرفتن examData و organizers
-      console.log("Data loaded:", examData);
-      console.log("Organizers:", organizers);
-      setExamsData(examData);
-      setOrganizers(organizers);
-      setSelectedExam(examData[0] || null);
-      setLoading(false);
+      try {
+        const { examData, organizers } = await fetchExamsData();
+        console.log("داده‌های لودشده:", examData);
+        console.log("مجری‌ها:", organizers);
+        setExamsData(examData);
+        setOrganizers(organizers);
+        setSelectedExam(examData[0] || null);
+      } catch (error) {
+        console.error("خطا در لود داده‌ها:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -93,7 +129,8 @@ const MainPageComp = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: false,
-    lazyLoad: "ondemand",
+    lazyLoad: false, // غیرفعال کردن lazyLoad
+    initialSlide: 0, // لود اسلاید اول
     afterChange: () => {
       window.dispatchEvent(new Event("resize"));
     },
@@ -103,9 +140,23 @@ const MainPageComp = () => {
     exam.title.includes(searchTerm)
   );
 
-  // if (loading) {
-  //   return <div>در حال بارگذاری...</div>;
-  // }
+  if (loading) {
+    return (
+      <div className="loading">
+        {/* <DotLottieReact
+          src="/assets/Lootie/loading.lottie"
+          loop
+          autoplay
+          style={{ width: "200px", height: "200px" }}
+        /> */}
+        <MainPageSkeleton />
+      </div>
+    );
+  }
+
+  if (!examsData.length || !selectedExam) {
+    return <div className="error">داده‌ای برای نمایش وجود ندارد!</div>;
+  }
 
   return (
     <div className="exam-report-slider">
@@ -184,128 +235,157 @@ const MainPageComp = () => {
                 {exam.reportSlides.map((slide, slideIndex) => (
                   <div key={slideIndex} className="slide">
                     <h3 className="slide-title">{slide.title}</h3>
-                    <div className="chart-container">
-                      {slide.type === "pie" && <Pie data={slide.data} />}
-                      {slide.type === "bar" && (
-                        <Bar
-                          data={slide.data}
-                          options={{
-                            scales: {
-                              y: {
-                                beginAtZero: true,
-                                title: {
-                                  display: true,
-                                  text: "تعداد داوطلب‌ها",
-                                },
-                              },
-                              x: {
-                                title: {
-                                  display: true,
-                                  text: slide.title.includes("آزمون")
-                                    ? "آزمون‌ها"
-                                    : "دین",
-                                },
-                                ticks: {
-                                  maxRotation: 45,
-                                  minRotation: 45,
-                                },
-                              },
-                            },
-                          }}
-                        />
-                      )}
-                      {slide.type === "map" && (
-                        <ProvinceMapChart data={slide.data} />
-                      )}
-                      {slide.type === "histogram" && (
-                        <Bar
-                          data={slide.data}
-                          options={{
-                            scales: {
-                              y: {
-                                beginAtZero: true,
-                                title: {
-                                  display: true,
-                                  text: "تعداد داوطلب‌ها",
-                                },
-                              },
-                              x: {
-                                title: { display: true, text: "سن (سال)" },
-                                ticks: { autoSkip: false, maxRotation: 45 },
-                              },
-                            },
-                            plugins: { legend: { display: false } },
-                            barPercentage: 1.0,
-                            categoryPercentage: 1.0,
-                          }}
-                        />
-                      )}
-                      {slide.type === "doughnut" && (
-                        <Doughnut data={slide.data} />
-                      )}
-                      {slide.type === "nestedDoughnut" && (
-                        <Doughnut
-                          data={slide.data}
-                          options={{
-                            cutout: "20%", // سوراخ تنگ‌تر
-                            plugins: {
-                              legend: {
-                                position: "right",
-                                labels: {
-                                  filter: (item) => {
-                                    return (
-                                      item.index < organizers.length &&
-                                      slide.data.datasets[1].data[
-                                        item.index
-                                      ] !== undefined
-                                    );
+                    <ChartWrapper>
+                      <div className="chart-container">
+                        {slide.type === "pie" && (
+                          <Pie
+                            key={`pie-${slideIndex}`}
+                            data={slide.data}
+                            options={{
+                              responsive: true,
+                              maintainAspectRatio: false,
+                            }}
+                          />
+                        )}
+                        {slide.type === "bar" && (
+                          <Bar
+                            key={`bar-${slideIndex}`}
+                            data={slide.data}
+                            options={{
+                              responsive: true,
+                              maintainAspectRatio: false,
+                              scales: {
+                                y: {
+                                  beginAtZero: true,
+                                  title: {
+                                    display: true,
+                                    text: "تعداد داوطلب‌ها",
                                   },
-                                  generateLabels: (chart) => {
-                                    const datasets = chart.data.datasets;
-                                    const innerData = datasets[1].data;
-                                    return organizers.map(
-                                      (organizer, index) => {
-                                        const color =
-                                          organizerColors[
-                                            String(organizer.organizerId)
-                                          ] || "#CCCCCC";
-                                        return {
-                                          text: organizer.organizerName,
-                                          fillStyle: color,
-                                          hidden: !innerData[index],
-                                          index,
-                                        };
-                                      }
-                                    );
+                                },
+                                x: {
+                                  title: {
+                                    display: true,
+                                    text: slide.title.includes("آزمون")
+                                      ? "آزمون‌ها"
+                                      : "دین",
+                                  },
+                                  ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45,
                                   },
                                 },
                               },
-                              tooltip: {
-                                callbacks: {
-                                  label: (context) => {
-                                    const datasetIndex = context.datasetIndex;
-                                    const index = context.dataIndex;
+                            }}
+                          />
+                        )}
+                        {slide.type === "map" && (
+                          <ProvinceMapChart
+                            key={`map-${slideIndex}`}
+                            data={slide.data}
+                          />
+                        )}
+                        {slide.type === "histogram" && (
+                          <Bar
+                            key={`histogram-${slideIndex}`}
+                            data={slide.data}
+                            options={{
+                              responsive: true,
+                              maintainAspectRatio: false,
+                              scales: {
+                                y: {
+                                  beginAtZero: true,
+                                  title: {
+                                    display: true,
+                                    text: "تعداد داوطلب‌ها",
+                                  },
+                                },
+                                x: {
+                                  title: { display: true, text: "سن (سال)" },
+                                  ticks: { autoSkip: false, maxRotation: 45 },
+                                },
+                              },
+                              plugins: { legend: { display: false } },
+                              barPercentage: 1.0,
+                              categoryPercentage: 1.0,
+                            }}
+                          />
+                        )}
+                        {slide.type === "doughnut" && (
+                          <Doughnut
+                            key={`doughnut-${slideIndex}`}
+                            data={slide.data}
+                            options={{
+                              responsive: true,
+                              maintainAspectRatio: false,
+                            }}
+                          />
+                        )}
+                        {slide.type === "nestedDoughnut" && (
+                          <Doughnut
+                            key={`nestedDoughnut-${slideIndex}`}
+                            data={slide.data}
+                            options={{
+                              responsive: true,
+                              maintainAspectRatio: false,
+                              cutout: "20%",
+                              plugins: {
+                                legend: {
+                                  position: "right",
+                                  labels: {
+                                    filter: (item) => {
+                                      return (
+                                        item.index < organizers.length &&
+                                        slide.data.datasets[1].data[
+                                          item.index
+                                        ] !== undefined
+                                      );
+                                    },
+                                    generateLabels: (chart) => {
+                                      const datasets = chart.data.datasets;
+                                      const innerData = datasets[1].data;
+                                      return organizers.map(
+                                        (organizer, index) => {
+                                          const color =
+                                            organizerColors[
+                                              String(organizer.organizerId)
+                                            ] || "#CCCCCC";
+                                          return {
+                                            text: organizer.organizerName,
+                                            fillStyle: color,
+                                            hidden: !innerData[index],
+                                            index,
+                                          };
+                                        }
+                                      );
+                                    },
+                                  },
+                                },
+                                tooltip: {
+                                  callbacks: {
+                                    label: (context) => {
+                                      const datasetIndex = context.datasetIndex;
+                                      const index = context.dataIndex;
 
-                                    if (datasetIndex === 0) {
-                                      // فقط برای لایه خارجی (آزمون‌ها)
-                                      const label = slide.data.labels[index];
-                                      if (
-                                        index >= organizers.length &&
-                                        !label.includes("بدون آزمون")
-                                      ) {
-                                        return label; // فقط اسم آزمون
+                                      if (datasetIndex === 0) {
+                                        const label = slide.data.labels[index];
+                                        if (
+                                          index >= organizers.length &&
+                                          !label.includes("بدون آزمون")
+                                        ) {
+                                          return label;
+                                        }
+                                        return "";
                                       }
-                                      return ""; // برای "بدون آزمون" یا اندیس‌های مربوط به مجری‌ها، چیزی نشون نده
-                                    }
-                                    return ""; // برای لایه داخلی چیزی نشون نده
+                                      return "";
+                                    },
                                   },
                                 },
                               },
-                            },
-                          }}
-                        />
-                      )}
-                    </div>
+                            }}
+                          />
+                        )}
+                      </div>
+                    </ChartWrapper>
                   </div>
                 ))}
               </Slider>
@@ -323,6 +403,7 @@ const MainPageComp = () => {
           );
         })}
       </div>
+      {/* <MainPageSkeleton/> */}
     </div>
   );
 };
